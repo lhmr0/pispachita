@@ -73,6 +73,25 @@
       35% { opacity:0; transform:translate(145vw,45vh) rotate(-25deg); }
       100% { opacity:0; transform:translate(145vw,45vh) rotate(-25deg); }
     }
+    .cover-romantic {
+      position:absolute; inset:0; pointer-events:none; z-index:1;
+    }
+    .cover-float-heart {
+      position:absolute; font-size:clamp(1rem,2.6vw,1.7rem);
+      opacity:.55;
+      filter:drop-shadow(0 0 8px rgba(255,110,150,.45));
+      animation:coverFloatHeart 8.5s ease-in-out infinite;
+    }
+    .cover-float-heart.h1 { left:12%; top:68%; animation-delay:-1.2s; }
+    .cover-float-heart.h2 { left:22%; top:28%; animation-delay:-3.8s; }
+    .cover-float-heart.h3 { right:17%; top:62%; animation-delay:-2.1s; }
+    .cover-float-heart.h4 { right:26%; top:24%; animation-delay:-5.2s; }
+    .cover-float-heart.h5 { left:50%; top:16%; animation-delay:-4.1s; }
+    .cover-float-heart.h6 { left:62%; top:74%; animation-delay:-6.4s; }
+    @keyframes coverFloatHeart {
+      0%,100% { transform:translateY(0) scale(.95) rotate(-4deg); opacity:.35; }
+      50% { transform:translateY(-18px) scale(1.12) rotate(4deg); opacity:.85; }
+    }
 
     /* ===========================================================
        SCENE 2 — MONKEY + PRINCESS
@@ -551,6 +570,36 @@
       animation:heartFloat 1s ease-in-out infinite;
     }
     @keyframes heartFloat { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
+    .monkey-speech {
+      position:absolute; top:-88px; left:50%; transform:translateX(-50%) translateY(8px);
+      min-width:170px; max-width:240px;
+      padding:8px 12px;
+      font-family:'Press Start 2P',cursive;
+      font-size:clamp(.44rem,1.2vw,.58rem);
+      line-height:1.5;
+      color:#6b1537;
+      background:linear-gradient(180deg,#fff4fb 0%,#ffe1ef 100%);
+      border:2px solid rgba(255,112,164,.6);
+      border-radius:12px;
+      box-shadow:0 8px 18px rgba(233,30,99,.25);
+      text-align:center;
+      opacity:0; pointer-events:none; z-index:30;
+      transition:opacity .25s ease, transform .25s ease;
+    }
+    .monkey-speech::after {
+      content:'';
+      position:absolute; bottom:-8px; left:50%; transform:translateX(-50%);
+      width:12px; height:12px;
+      background:#ffe6f2;
+      border-right:2px solid rgba(255,112,164,.6);
+      border-bottom:2px solid rgba(255,112,164,.6);
+      transform-origin:center;
+      rotate:45deg;
+    }
+    .monkey-speech.show {
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
 
     /* Flying heart (delivery) */
     .flying-heart-delivery {
@@ -963,6 +1012,14 @@
     <canvas class="stars-canvas" id="starsCanvas"></canvas>
     <div class="cover-shooting-star s1"></div>
     <div class="cover-shooting-star s2"></div>
+    <div class="cover-romantic" aria-hidden="true">
+      <span class="cover-float-heart h1">💕</span>
+      <span class="cover-float-heart h2">✨</span>
+      <span class="cover-float-heart h3">💖</span>
+      <span class="cover-float-heart h4">🌸</span>
+      <span class="cover-float-heart h5">💗</span>
+      <span class="cover-float-heart h6">🫶</span>
+    </div>
     <div class="heart-wrapper" id="heartWrapper" role="button" aria-label="Haz clic para continuar">
       <svg class="heart" id="heart" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -1071,6 +1128,7 @@
     <!-- MONKEY (rebuilt) -->
     <div class="monkey-container" id="monkeyContainer">
       <div class="monkey-heart" id="monkeyHeart">❤️</div>
+      <div class="monkey-speech" id="monkeySpeech">Te amo mi pispachita 💕</div>
       <div class="monkey-body">
         <!-- Head -->
         <div class="m-head">
@@ -1252,6 +1310,7 @@
     const deliveryExplosion = document.getElementById('deliveryExplosion');
     const scene2Continue = document.getElementById('scene2Continue');
     const monkeyHeart = document.getElementById('monkeyHeart');
+    const monkeySpeech = document.getElementById('monkeySpeech');
     const flyingHeart = document.getElementById('flyingHeart');
     const princessHeart = document.getElementById('princessHeart');
 
@@ -1322,6 +1381,10 @@
       const startY = monkeyRect.top;
       const endX = princessRect.left + princessRect.width/2;
       const endY = princessRect.top;
+
+      // Monkey says phrase while delivering the heart
+      monkeySpeech.classList.add('show');
+      setTimeout(() => monkeySpeech.classList.remove('show'), 2100);
 
       // Hide monkey's heart
       monkeyHeart.style.transition = 'opacity .3s';
