@@ -53,6 +53,26 @@
     }
     @keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
     @keyframes pulse-text { 0%,100%{opacity:.8} 50%{opacity:1} }
+    .cover-shooting-star {
+      position:absolute; width:120px; height:2px;
+      background:linear-gradient(90deg,rgba(255,255,255,.95),rgba(255,255,255,0));
+      border-radius:2px; filter:drop-shadow(0 0 8px rgba(255,255,255,.8));
+      transform:rotate(-25deg); opacity:0; z-index:1;
+      animation:coverShootingStar 7s linear infinite;
+    }
+    .cover-shooting-star::before {
+      content:''; position:absolute; right:0; top:-2px;
+      width:7px; height:7px; border-radius:50%;
+      background:#fff; box-shadow:0 0 10px rgba(255,255,255,.9);
+    }
+    .cover-shooting-star.s1 { top:18%; left:-20%; animation-delay:0s; }
+    .cover-shooting-star.s2 { top:35%; left:-30%; animation-delay:3.2s; }
+    @keyframes coverShootingStar {
+      0% { opacity:0; transform:translate(0,0) rotate(-25deg); }
+      8% { opacity:1; }
+      35% { opacity:0; transform:translate(145vw,45vh) rotate(-25deg); }
+      100% { opacity:0; transform:translate(145vw,45vh) rotate(-25deg); }
+    }
 
     /* ===========================================================
        SCENE 2 — MONKEY + PRINCESS
@@ -63,9 +83,83 @@
       display:flex; flex-direction:column; align-items:center; justify-content:center;
       opacity:0; visibility:hidden; pointer-events:none;
       transition: opacity 1s ease, visibility 1s ease;
+      animation: dayNightCycle 60s ease-in-out infinite;
     }
-    .scene2.visible { opacity:1; visibility:visible; pointer-events:auto; }
-    .scene2.hidden { opacity:0; visibility:hidden; pointer-events:none; }
+    @keyframes dayNightCycle {
+      0% {
+        background: linear-gradient(180deg, #0a0215 0%, #0f0a25 30%, #0d0935 55%, #0a0215 100%);
+      }
+      5% {
+        background: linear-gradient(180deg, #0f0820 0%, #12102d 30%, #10103d 55%, #0f0820 100%);
+      }
+      10% {
+        background: linear-gradient(180deg, #14102a 0%, #16153a 30%, #121a42 55%, #14102a 100%);
+      }
+      15% {
+        background: linear-gradient(180deg, #1a1535 0%, #1c1a45 30%, #14254d 55%, #1a1535 100%);
+      }
+      20% {
+        background: linear-gradient(180deg, #251a50 0%, #2a2060 30%, #1d3a6a 55%, #251a50 100%);
+      }
+      25% {
+        background: linear-gradient(180deg, #3a2a70 0%, #404080 30%, #2a5090 55%, #3a2a70 100%);
+      }
+      30% {
+        background: linear-gradient(180deg, #5a4a9a 0%, #6a5aaa 30%, #3a7aaa 55%, #5a4a9a 100%);
+      }
+      35% {
+        background: linear-gradient(180deg, #7a8acf 0%, #8a9adf 30%, #4a9eff 55%, #7a8acf 100%);
+      }
+      40% {
+        background: linear-gradient(180deg, #87ceeb 0%, #b0e0ff 30%, #87ceeb 55%, #87ceeb 100%);
+      }
+      45% {
+        background: linear-gradient(180deg, #87ceeb 0%, #d0f0ff 30%, #87ceeb 55%, #87ceeb 100%);
+      }
+      50% {
+        background: linear-gradient(180deg, #87ceeb 0%, #e0f6ff 30%, #87ceeb 55%, #87ceeb 100%);
+      }
+      55% {
+        background: linear-gradient(180deg, #87ceeb 0%, #d0f0ff 30%, #87ceeb 55%, #87ceeb 100%);
+      }
+      60% {
+        background: linear-gradient(180deg, #87ceeb 0%, #b0e0ff 30%, #87ceeb 55%, #87ceeb 100%);
+      }
+      65% {
+        background: linear-gradient(180deg, #7a8acf 0%, #8a9adf 30%, #4a9eff 55%, #7a8acf 100%);
+      }
+      70% {
+        background: linear-gradient(180deg, #5a4a9a 0%, #6a5aaa 30%, #3a7aaa 55%, #5a4a9a 100%);
+      }
+      75% {
+        background: linear-gradient(180deg, #3a2a70 0%, #404080 30%, #2a5090 55%, #3a2a70 100%);
+      }
+      80% {
+        background: linear-gradient(180deg, #251a50 0%, #2a2060 30%, #1d3a6a 55%, #251a50 100%);
+      }
+      85% {
+        background: linear-gradient(180deg, #1a1535 0%, #1c1a45 30%, #14254d 55%, #1a1535 100%);
+      }
+      90% {
+        background: linear-gradient(180deg, #14102a 0%, #16153a 30%, #121a42 55%, #14102a 100%);
+      }
+      95% {
+        background: linear-gradient(180deg, #0f0820 0%, #12102d 30%, #10103d 55%, #0f0820 100%);
+      }
+      100% {
+        background: linear-gradient(180deg, #0a0215 0%, #0f0a25 30%, #0d0935 55%, #0a0215 100%);
+      }
+    }
+    @keyframes moonVisibility {
+      0% { opacity: 1; filter: drop-shadow(0 0 50px rgba(255,224,130,.25)); }
+      30% { opacity: 0.3; filter: drop-shadow(0 0 20px rgba(255,224,130,.1)); }
+      40% { opacity: 0; filter: drop-shadow(0 0 0px rgba(255,224,130,0)); }
+      60% { opacity: 0; filter: drop-shadow(0 0 0px rgba(255,224,130,0)); }
+      70% { opacity: 0.3; filter: drop-shadow(0 0 20px rgba(255,224,130,.1)); }
+      100% { opacity: 1; filter: drop-shadow(0 0 50px rgba(255,224,130,.25)); }
+    }
+    .scene2.visible { opacity:1; visibility:visible; pointer-events:auto; animation: dayNightCycle 60s ease-in-out infinite; }
+    .scene2.hidden { opacity:0; visibility:hidden; pointer-events:none; animation: none; }
 
     .scene2-narrative {
       position:absolute; top:6%; width:88%; max-width:550px; text-align:center;
@@ -106,46 +200,182 @@
 
     .stage {
       position:absolute; bottom:0; left:0; right:0; width:100%; height:25%;
-      background: linear-gradient(180deg,#143a14 0%,#0e2e0e 50%,#091f09 100%);
-      border-top:3px solid #2a6a2a;
+      background:
+        radial-gradient(120% 80% at 50% -10%, rgba(100,185,85,.22) 0%, rgba(100,185,85,0) 55%),
+        linear-gradient(180deg,#1f5b22 0%,#154a1b 26%,#0f3b15 56%,#0a2f11 78%,#07270d 100%);
+      border-top:2px solid #3ea446;
+      box-shadow: inset 0 16px 28px rgba(117,194,90,.18), inset 0 -25px 35px rgba(2,20,8,.32);
+      overflow:hidden;
     }
     .stage::before {
-      content:''; position:absolute; top:-50px; width:100%; height:50px;
-      background:linear-gradient(180deg,transparent,rgba(20,58,20,.7));
+      content:''; position:absolute; top:-52px; width:100%; height:56px;
+      background:linear-gradient(180deg,transparent,rgba(32,90,36,.72));
+      pointer-events:none;
+    }
+    .stage::after {
+      content:'';
+      position:absolute; inset:0;
+      background:
+        repeating-linear-gradient(110deg, rgba(255,255,255,.03) 0 2px, rgba(0,0,0,0) 2px 10px),
+        repeating-linear-gradient(70deg, rgba(8,32,14,.17) 0 1px, rgba(0,0,0,0) 1px 7px);
+      mix-blend-mode:soft-light;
+      opacity:.45;
+      pointer-events:none;
     }
     .ground-flower {
       position:absolute; font-size:1.1rem; bottom:5px; z-index:2;
       animation:flowerSway 3s ease-in-out infinite alternate;
     }
     @keyframes flowerSway { 0%{transform:rotate(-5deg)} 100%{transform:rotate(5deg)} }
-    .grass { position:absolute; top:-4px; left:0; width:100%; height:22px; overflow:visible; z-index:5; display:flex; justify-content:space-around; }
+    .grass {
+      position:absolute; top:-6px; left:0; width:100%; height:24px;
+      overflow:visible; z-index:5; display:flex; justify-content:space-around;
+      filter: drop-shadow(0 2px 0 rgba(7,45,14,.45));
+    }
     .grass span {
       display:inline-block; width:5px; height:14px; margin:0 2px;
-      background:#2d7b2d; border-radius:50% 50% 0 0;
+      background:linear-gradient(180deg,#59cf59 0%,#2f962f 70%,#216f21 100%);
+      border-radius:55% 55% 0 0;
       transform-origin:bottom; animation:sway 2.5s ease-in-out infinite alternate;
     }
-    .grass span:nth-child(even) { height:10px; background:#3a9a3a; animation-delay:-.7s; }
-    .grass span:nth-child(3n) { height:16px; background:#258a25; animation-delay:-.3s; }
+    .grass span:nth-child(even) { height:11px; background:linear-gradient(180deg,#6ddf6d,#3ea43e 72%,#2d7f2d); animation-delay:-.7s; }
+    .grass span:nth-child(3n) { height:17px; background:linear-gradient(180deg,#4fc24f,#319631 72%,#266f26); animation-delay:-.3s; }
     @keyframes sway { 0%{transform:rotate(-10deg)} 100%{transform:rotate(10deg)} }
+    .bush {
+      position:absolute; bottom:8px; width:80px; height:34px; z-index:2;
+      background:radial-gradient(ellipse at 50% 35%,#3caa46 0%,#2f8f37 65%,#226829 100%);
+      border-radius:55% 45% 42% 58%;
+      box-shadow:inset -8px -6px 12px rgba(14,55,20,.35), 0 3px 0 rgba(7,35,13,.35);
+      animation:bushSway 4.8s ease-in-out infinite alternate;
+      transform-origin:bottom center;
+    }
+    .bush::before,
+    .bush::after {
+      content:''; position:absolute; background:inherit; border-radius:50%;
+    }
+    .bush::before { width:42px; height:28px; left:8px; top:-10px; }
+    .bush::after { width:36px; height:24px; right:10px; top:-8px; }
+    .bush.small { width:58px; height:26px; opacity:.92; animation-duration:5.6s; }
+    .stone {
+      position:absolute; bottom:5px; width:18px; height:10px; z-index:2;
+      background:linear-gradient(180deg,#9ba79c,#6f7f70);
+      border-radius:55% 45% 40% 60%;
+      box-shadow:inset -4px -3px 5px rgba(32,42,34,.4);
+    }
+    .fireweed {
+      position:absolute; bottom:8px; z-index:3; font-size:.9rem;
+      filter: drop-shadow(0 0 6px rgba(255,195,80,.45));
+      animation: fireweedBlink 2.6s ease-in-out infinite;
+    }
+    @keyframes bushSway { 0%{transform:rotate(-2deg)} 100%{transform:rotate(2deg)} }
+    @keyframes fireweedBlink { 0%,100%{opacity:.45; transform:translateY(0)} 50%{opacity:1; transform:translateY(-2px)} }
 
     .tree { position:absolute; bottom:30%; z-index:1; opacity:.15; }
     .tree-trunk { width:12px; height:60px; background:#1a3a1a; margin:0 auto; }
     .tree-top { width:60px; height:60px; background:#1a4a1a; border-radius:50%; margin-bottom:-10px; }
 
     .moon {
-      position:absolute; top:7%; right:12%; width:80px; height:80px;
-      background:radial-gradient(circle at 30% 30%,#fffde7,#ffe082,#ffca28);
-      border-radius:50%; box-shadow:0 0 50px rgba(255,224,130,.25),0 0 100px rgba(255,224,130,.1); z-index:1;
+      position:absolute; top:7%; right:12%; width:112px; height:112px;
+      border-radius:50%; z-index:2; overflow:hidden;
+      background:radial-gradient(circle at 35% 35%,#efe2b3 0%,#c8af68 60%,#8d7a48 100%);
+      animation: moonSunBody 60s ease-in-out infinite;
     }
+    .moon::before {
+      content:'';
+      position:absolute; inset:-18px;
+      border-radius:50%;
+      background:repeating-conic-gradient(from 0deg, rgba(255,193,7,.45) 0 12deg, rgba(255,193,7,0) 12deg 24deg);
+      animation: sunRaysVisibility 60s ease-in-out infinite;
+      z-index:-1;
+    }
+    .moon::after {
+      content:'';
+      position:absolute; top:-3px; left:44px;
+      width:112px; height:112px; border-radius:50%;
+      background:rgba(10,8,24,.9);
+      animation: crescentMaskVisibility 60s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes moonSunBody {
+      0%, 30%, 70%, 100% {
+        background:radial-gradient(circle at 35% 35%,#efe2b3 0%,#c8af68 60%,#8d7a48 100%);
+        box-shadow:0 0 18px rgba(239,226,179,.25), inset -18px -18px 26px rgba(35,26,14,.35);
+      }
+      40%, 60% {
+        background:radial-gradient(circle at 42% 38%,#fff36d 0%,#ffc928 52%,#ff9800 100%);
+        box-shadow:0 0 36px rgba(255,193,7,.85), 0 0 72px rgba(255,152,0,.45), inset 0 0 16px rgba(255,255,150,.35);
+      }
+      50% {
+        background:radial-gradient(circle at 42% 38%,#fff57d 0%,#ffd54f 50%,#ff9800 100%);
+        box-shadow:0 0 42px rgba(255,193,7,.95), 0 0 90px rgba(255,152,0,.55), inset 0 0 20px rgba(255,255,170,.45);
+      }
+    }
+    @keyframes crescentMaskVisibility {
+      0%, 30%, 70%, 100% { opacity:1; }
+      38%, 62% { opacity:0; }
+      50% { opacity:0; }
+    }
+    @keyframes sunRaysVisibility {
+      0%, 30%, 70%, 100% { opacity:0; transform:rotate(0deg) scale(.9); }
+      40%, 60% { opacity:.65; transform:rotate(8deg) scale(1); }
+      50% { opacity:.85; transform:rotate(16deg) scale(1.05); }
+    }
+
+    /* Clouds */
+    .cloud {
+      position:absolute; z-index:3; opacity:0;
+      width:150px; height:52px;
+      border-radius:40px;
+      background:linear-gradient(180deg,#ffffff 0%,#f5f7fb 100%);
+      box-shadow:0 6px 12px rgba(36,68,102,.10), inset 0 -6px 12px rgba(190,205,225,.28);
+      animation: cloudFloat 60s linear infinite;
+    }
+    .cloud::before,
+    .cloud::after {
+      content:''; position:absolute; border-radius:50%;
+      background:inherit;
+      box-shadow:inherit;
+    }
+    .cloud::before { width:64px; height:64px; left:18px; top:-28px; }
+    .cloud::after  { width:82px; height:82px; left:62px; top:-38px; }
+    @keyframes cloudFloat {
+      0%, 34% { opacity:0; transform:translateX(-220px); }
+      40%, 60% { opacity:.92; }
+      66%, 100% { opacity:0; transform:translateX(calc(100vw + 220px)); }
+    }
+    .cloud1 { top:11%; left:-220px; animation-delay:0s; }
+    .cloud2 { top:19%; left:-260px; animation-delay:10s; transform:scale(.85); }
+    .cloud3 { top:15%; left:-240px; animation-delay:20s; transform:scale(.95); }
+
+    /* Day birds */
+    .bird {
+      position:absolute; width:22px; height:10px; z-index:4; opacity:0;
+      border-top:3px solid rgba(58,76,92,.7);
+      border-radius:50% 50% 0 0;
+      animation:birdFly 60s linear infinite;
+    }
+    .bird::after {
+      content:''; position:absolute; left:18px; top:-3px;
+      width:22px; height:10px;
+      border-top:3px solid rgba(58,76,92,.7);
+      border-radius:50% 50% 0 0;
+    }
+    @keyframes birdFly {
+      0%, 34% { opacity:0; transform:translateX(-120px) translateY(0); }
+      42%, 58% { opacity:.7; }
+      66%, 100% { opacity:0; transform:translateX(calc(100vw + 120px)) translateY(-14px); }
+    }
+    .bird1 { top:14%; left:-120px; animation-delay:4s; }
+    .bird2 { top:18%; left:-150px; animation-delay:14s; transform:scale(.8); }
     .scene2-star {
       position:absolute; width:3px; height:3px; background:#fff;
-      border-radius:50%; animation:twinkle 3s ease-in-out infinite;
+      border-radius:50%; animation:twinkle 3s ease-in-out infinite, nightOnly 60s ease-in-out infinite;
     }
     @keyframes twinkle { 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:1;transform:scale(1.5)} }
     .firefly {
       position:absolute; width:4px; height:4px; border-radius:50%;
       background:#fff8e1; box-shadow:0 0 8px #fff176,0 0 20px rgba(255,241,118,.4);
-      animation:fireflyFloat 6s ease-in-out infinite; z-index:3;
+      animation:fireflyFloat 6s ease-in-out infinite, nightOnly 60s ease-in-out infinite; z-index:3;
     }
     @keyframes fireflyFloat {
       0%,100%{transform:translate(0,0);opacity:.2}
@@ -153,10 +383,14 @@
       50%{transform:translate(-15px,-45px);opacity:.4}
       75%{transform:translate(25px,-15px);opacity:.9}
     }
+    @keyframes nightOnly {
+      0%, 30%, 70%, 100% { opacity:1; }
+      40%, 60% { opacity:0; }
+    }
 
     /* ===== MONKEY — COMPLETELY REBUILT ===== */
     .monkey-container {
-      position:absolute; bottom:16%; z-index:25;
+      position:absolute; bottom:22%; z-index:25;
       left:-130px; opacity:1 !important; visibility:visible !important;
     }
     .monkey-container.walking { animation: monkeyWalk 5.5s ease-in-out forwards; }
@@ -170,105 +404,149 @@
     .monkey-container.celebrating { animation: monkeyCelebrate 1.2s ease-in-out infinite; }
     @keyframes monkeyCelebrate { 0%,100%{transform:translateY(0)} 25%{transform:translateY(-12px)} 50%{transform:translateY(0)} 75%{transform:translateY(-8px)} }
 
-    .monkey { width:110px; height:180px; position:relative; }
-    .monkey-body { position:relative; width:108px; height:180px; }
+    .monkey { width:110px; height:140px; position:relative; }
+    .monkey-body { position:relative; width:110px; height:140px; }
 
     /* Monkey Head */
     .m-head {
-      position:absolute; top:2px; left:50%; transform:translateX(-50%);
-      width:50px; height:46px; background:radial-gradient(circle at 40% 35%,#a0522d,#7a3b10);
+      position:absolute; top:3px; left:50%; transform:translateX(-50%);
+      width:65px; height:60px; background:radial-gradient(circle at 40% 35%,#a0522d,#7a3b10);
       border-radius:50%; z-index:5;
     }
     .m-face {
-      position:absolute; top:12px; left:50%; transform:translateX(-50%);
-      width:36px; height:30px; background:radial-gradient(circle at 50% 40%,#f5d5a8,#deb887);
+      position:absolute; top:16px; left:50%; transform:translateX(-50%);
+      width:48px; height:40px; background:radial-gradient(circle at 50% 40%,#f5d5a8,#deb887);
       border-radius:50%;
     }
     .m-eye {
-      position:absolute; top:7px; width:8px; height:9px;
+      position:absolute; top:9px; width:10px; height:12px;
       background:#1a1a1a; border-radius:50%;
     }
     .m-eye::after {
-      content:''; position:absolute; top:2px; left:2px; width:3px; height:3px;
+      content:''; position:absolute; top:2px; left:2px; width:4px; height:4px;
       background:white; border-radius:50%;
     }
-    .m-eye.l { left:6px; }
-    .m-eye.r { right:6px; }
+    .m-eye.l { left:8px; }
+    .m-eye.r { right:8px; }
     .m-mouth {
-      position:absolute; bottom:4px; left:50%; transform:translateX(-50%);
-      width:12px; height:6px; border:2px solid #5a2d0c; border-top:none;
-      border-radius:0 0 12px 12px;
+      position:absolute; bottom:5px; left:50%; transform:translateX(-50%);
+      width:14px; height:8px; border:2px solid #5a2d0c; border-top:none;
+      border-radius:0 0 14px 14px;
     }
     .m-ear {
-      position:absolute; top:10px; width:16px; height:16px;
+      position:absolute; top:13px; width:20px; height:20px;
       background:#a0522d; border-radius:50%; z-index:4;
     }
     .m-ear::after {
-      content:''; position:absolute; top:3px; left:3px; width:10px; height:10px;
+      content:''; position:absolute; top:4px; left:4px; width:12px; height:12px;
       background:#deb887; border-radius:50%;
     }
-    .m-ear.l { left:-4px; }
-    .m-ear.r { right:-4px; }
+    .m-ear.l { left:-5px; }
+    .m-ear.r { right:-5px; }
 
     /* Monkey Torso */
     .m-torso {
-      position:absolute; top:42px; left:50%; transform:translateX(-50%);
-      width:36px; height:32px; background:radial-gradient(ellipse at 50% 30%,#a0522d,#7a3b10);
-      border-radius:18px 18px 12px 12px; z-index:3;
+      position:absolute; top:55px; left:50%; transform:translateX(-50%);
+      width:48px; height:42px; background:radial-gradient(ellipse at 50% 30%,#a0522d,#7a3b10);
+      border-radius:24px 24px 16px 16px; z-index:3;
     }
     .m-belly {
-      position:absolute; top:5px; left:50%; transform:translateX(-50%);
-      width:22px; height:20px; background:radial-gradient(circle,#f5d5a8,#deb887);
+      position:absolute; top:6px; left:50%; transform:translateX(-50%);
+      width:28px; height:26px; background:radial-gradient(circle,#f5d5a8,#deb887);
       border-radius:50%;
     }
 
     /* Monkey Arms */
     .m-arm {
-      position:absolute; top:44px; width:13px; height:32px;
+      position:absolute; top:57px; width:17px; height:42px;
       background:linear-gradient(180deg,#a0522d,#8B4513);
-      border-radius:7px; z-index:6; transform-origin:top center;
+      border-radius:9px; z-index:6; transform-origin:top center;
     }
-    .m-arm.l { left:10px; transform:rotate(25deg); }
-    .m-arm.r { right:10px; transform:rotate(-25deg); }
-    .m-arm.l.carrying { animation:armUpL .6s ease forwards; }
-    .m-arm.r.carrying { animation:armUpR .6s ease forwards; }
-    @keyframes armUpL { to{transform:rotate(-40deg) translateY(-6px)} }
-    @keyframes armUpR { to{transform:rotate(40deg) translateY(-6px)} }
+    .m-arm.l { left:24px; transform:rotate(8deg); }
+    .m-arm.r { right:24px; transform:rotate(-8deg); }
+    .m-arm.l.carrying { animation:armUpL .45s ease forwards; }
+    .m-arm.r.carrying { animation:armUpR .45s ease forwards; }
+    .monkey-container.walking .m-arm.l,
+    .monkey-container.walking .m-arm.l.carrying { animation:armWalkL .35s ease-in-out infinite; }
+    .monkey-container.walking .m-arm.r,
+    .monkey-container.walking .m-arm.r.carrying { animation:armWalkR .35s ease-in-out infinite; }
+    .monkey-container.celebrating .m-arm.l,
+    .monkey-container.celebrating .m-arm.l.carrying { animation:armCheerL .65s ease-in-out infinite; }
+    .monkey-container.celebrating .m-arm.r,
+    .monkey-container.celebrating .m-arm.r.carrying { animation:armCheerR .65s ease-in-out infinite; }
+    @keyframes armUpL { to{transform:rotate(-20deg) translateY(-4px)} }
+    @keyframes armUpR { to{transform:rotate(20deg) translateY(-4px)} }
+    @keyframes armWalkL {
+      0%,100% { transform:rotate(-18deg) translateY(0); }
+      50% { transform:rotate(-2deg) translateY(-2px); }
+    }
+    @keyframes armWalkR {
+      0%,100% { transform:rotate(18deg) translateY(0); }
+      50% { transform:rotate(2deg) translateY(-2px); }
+    }
+    @keyframes armCheerL {
+      0%,100% { transform:rotate(-28deg) translateY(0); }
+      50% { transform:rotate(-45deg) translateY(-5px); }
+    }
+    @keyframes armCheerR {
+      0%,100% { transform:rotate(28deg) translateY(0); }
+      50% { transform:rotate(45deg) translateY(-5px); }
+    }
     .m-hand {
-      position:absolute; bottom:-3px; left:50%; transform:translateX(-50%);
-      width:12px; height:12px; background:#deb887; border-radius:50%;
+      position:absolute; bottom:-4px; left:50%; transform:translateX(-50%);
+      width:15px; height:15px; background:#deb887; border-radius:50%;
+    }
+    .monkey-container.walking .m-arm.l .m-hand { animation:handSwingL .35s ease-in-out infinite; }
+    .monkey-container.walking .m-arm.r .m-hand { animation:handSwingR .35s ease-in-out infinite; }
+    .monkey-container.celebrating .m-arm.l .m-hand { animation:handCheerL .6s ease-in-out infinite; }
+    .monkey-container.celebrating .m-arm.r .m-hand { animation:handCheerR .6s ease-in-out infinite; }
+    @keyframes handSwingL {
+      0%,100% { transform:translateX(-50%) translateY(0) rotate(-8deg); }
+      50% { transform:translateX(-50%) translateY(-2px) rotate(8deg); }
+    }
+    @keyframes handSwingR {
+      0%,100% { transform:translateX(-50%) translateY(0) rotate(8deg); }
+      50% { transform:translateX(-50%) translateY(-2px) rotate(-8deg); }
+    }
+    @keyframes handCheerL {
+      0%,100% { transform:translateX(-50%) translateY(0) scale(1) rotate(-12deg); }
+      50% { transform:translateX(-50%) translateY(-4px) scale(1.08) rotate(12deg); }
+    }
+    @keyframes handCheerR {
+      0%,100% { transform:translateX(-50%) translateY(0) scale(1) rotate(12deg); }
+      50% { transform:translateX(-50%) translateY(-4px) scale(1.08) rotate(-12deg); }
     }
 
     /* Monkey Legs */
     .m-leg {
-      position:absolute; top:70px; width:14px; height:24px;
+      position:absolute; top:92px; width:18px; height:32px;
       background:linear-gradient(180deg,#8B4513,#6b3410);
-      border-radius:7px; z-index:2; transform-origin:top center;
+      border-radius:9px; z-index:2; transform-origin:top center;
     }
-    .m-leg.l { left:20px; }
-    .m-leg.r { right:20px; }
+    .m-leg.l { left:31px; }
+    .m-leg.r { right:31px; }
     .monkey-container.walking .m-leg.l { animation:legL .35s ease-in-out infinite; }
     .monkey-container.walking .m-leg.r { animation:legR .35s ease-in-out infinite; }
-    @keyframes legL { 0%,100%{transform:rotate(-15deg)} 50%{transform:rotate(15deg)} }
-    @keyframes legR { 0%,100%{transform:rotate(15deg)} 50%{transform:rotate(-15deg)} }
+    @keyframes legL { 0%,100%{transform:rotate(-12deg)} 50%{transform:rotate(12deg)} }
+    @keyframes legR { 0%,100%{transform:rotate(12deg)} 50%{transform:rotate(-12deg)} }
     .m-foot {
-      position:absolute; bottom:-5px; left:-2px;
-      width:18px; height:9px; background:#5a2d0c;
-      border-radius:9px 9px 4px 4px;
+      position:absolute; bottom:-6px; left:-2px;
+      width:22px; height:11px; background:#5a2d0c;
+      border-radius:11px 11px 5px 5px;
     }
 
     /* Monkey Tail */
     .m-tail {
-      position:absolute; top:52px; left:-22px;
-      width:36px; height:36px; border:4px solid #8B4513;
+      position:absolute; top:65px; left:-14px;
+      width:45px; height:45px; border:5px solid #8B4513;
       border-color:#8B4513 transparent transparent transparent;
       border-radius:50%; transform:rotate(-30deg); z-index:1;
     }
 
     /* Heart carried by monkey */
     .monkey-heart {
-      position:absolute; top:-18px; left:50%; transform:translateX(-50%);
-      font-size:2rem; z-index:8;
+      position:absolute; top:-24px; left:50%; transform:translateX(-50%);
+      font-size:2.5rem; z-index:8;
       filter:drop-shadow(0 0 12px rgba(255,80,120,.9));
       animation:heartFloat 1s ease-in-out infinite;
     }
@@ -462,13 +740,40 @@
     .scene2-continue {
       position:absolute; bottom:6%; left:50%; transform:translateX(-50%);
       font-family:'Press Start 2P',cursive; font-size:clamp(0.7rem,2vw,0.95rem);
-      color:#ffd6e8; background:rgba(255,255,255,.07);
-      border:2px solid rgba(255,200,220,.3);
-      padding:12px 32px; border-radius:30px; cursor:pointer; z-index:31;
-      opacity:0; transition:background .3s,opacity .8s,transform .3s; letter-spacing:0px; word-spacing:1px;
+      color:#fff3fa;
+      background:linear-gradient(135deg,#ff5a95 0%,#e91e63 45%,#c2185b 100%);
+      border:2px solid rgba(255,255,255,.45);
+      padding:13px 34px; border-radius:999px; cursor:pointer; z-index:31;
+      box-shadow:0 8px 24px rgba(233,30,99,.4), inset 0 0 0 1px rgba(255,255,255,.2);
+      opacity:0; transition:opacity .8s,transform .3s,box-shadow .3s,filter .3s; letter-spacing:0px; word-spacing:1px;
+      animation:continuePulse 2.1s ease-in-out infinite;
+      overflow:hidden;
     }
     .scene2-continue.show { opacity:1; }
-    .scene2-continue:hover { background:rgba(255,255,255,.15); transform:translateX(-50%) scale(1.05); }
+    .scene2-continue::before {
+      content:'';
+      position:absolute; top:-120%; left:-28%; width:24%; height:300%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+      transform:rotate(18deg);
+      animation:continueShine 3.1s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .scene2-continue:hover {
+      transform:translateX(-50%) scale(1.06);
+      box-shadow:0 12px 30px rgba(233,30,99,.52), inset 0 0 0 1px rgba(255,255,255,.34);
+      filter:saturate(1.08);
+    }
+    .scene2-continue:active { transform:translateX(-50%) scale(1.01); }
+    @keyframes continuePulse {
+      0%,100% { box-shadow:0 8px 24px rgba(233,30,99,.4), inset 0 0 0 1px rgba(255,255,255,.2); }
+      50% { box-shadow:0 12px 30px rgba(233,30,99,.55), 0 0 0 6px rgba(233,30,99,.12), inset 0 0 0 1px rgba(255,255,255,.3); }
+    }
+    @keyframes continueShine {
+      0%, 20% { left:-28%; opacity:0; }
+      30% { opacity:1; }
+      65% { left:118%; opacity:0; }
+      100% { left:118%; opacity:0; }
+    }
 
     /* ===== DAYS COUNTER ===== */
     .days-counter {
@@ -487,6 +792,7 @@
       font-family:'Dancing Script',cursive; font-size:2.2rem; font-weight:700;
       color:#c2185b; line-height:1; margin-bottom:2px;
       background:linear-gradient(135deg,#e91e63,#c2185b);
+      background-clip:text;
       -webkit-background-clip:text; -webkit-text-fill-color:transparent;
     }
     .days-counter .counter-label {
@@ -515,7 +821,44 @@
       background:radial-gradient(circle,rgba(255,182,193,.15) 0%,transparent 70%);
       top:-100px; right:-100px; pointer-events:none;
     }
-    .content-inner { max-width:680px; margin:0 auto; padding:60px 28px 40px; }
+    .content-decor {
+      position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden;
+    }
+    .content-petal, .content-spark {
+      position:fixed; pointer-events:none; opacity:.75;
+    }
+    .content-petal {
+      font-size:1.2rem;
+      animation:petalDrift linear infinite;
+      filter:drop-shadow(0 0 4px rgba(233,30,99,.2));
+    }
+    .content-spark {
+      width:5px; height:5px; border-radius:50%;
+      background:radial-gradient(circle,#fff,#ffd1e1 70%,transparent 100%);
+      box-shadow:0 0 8px rgba(255,182,193,.8);
+      animation:sparkFloat ease-in-out infinite;
+    }
+    @keyframes petalDrift {
+      0% { transform:translateY(-8vh) translateX(0) rotate(0deg); opacity:0; }
+      10% { opacity:.85; }
+      50% { transform:translateY(50vh) translateX(25px) rotate(120deg); opacity:.8; }
+      100% { transform:translateY(110vh) translateX(-20px) rotate(260deg); opacity:0; }
+    }
+    @keyframes sparkFloat {
+      0%,100% { transform:translateY(0) scale(.7); opacity:.2; }
+      50% { transform:translateY(-18px) scale(1.15); opacity:.95; }
+    }
+    .content-petal.p1 { left:8%; animation-duration:15s; animation-delay:-2s; }
+    .content-petal.p2 { left:24%; animation-duration:18s; animation-delay:-8s; }
+    .content-petal.p3 { left:42%; animation-duration:16s; animation-delay:-5s; }
+    .content-petal.p4 { left:61%; animation-duration:19s; animation-delay:-11s; }
+    .content-petal.p5 { left:79%; animation-duration:17s; animation-delay:-4s; }
+    .content-petal.p6 { left:92%; animation-duration:20s; animation-delay:-10s; }
+    .content-spark.s1 { top:22%; left:14%; animation-duration:4s; }
+    .content-spark.s2 { top:34%; left:86%; animation-duration:5s; animation-delay:-1s; }
+    .content-spark.s3 { top:58%; left:18%; animation-duration:4.5s; animation-delay:-2s; }
+    .content-spark.s4 { top:72%; left:82%; animation-duration:5.5s; animation-delay:-3s; }
+    .content-inner { max-width:680px; margin:0 auto; padding:60px 28px 40px; position:relative; z-index:2; }
 
     .content-header { text-align:center; margin-bottom:48px; opacity:0; transform:translateY(30px); }
     .content-header.animate { animation:revealUp 1s ease forwards; }
@@ -575,9 +918,10 @@
     @media(max-width:768px){
       .scene2-narrative{font-size:0.8rem;top:5%;width:92%}
       .scene2-narrative-end{font-size:0.8rem;bottom:11%;width:92%}
-      .scene2-continue{font-size:0.5rem;padding:8px 18px;bottom:7%}
+      .scene2-continue{font-size:0.6rem;padding:10px 20px;bottom:7%}
       .monkey-container{transform:scale(1)}
-      .princess-container{right:12%;transform:scale(.85)}
+      .princess-container{right:12%;transform:scale(1)}
+      .princess-container.show{transform:scale(1)}
       .moon{width:60px;height:60px}
       .stage{height:35%}
     }
@@ -587,11 +931,11 @@
       .reason-card{padding:18px 16px;gap:14px}
       .heart{width:90px;height:90px}
       .monkey-container{transform:scale(1)}
-      .princess-container{right:10%;transform:scale(.7)}
-      .princess-container.show{transform:scale(.7)}
+      .princess-container{right:10%;transform:scale(1)}
+      .princess-container.show{transform:scale(1)}
       .scene2-narrative{font-size:0.65rem;top:4%;width:95%}
       .scene2-narrative-end{font-size:0.65rem;bottom:12%;width:95%;line-height:1.5}
-      .scene2-continue{font-size:0.45rem;padding:7px 16px;bottom:8%}
+      .scene2-continue{font-size:0.52rem;padding:9px 16px;bottom:8%}
       .moon{width:50px;height:50px;top:5%;right:8%}
       .stage{height:38%}
       .days-counter{padding:8px 12px;top:10px;left:10px}
@@ -601,9 +945,10 @@
     @media(max-width:480px){
       .scene2-narrative{font-size:0.55rem;top:3%}
       .scene2-narrative-end{font-size:0.55rem;bottom:14%}
-      .scene2-continue{font-size:0.4rem;padding:6px 12px}
+      .scene2-continue{font-size:0.46rem;padding:8px 14px}
       .monkey-container{transform:scale(1)}
-      .princess-container{right:8%;transform:scale(.6)}
+      .princess-container{right:8%;transform:scale(.95)}
+      .princess-container.show{transform:scale(.95)}
       .stage{height:40%}
     }
     ::-webkit-scrollbar{width:6px}
@@ -616,6 +961,8 @@
   <!-- ===== SCREEN 1: COVER ===== -->
   <section class="cover" id="cover">
     <canvas class="stars-canvas" id="starsCanvas"></canvas>
+    <div class="cover-shooting-star s1"></div>
+    <div class="cover-shooting-star s2"></div>
     <div class="heart-wrapper" id="heartWrapper" role="button" aria-label="Haz clic para continuar">
       <svg class="heart" id="heart" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -636,12 +983,17 @@
               fill="url(#heartGradient)" filter="url(#heartGlow)" />
       </svg>
     </div>
-    <p class="cover-text">Haz clic en el corazón 💗</p>
+    <p class="cover-text">Haz clic en el corazón, mi pispachita 💗</p>
   </section>
 
   <!-- ===== SCREEN 2: MONKEY → PRINCESS ===== -->
   <section class="scene2" id="scene2">
     <div class="moon"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+    <div class="bird bird1"></div>
+    <div class="bird bird2"></div>
     <div class="scene2-star" style="top:5%;left:10%;animation-delay:0s"></div>
     <div class="scene2-star" style="top:12%;left:30%;animation-delay:-.8s"></div>
     <div class="scene2-star" style="top:8%;left:55%;animation-delay:-1.5s"></div>
@@ -699,6 +1051,16 @@
         <span></span><span></span><span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span><span></span><span></span>
       </div>
+      <div class="bush" style="left:6%;bottom:10px"></div>
+      <div class="bush small" style="left:20%;bottom:9px"></div>
+      <div class="bush" style="left:73%;bottom:10px"></div>
+      <div class="bush small" style="left:88%;bottom:9px"></div>
+      <div class="stone" style="left:28%"></div>
+      <div class="stone" style="left:58%;width:14px;height:8px"></div>
+      <div class="stone" style="left:82%;width:12px;height:7px"></div>
+      <div class="fireweed" style="left:14%;animation-delay:-.5s">✨</div>
+      <div class="fireweed" style="left:46%;animation-delay:-1.2s">✨</div>
+      <div class="fireweed" style="left:69%;animation-delay:-.9s">✨</div>
       <div class="ground-flower" style="left:10%;bottom:2px">🌷</div>
       <div class="ground-flower" style="left:30%;bottom:4px;animation-delay:-1s">🌸</div>
       <div class="ground-flower" style="left:65%;bottom:2px;animation-delay:-2s">🌺</div>
@@ -798,6 +1160,18 @@
 
   <!-- ===== SCREEN 3: CONTENT ===== -->
   <section class="content" id="content">
+    <div class="content-decor" aria-hidden="true">
+      <span class="content-petal p1">🌸</span>
+      <span class="content-petal p2">🌺</span>
+      <span class="content-petal p3">🌷</span>
+      <span class="content-petal p4">💮</span>
+      <span class="content-petal p5">🌸</span>
+      <span class="content-petal p6">🌺</span>
+      <span class="content-spark s1"></span>
+      <span class="content-spark s2"></span>
+      <span class="content-spark s3"></span>
+      <span class="content-spark s4"></span>
+    </div>
     <!-- Days Counter -->
     <div class="days-counter" id="daysCounter">
       <div class="counter-icon">💕</div>
