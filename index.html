@@ -69,9 +69,49 @@
       color: #ff4f8b;
     }
 
+    /* Photo in selector */
+    .selector-photo {
+      animation: fadeInUp 1s ease .5s both;
+      margin-bottom: 36px;
+      text-align: center;
+    }
+    .selector-photo-frame {
+      display: inline-block;
+      padding: 7px;
+      background: linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      border-radius: 18px;
+      border: 1.5px solid rgba(255,182,193,.35);
+      box-shadow:
+        0 8px 32px rgba(233,30,99,.25),
+        0 2px 8px rgba(0,0,0,.35),
+        inset 0 0 18px rgba(255,130,170,.08);
+      transform: rotate(-2deg);
+      transition: transform .5s cubic-bezier(.34,1.56,.64,1), box-shadow .5s;
+      backdrop-filter: blur(6px);
+    }
+    .selector-photo-frame:hover {
+      transform: rotate(0deg) scale(1.03);
+      box-shadow: 0 16px 48px rgba(233,30,99,.4), 0 4px 16px rgba(0,0,0,.4),
+                  inset 0 0 24px rgba(255,130,170,.14);
+    }
+    .selector-photo-frame img {
+      display: block;
+      width: clamp(130px, 30vw, 200px);
+      height: clamp(130px, 30vw, 200px);
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    .selector-photo-caption {
+      margin-top: 10px;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(.85rem, 2.2vw, 1.05rem);
+      color: rgba(255,182,193,.75);
+      letter-spacing: .5px;
+    }
+
     .selector-cards {
       display: flex; gap: 28px; flex-wrap: wrap; justify-content: center;
-      animation: fadeInUp 1s ease .6s both;
+      animation: fadeInUp 1s ease .7s both;
     }
 
     .selector-card {
@@ -1633,15 +1673,15 @@
     <div class="sel-shooting-star ss1"></div>
     <div class="sel-shooting-star ss2"></div>
     <!-- Floating decorative icons -->
-    <span class="sel-float f1">💕</span>
-    <span class="sel-float f2">✨</span>
-    <span class="sel-float f3">💜</span>
-    <span class="sel-float f4">🌸</span>
-    <span class="sel-float f5">💖</span>
-    <span class="sel-float f6">⭐</span>
-    <span class="sel-float f7">🦋</span>
-    <span class="sel-float f8">💗</span>
-    <span class="sel-float f9">🌺</span>
+    <span class="sel-float f1">🌽</span>
+    <span class="sel-float f2">🌽</span>
+    <span class="sel-float f3">🌽</span>
+    <span class="sel-float f4">�</span>
+    <span class="sel-float f5">🌽</span>
+    <span class="sel-float f6">🌽</span>
+    <span class="sel-float f7">🌽</span>
+    <span class="sel-float f8">🌽</span>
+    <span class="sel-float f9">�</span>
 
     <h1 class="selector-title">✨ Para mi pispachita ✨</h1>
     <p class="selector-subtitle">Elige qué celebrar hoy</p>
@@ -1651,6 +1691,13 @@
       <span class="badge-text">Ya llevamos</span>
       <span class="badge-num" id="selectorDays">---</span>
       <span class="badge-text">días juntos</span>
+    </div>
+
+    <div class="selector-photo">
+      <div class="selector-photo-frame">
+        <img src="lis6.jpg" alt="Mi pispachita" />
+      </div>
+      <p class="selector-photo-caption">✨ Mi persona favorita ✨</p>
     </div>
 
     <div class="selector-cards">
