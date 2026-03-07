@@ -13,7 +13,196 @@
     html { scroll-behavior: smooth; }
     body { font-family: 'Lora', Georgia, serif; overflow: hidden; min-height: 100vh; color: #4a2040; }
 
-    .stars-canvas { position: fixed; inset: 0; z-index: -1; }
+    .stars-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    /* ===== PANTALLA DE SELECCIÓN ===== */
+    .selector-screen {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, rgba(13,0,21,.97) 0%, rgba(26,10,46,.97) 40%, rgba(13,0,21,.97) 100%);
+      transition: opacity 1s ease, visibility 1s ease;
+      overflow: hidden;
+    }
+    .selector-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .selector-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      color: #f9c0d8;
+      text-align: center;
+      margin-bottom: 8px;
+      animation: fadeInUp 1s ease both;
+      text-shadow: none;
+    }
+    body.is-valentines-day .selector-title {
+      text-shadow: 0 0 30px rgba(255,150,200,.5), 0 0 60px rgba(255,80,130,.3);
+    }
+    .selector-subtitle {
+      font-family: 'Lora', serif;
+      font-size: clamp(0.8rem, 2vw, 1rem);
+      color: rgba(255,200,230,.55);
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInUp 1s ease .2s both;
+      letter-spacing: 1px;
+    }
+
+    .selector-days-badge {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,182,193,.3);
+      border-radius: 50px;
+      padding: 10px 26px;
+      margin-bottom: 50px;
+      display: flex; align-items: center; gap: 10px;
+      animation: fadeInUp 1s ease .4s both;
+      backdrop-filter: blur(6px);
+    }
+    .selector-days-badge .badge-icon { font-size: 1.3rem; animation: heartbeat 1.2s infinite; }
+    .selector-days-badge .badge-text {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.1rem;
+      color: #ffb3cc;
+    }
+    .selector-days-badge .badge-num {
+      font-family: 'Press Start 2P', cursive;
+      font-size: .85rem;
+      color: #ff4f8b;
+    }
+
+    .selector-cards {
+      display: flex; gap: 28px; flex-wrap: wrap; justify-content: center;
+      animation: fadeInUp 1s ease .6s both;
+    }
+
+    .selector-card {
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      width: clamp(150px, 38vw, 220px);
+      border-radius: 24px;
+      overflow: hidden;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s;
+      position: relative;
+    }
+    .selector-card:hover { transform: translateY(-8px) scale(1.04); }
+    .selector-card:active { transform: scale(.97); }
+
+    .selector-card-inner {
+      border-radius: 24px;
+      padding: 36px 24px 28px;
+      border: 2px solid transparent;
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      transition: border-color .3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Valentine card */
+    .card-valentine .selector-card-inner {
+      background: linear-gradient(145deg, rgba(100,10,40,.7) 0%, rgba(60,0,30,.75) 100%);
+      border-color: rgba(255,80,130,.45);
+      box-shadow: 0 8px 32px rgba(233,30,99,.25), inset 0 0 20px rgba(255,80,130,.08);
+    }
+    .card-valentine:hover .selector-card-inner { border-color: rgba(255,80,130,.85); box-shadow: 0 16px 48px rgba(233,30,99,.5), 0 0 40px rgba(255,80,130,.2); }
+
+    /* Womens day card */
+    .card-womens .selector-card-inner {
+      background: linear-gradient(145deg, rgba(50,0,80,.7) 0%, rgba(30,0,60,.75) 100%);
+      border-color: rgba(180,80,255,.4);
+      box-shadow: 0 8px 32px rgba(150,0,255,.2), inset 0 0 20px rgba(180,80,255,.07);
+    }
+    .card-womens:hover .selector-card-inner { border-color: rgba(200,100,255,.85); box-shadow: 0 16px 48px rgba(150,0,255,.5), 0 0 40px rgba(200,100,255,.2); }
+
+    .selector-card-emoji { font-size: clamp(2.8rem, 7vw, 4rem); line-height: 1; }
+    .selector-card-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      font-weight: 700;
+      line-height: 1.3;
+      text-align: center;
+    }
+    .card-valentine .selector-card-title { color: #ff80ab; text-shadow: 0 0 15px rgba(255,80,120,.5); }
+    .card-womens .selector-card-title { color: #d580ff; text-shadow: 0 0 15px rgba(180,80,255,.5); }
+
+    .selector-card-date {
+      font-family: 'Lora', serif;
+      font-size: .72rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+    }
+    .card-valentine .selector-card-date { color: #ff4f8b; background: rgba(255,80,130,.12); border: 1px solid rgba(255,80,130,.3); }
+    .card-womens .selector-card-date { color: #c87aff; background: rgba(180,80,255,.12); border: 1px solid rgba(180,80,255,.3); }
+
+    /* Today's celebration highlight */
+    .selector-card.today-highlight .selector-card-inner {
+      animation: cardGlow 2s ease-in-out infinite;
+    }
+    .card-valentine.today-highlight .selector-card-inner { animation: cardGlowValentine 2s ease-in-out infinite; }
+    .card-womens.today-highlight .selector-card-inner   { animation: cardGlowWomens 2s ease-in-out infinite; }
+    @keyframes cardGlowValentine {
+      0%,100% { box-shadow: 0 8px 32px rgba(233,30,99,.25), inset 0 0 20px rgba(255,80,130,.08); border-color: rgba(255,80,130,.45); }
+      50% { box-shadow: 0 16px 52px rgba(233,30,99,.65), 0 0 50px rgba(255,80,130,.35); border-color: rgba(255,80,130,.9); }
+    }
+    @keyframes cardGlowWomens {
+      0%,100% { box-shadow: 0 8px 32px rgba(150,0,255,.2), inset 0 0 20px rgba(180,80,255,.07); border-color: rgba(180,80,255,.4); }
+      50% { box-shadow: 0 16px 52px rgba(150,0,255,.65), 0 0 50px rgba(200,100,255,.35); border-color: rgba(200,100,255,.9); }
+    }
+
+    .selector-card-today-badge {
+      position: absolute; top: -10px; right: -10px;
+      background: linear-gradient(135deg, #ffd700, #ff9800);
+      color: #3a1a00;
+      font-family: 'Lora', serif;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      box-shadow: 0 2px 10px rgba(255,180,0,.5);
+      white-space: nowrap;
+      z-index: 5;
+      animation: badgePop .5s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes badgePop { 0%{transform:scale(0) rotate(-10deg)} 100%{transform:scale(1) rotate(0)} }
+
+    /* Floating particles on selector */
+    .sel-float {
+      position: absolute; pointer-events: none; font-size: clamp(.9rem, 2.2vw, 1.4rem);
+      opacity: .45; animation: coverFloatHeart 8.5s ease-in-out infinite;
+    }
+    .sel-float.f1 { left:6%; top:72%; animation-delay:-1s; }
+    .sel-float.f2 { left:18%; top:18%; animation-delay:-3.5s; }
+    .sel-float.f3 { right:8%; top:65%; animation-delay:-2s; }
+    .sel-float.f4 { right:20%; top:20%; animation-delay:-5s; }
+    .sel-float.f5 { left:50%; top:88%; animation-delay:-4s; }
+    .sel-float.f6 { left:32%; top:8%;  animation-delay:-6s; }
+    .sel-float.f7 { right:35%; top:82%; animation-delay:-1.5s; }
+    .sel-float.f8 { left:78%; top:38%; animation-delay:-3s; }
+    .sel-float.f9 { left:10%; top:45%; animation-delay:-2.5s; }
+
+    @keyframes selectorShootingStar {
+      0%   { opacity:0; transform:translate(0,0) rotate(-25deg); }
+      8%   { opacity:1; }
+      35%  { opacity:0; transform:translate(145vw,45vh) rotate(-25deg); }
+      100% { opacity:0; transform:translate(145vw,45vh) rotate(-25deg); }
+    }
+    .sel-shooting-star {
+      position:absolute; width:120px; height:2px;
+      background:linear-gradient(90deg,rgba(255,255,255,.9),rgba(255,255,255,0));
+      border-radius:2px; filter:drop-shadow(0 0 8px #fff8);
+      transform:rotate(-25deg); opacity:0; z-index:0;
+      animation: selectorShootingStar 7s linear infinite;
+    }
+    .sel-shooting-star.ss1 { top:12%; left:-20%; animation-delay:0s; }
+    .sel-shooting-star.ss2 { top:60%; left:-30%; animation-delay:3.5s; }
+    .sel-shooting-star::before {
+      content:''; position:absolute; right:0; top:-2px;
+      width:7px; height:7px; border-radius:50%;
+      background:#fff; box-shadow:0 0 10px #fff;
+    }
 
     /* ===== COVER ===== */
     .cover {
@@ -92,6 +281,258 @@
       0%,100% { transform:translateY(0) scale(.95) rotate(-4deg); opacity:.35; }
       50% { transform:translateY(-18px) scale(1.12) rotate(4deg); opacity:.85; }
     }
+
+    /* ===========================================================
+       WOMENS DAY SCENE
+    =========================================================== */
+    .scene-womens {
+      position: fixed; inset: 0; z-index: 99;
+      background: linear-gradient(180deg, #0a0018 0%, #1a0035 35%, #2a0050 65%, #0a0018 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 1s ease, visibility 1s ease;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .scene-womens.visible { opacity: 1; visibility: visible; pointer-events: auto; }
+
+    /* Power rays background */
+    .womens-rays {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background: conic-gradient(from 0deg at 50% 50%,
+        transparent 0deg, rgba(200,100,255,.07) 10deg,
+        transparent 20deg, rgba(255,100,200,.07) 35deg,
+        transparent 50deg, rgba(200,100,255,.07) 65deg,
+        transparent 80deg, rgba(255,100,200,.07) 95deg,
+        transparent 110deg, rgba(200,100,255,.07) 125deg,
+        transparent 140deg, rgba(255,100,200,.07) 155deg,
+        transparent 170deg, rgba(200,100,255,.07) 185deg,
+        transparent 200deg, rgba(255,100,200,.07) 215deg,
+        transparent 230deg, rgba(200,100,255,.07) 245deg,
+        transparent 260deg, rgba(255,100,200,.07) 275deg,
+        transparent 290deg, rgba(200,100,255,.07) 305deg,
+        transparent 320deg, rgba(255,100,200,.07) 335deg,
+        transparent 350deg, rgba(200,100,255,.07) 360deg);
+      animation: raysRotate 20s linear infinite;
+    }
+    @keyframes raysRotate { to { transform: rotate(360deg); } }
+
+    .womens-glow {
+      position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%);
+      width: 420px; height: 420px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(180,50,255,.22) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+      animation: womensGlowPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes womensGlowPulse { 0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.7} 50%{transform:translate(-50%,-50%) scale(1.35);opacity:1} }
+
+    /* ── HEROINE: same princess, flying superhero style ── */
+    .heroine-container {
+      position: absolute;
+      z-index: 5;
+      opacity: 0;
+      /* will be animated via JS to fly across */
+      top: 35%;
+      left: -200px;
+      filter: drop-shadow(0 0 18px rgba(200,80,255,.75));
+    }
+    .heroine-container.show { opacity: 1; }
+
+    /* Cape that trails behind her */
+    .heroine-cape-wrap {
+      position: absolute;
+      top: 42px; right: -10px;
+      width: 52px; height: 36px;
+      background: linear-gradient(135deg, #9b00e8, #c800ff 60%, #6600aa);
+      border-radius: 0 50% 50% 0;
+      transform-origin: left center;
+      animation: capeFlap 0.7s ease-in-out infinite alternate;
+      z-index: 0;
+      box-shadow: 0 0 14px rgba(180,0,255,.6);
+    }
+    @keyframes capeFlap {
+      0%  { transform: scaleY(.85) skewY(-6deg); }
+      100%{ transform: scaleY(1.12) skewY(6deg); }
+    }
+
+    /* Floating-bob for the princess during flight */
+    .heroine-inner {
+      position: relative;
+      animation: heroBob 1.6s ease-in-out infinite;
+    }
+    @keyframes heroBob {
+      0%,100%{ transform: translateY(0) rotate(-4deg); }
+      50%    { transform: translateY(-14px) rotate(3deg); }
+    }
+
+    /* Power aura rings around flying princess */
+    .heroine-aura {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 120px; height: 120px; border-radius: 50%;
+      border: 2px solid rgba(200,0,255,.45);
+      pointer-events: none;
+      animation: auraRing 2s ease-out infinite;
+    }
+    .heroine-aura.a2 { width: 160px; height: 160px; animation-delay: .7s; }
+    .heroine-aura.a3 { width: 200px; height: 200px; animation-delay: 1.4s; }
+    @keyframes auraRing { 0%{opacity:.8;transform:translate(-50%,-50%) scale(.75)} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.35)} }
+
+    /* Speed-trail lines */
+    .heroine-trail {
+      position: absolute; top: 50%; right: 100%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 6px; pointer-events: none; z-index: -1;
+    }
+    .heroine-trail span {
+      display: block; height: 2px; border-radius: 2px;
+      background: linear-gradient(90deg, transparent, rgba(200,100,255,.6));
+      animation: trailFade .6s ease-in-out infinite alternate;
+    }
+    .heroine-trail span:nth-child(1){ width: 60px; animation-delay:0s; }
+    .heroine-trail span:nth-child(2){ width: 90px; animation-delay:.1s; }
+    .heroine-trail span:nth-child(3){ width: 50px; animation-delay:.2s; }
+    .heroine-trail span:nth-child(4){ width: 80px; animation-delay:.15s; }
+    .heroine-trail span:nth-child(5){ width: 40px; animation-delay:.05s; }
+    @keyframes trailFade { 0%{opacity:.7} 100%{opacity:.15} }
+
+    /* Womens day phrases */
+    .womens-phrase {
+      position: absolute;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(.95rem, 2.8vw, 1.35rem);
+      font-weight: 700;
+      color: #e080ff;
+      text-shadow: 0 0 20px rgba(200,0,255,.7), 0 0 40px rgba(200,0,255,.3);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+      text-align: center;
+      max-width: 68vw;
+      padding: 12px 22px;
+      background: rgba(30,0,50,.6);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      border: 1px solid rgba(200,0,255,.35);
+    }
+    @keyframes phraseReveal {
+      0%{opacity:0;transform:translateY(24px) scale(.88)}
+      100%{opacity:1;transform:translateY(0) scale(1)}
+    }
+
+    .womens-phrase-title {
+      position: absolute;
+      top: 6%;
+      left: 0; right: 0;
+      width: 100%;
+      text-align: center;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.5rem, 4.5vw, 2.6rem);
+      font-weight: 700;
+      color: #f0a0ff;
+      text-shadow: 0 0 30px rgba(200,0,255,.8), 0 0 60px rgba(200,0,255,.4);
+      opacity: 0;
+      z-index: 10;
+      padding: 0 16px;
+    }
+    .womens-phrase-title.show { animation: phraseReveal 1s ease forwards; }
+
+    .womens-phrase.p1 { bottom: 74%; left: 4vw; }
+    .womens-phrase.p2 { bottom: 60%; right: 3vw; }
+    .womens-phrase.p3 { bottom: 46%; left: 3vw; }
+    .womens-phrase.p4 { bottom: 32%; right: 3vw; }
+    .womens-phrase.p5 { bottom: 18%; left: 4vw; }
+
+    .womens-tap-hint {
+      position: absolute; bottom: 2%; left: 50%; transform: translateX(-50%);
+      font-family: 'Dancing Script', cursive; font-size: clamp(.9rem,2.2vw,1.1rem);
+      color: rgba(220,160,255,.7); z-index: 11; opacity: 0;
+      pointer-events: none; text-align: center; white-space: nowrap;
+      background: rgba(20,0,40,.45); backdrop-filter: blur(6px);
+      padding: 6px 20px; border-radius: 30px;
+      border: 1px solid rgba(200,80,255,.3);
+      animation: hintBlink 1.8s ease-in-out infinite;
+    }
+    .womens-tap-hint.show { opacity: 1; }
+    @keyframes hintBlink { 0%,100%{opacity:.35} 50%{opacity:.9} }
+
+    .womens-float-icon {
+      position: absolute; font-size: clamp(1rem, 2.4vw, 1.6rem);
+      opacity: .5; animation: coverFloatHeart 9s ease-in-out infinite;
+      pointer-events: none; z-index: 1;
+    }
+    .womens-float-icon.w1 { left:8%;   top:70%; animation-delay:-1s; }
+    .womens-float-icon.w2 { left:20%;  top:22%; animation-delay:-3s; }
+    .womens-float-icon.w3 { right:10%; top:60%; animation-delay:-2s; }
+    .womens-float-icon.w4 { right:22%; top:18%; animation-delay:-5s; }
+    .womens-float-icon.w5 { left:48%;  top:12%; animation-delay:-4s; }
+    .womens-float-icon.w6 { left:65%;  top:78%; animation-delay:-6s; }
+
+    /* Power sparks */
+    .power-spark {
+      position: absolute; pointer-events: none; z-index: 6;
+      font-size: 1.2rem;
+      animation: sparkFly 1.5s ease-out forwards;
+    }
+    @keyframes sparkFly {
+      0%  { opacity: 1; transform: translate(0,0) scale(1); }
+      100%{ opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+    }
+
+    /* ── Monkey in womens scene — fixed bottom-right watching pose ── */
+    .womens-monkey {
+      position: absolute;
+      bottom: 0;
+      right: 5%;
+      z-index: 20;
+      transform: scaleX(-1); /* face left, watching princess */
+      opacity: 0;
+      transition: opacity 1s ease;
+      filter: drop-shadow(0 0 14px rgba(200,80,255,.5));
+    }
+    .womens-monkey.show { opacity: 1; }
+    /* gentle idle sway */
+    .womens-monkey.show .monkey-body { animation: monkeyIdle 2.4s ease-in-out infinite; }
+    @keyframes monkeyIdle {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      40%     { transform: translateY(-6px) rotate(-2deg); }
+      70%     { transform: translateY(-3px) rotate(1deg); }
+    }
+    /* eyes follow (head tilt toward princess) */
+    .womens-monkey.show .m-head { animation: headWatch 3s ease-in-out infinite; }
+    @keyframes headWatch {
+      0%,100% { transform: translateX(-50%) rotate(0deg); }
+      50%     { transform: translateX(-50%) rotate(-8deg); }
+    }
+    /* arms raised in awe */
+    .womens-monkey .m-arm.l { transform: rotate(-45deg) translateY(-4px) !important; }
+    .womens-monkey .m-arm.r { transform: rotate(45deg)  translateY(-4px) !important; }
+    /* speech bubble (un-flipped) */
+    .womens-monkey-speech {
+      position: absolute;
+      bottom: 100%; right: 0;
+      min-width: 140px; max-width: 200px;
+      padding: 8px 12px;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(.78rem, 2vw, .98rem);
+      line-height: 1.4;
+      color: #4a004a;
+      background: linear-gradient(180deg, #fff4ff 0%, #f0d0ff 100%);
+      border: 1.5px solid rgba(200,80,255,.5);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(180,0,255,.2);
+      text-align: center;
+      white-space: nowrap;
+      opacity: 0; pointer-events: none;
+      transform: scaleX(-1); /* un-flip text */
+      transition: opacity .5s ease;
+      z-index: 30;
+    }
+    .womens-monkey-speech::after {
+      content: '';
+      position: absolute; top: 100%; right: 20px;
+      border: 7px solid transparent;
+      border-top-color: #f0d0ff;
+    }
+    .womens-monkey-speech.show { opacity: 1; }
 
     /* ===========================================================
        SCENE 2 — MONKEY + PRINCESS
@@ -869,7 +1310,7 @@
       -webkit-backdrop-filter: blur(12px);
       border-radius: 25px;
       padding: 50px 55px;
-      border: 2px solid rgba(255, 182, 193, 0.5);
+      border: 2px solid rgba(255, 182, 193, 0.45);
       box-shadow: 0 8px 40px rgba(233, 30, 99, 0.25),
                   inset 0 0 25px rgba(255, 130, 170, 0.12),
                   0 0 60px rgba(233, 30, 99, 0.1);
@@ -879,7 +1320,6 @@
       animation: valentineContainerFade 7.5s ease forwards;
       overflow: hidden;
     }
-
     .valentine-message-container::before {
       content: '';
       position: absolute;
@@ -1185,9 +1625,168 @@
 </head>
 <body>
 
+  <!-- Stars background (fixed, shared across all scenes) -->
+  <canvas class="stars-canvas" id="starsCanvas"></canvas>
+
+  <!-- ===== SELECTOR SCREEN ===== -->
+  <section class="selector-screen" id="selectorScreen">
+    <div class="sel-shooting-star ss1"></div>
+    <div class="sel-shooting-star ss2"></div>
+    <!-- Floating decorative icons -->
+    <span class="sel-float f1">💕</span>
+    <span class="sel-float f2">✨</span>
+    <span class="sel-float f3">💜</span>
+    <span class="sel-float f4">🌸</span>
+    <span class="sel-float f5">💖</span>
+    <span class="sel-float f6">⭐</span>
+    <span class="sel-float f7">🦋</span>
+    <span class="sel-float f8">💗</span>
+    <span class="sel-float f9">🌺</span>
+
+    <h1 class="selector-title">✨ Para mi pispachita ✨</h1>
+    <p class="selector-subtitle">Elige qué celebrar hoy</p>
+
+    <div class="selector-days-badge">
+      <span class="badge-icon">💕</span>
+      <span class="badge-text">Ya llevamos</span>
+      <span class="badge-num" id="selectorDays">---</span>
+      <span class="badge-text">días juntos</span>
+    </div>
+
+    <div class="selector-cards">
+      <button class="selector-card card-valentine" id="btnValentine">
+        <div class="selector-card-inner">
+          <div class="selector-card-emoji">💝</div>
+          <div class="selector-card-title">Día de<br>San Valentín</div>
+          <div class="selector-card-date">14 de febrero</div>
+        </div>
+      </button>
+      <button class="selector-card card-womens" id="btnWomens">
+        <div class="selector-card-inner">
+          <div class="selector-card-emoji">💜</div>
+          <div class="selector-card-title">Día de<br>la Mujer</div>
+          <div class="selector-card-date">8 de marzo</div>
+        </div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== WOMENS DAY SCENE ===== -->
+  <section class="scene-womens" id="sceneWomens">
+    <div class="womens-rays"></div>
+    <div class="womens-glow"></div>
+    <span class="womens-float-icon w1">💜</span>
+    <span class="womens-float-icon w2">✨</span>
+    <span class="womens-float-icon w3">🦋</span>
+    <span class="womens-float-icon w4">⭐</span>
+    <span class="womens-float-icon w5">🌸</span>
+    <span class="womens-float-icon w6">💪</span>
+
+    <div class="womens-phrase-title" id="womensPhraseTitle">
+      ¡Feliz Día de la Mujer, mi superheroína! 💜
+    </div>
+
+    <div class="womens-phrase p1" id="womensP1">
+      Mi pacuchita, adoro tu inteligencia y valentía
+    </div>
+    <div class="womens-phrase p2" id="womensP2">
+      Eres el pilar en la vida de muchos.<br>Te agradecen Jaimen, Vilma y Álvaro 🌸
+    </div>
+    <div class="womens-phrase p3" id="womensP3">
+      Porque a las superheroínas les huelen los pies 👟💨
+    </div>
+    <div class="womens-phrase p4" id="womensP4">
+      Por más humitas de saramama juntos 🌽✨
+    </div>
+    <div class="womens-phrase p5" id="womensP5">
+      Por un Huambos más seguro 💪
+    </div>
+
+    <!-- Princess as flying superheroine -->
+    <div class="heroine-container" id="heroineContainer">
+      <div class="heroine-aura a1"></div>
+      <div class="heroine-aura a2"></div>
+      <div class="heroine-aura a3"></div>
+      <!-- Speed trail -->
+      <div class="heroine-trail">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <!-- Princess body (same as scene2) wrapped in inner for bob animation -->
+      <div class="heroine-inner">
+        <!-- Cape -->
+        <div class="heroine-cape-wrap"></div>
+        <!-- Reuse exact princess markup -->
+        <div class="princess" style="position:relative;">
+          <div class="princess-crown">
+            <div class="princess-crown-base"></div>
+            <div class="princess-crown-point"></div>
+            <div class="princess-crown-point"></div>
+            <div class="princess-crown-point"></div>
+            <div class="princess-crown-gem"></div>
+          </div>
+          <div class="princess-hair-top"></div>
+          <div class="princess-hair-side-l"></div>
+          <div class="princess-hair-side-r"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-head">
+            <div class="princess-eyelash left"></div>
+            <div class="princess-eyelash right"></div>
+            <div class="princess-eye left"></div>
+            <div class="princess-eye right"></div>
+            <div class="princess-blush left"></div>
+            <div class="princess-blush right"></div>
+            <div class="princess-mouth"></div>
+            <div class="princess-smile"></div>
+          </div>
+          <!-- Arms raised in superhero pose -->
+          <div class="princess-arm left"  style="transform:rotate(-75deg) translateY(-6px);"></div>
+          <div class="princess-arm right" style="transform:rotate(75deg) translateY(-6px);"></div>
+          <div class="princess-dress-top"></div>
+          <div class="princess-dress-bottom">
+            <div class="princess-dress-detail"></div>
+            <div class="princess-dress-sparkle">✦</div>
+            <div class="princess-dress-sparkle">✦</div>
+            <div class="princess-dress-sparkle">✦</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- tap-anywhere hint -->
+    <div class="womens-tap-hint" id="womensTapHint">✨ Toca para continuar ✨</div>
+
+    <!-- Monkey watching the flying princess -->
+    <div class="womens-monkey" id="womensMonkey">
+      <div class="womens-monkey-speech" id="womensMonkeySpeech">¡Vuela, mi amor! 💜</div>
+      <div class="monkey-body">
+        <div class="m-head">
+          <div class="m-ear l"></div>
+          <div class="m-ear r"></div>
+          <div class="m-face">
+            <div class="m-eye l"></div>
+            <div class="m-eye r"></div>
+            <div class="m-mouth"></div>
+          </div>
+        </div>
+        <div class="m-torso"><div class="m-belly"></div></div>
+        <div class="m-arm l"><div class="m-hand"></div></div>
+        <div class="m-arm r"><div class="m-hand"></div></div>
+        <div class="m-leg l"><div class="m-foot"></div></div>
+        <div class="m-leg r"><div class="m-foot"></div></div>
+        <div class="m-tail"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== SCREEN 1: COVER ===== -->
-  <section class="cover" id="cover">
-    <canvas class="stars-canvas" id="starsCanvas"></canvas>
+  <section class="cover hidden" id="cover">
     
     <!-- ===== VALENTINE'S DAY MESSAGES ===== -->
     <div class="valentine-message-container" id="valentineMessageContainer"></div>
@@ -1456,6 +2055,7 @@
     /* ===== STARS CANVAS ===== */
     (function initStars() {
       const canvas = document.getElementById('starsCanvas');
+      if (!canvas) return;
       const ctx = canvas.getContext('2d');
       let stars = [];
       const COUNT = 180;
@@ -1480,56 +2080,285 @@
       addEventListener('resize',()=>{resize();create();});
     })();
 
-    /* ===== VALENTINE'S DAY MESSAGE ===== */
-    (function initValentinesDay() {
-      const today = new Date();
-      const isValentinesDay = today.getMonth() === 1 && today.getDate() === 14; // Febrero 14
-      
-      if (isValentinesDay) {
-        const messages = [
-          '¡Feliz Día de San Valentín!',
-          'Mi pispachita',
-          'Mi alérgica al agua',
-          'Mi pacuchita',
-          'La razón de mis canas',
-          'Te amo y adoro',
-          'Hoy y siempre',
-          'Ya van 448 días de conocernos'
-        ];
-        
-        const container = document.getElementById('valentineMessageContainer');
-        
-        messages.forEach((msg, idx) => {
-          const el = document.createElement('div');
-          el.className = `valentine-element line${idx + 1}`;
-          el.textContent = msg;
-          container.appendChild(el);
-        });
+    /* ===== DAYS COUNTER (shared) ===== */
+    const START_DATE = new Date(2024, 10, 23); // Nov 23, 2024
+    function calcDays() {
+      return Math.floor(Math.abs(new Date() - START_DATE) / 86400000);
+    }
+    // Update selector badge
+    const selectorDaysEl = document.getElementById('selectorDays');
+    if (selectorDaysEl) selectorDaysEl.textContent = calcDays();
 
-        // Lluvia de corazones cada 1 segundo
-        const heartRainInterval = setInterval(() => {
-          if (document.getElementById('cover').classList.contains('hidden')) {
-            clearInterval(heartRainInterval);
-            container.remove();
-            return;
-          }
-          
-          const heart = document.createElement('span');
-          heart.className = 'valentine-heart-rain';
-          heart.textContent = '💖';
-          heart.style.left = Math.random() * 100 + 'vw';
-          heart.style.top = '-50px';
-          heart.style.animationDuration = (4 + Math.random() * 2) + 's';
-          document.body.appendChild(heart);
-          
-          setTimeout(() => heart.remove(), 6000);
-        }, 1000);
+    /* ===== DATE CONDITION ===== */
+    const _today = new Date();
+    const isValentinesDay = _today.getMonth() === 1 && _today.getDate() === 14;
+    const isWomensDay     = _today.getMonth() === 2 && _today.getDate() === 8;
+    if (isValentinesDay) document.body.classList.add('is-valentines-day');
+
+    /* ===== SELECTOR SCREEN LOGIC ===== */
+    const selectorScreen  = document.getElementById('selectorScreen');
+    const sceneWomens     = document.getElementById('sceneWomens');
+    const cover           = document.getElementById('cover');
+
+    // Highlight today's occasion on the selector
+    (function highlightTodayCard() {
+      // Dynamic subtitle
+      const subtitle = document.querySelector('.selector-subtitle');
+      if (isValentinesDay) {
+        subtitle.textContent = '🌹 ¡Hoy es Día de San Valentín! 🌹';
+        subtitle.style.color = 'rgba(255,140,180,.85)';
+      } else if (isWomensDay) {
+        subtitle.textContent = '💜 ¡Hoy es Día Internacional de la Mujer! 💜';
+        subtitle.style.color = 'rgba(200,140,255,.85)';
+      }
+
+      if (isValentinesDay) {
+        const btn = document.getElementById('btnValentine');
+        btn.classList.add('today-highlight');
+        const badge = document.createElement('div');
+        badge.className = 'selector-card-today-badge';
+        badge.textContent = '¡Hoy! 🎉';
+        btn.appendChild(badge);
+      } else if (isWomensDay) {
+        const btn = document.getElementById('btnWomens');
+        btn.classList.add('today-highlight');
+        const badge = document.createElement('div');
+        badge.className = 'selector-card-today-badge';
+        badge.textContent = '¡Hoy! 🎉';
+        btn.appendChild(badge);
       }
     })();
 
+    function hideSelector() {
+      selectorScreen.classList.add('hidden');
+    }
+
+    // Button: Valentine's Day
+    document.getElementById('btnValentine').addEventListener('click', () => {
+      hideSelector();
+      setTimeout(() => {
+        cover.classList.remove('hidden');
+        initValentinesDay(); // always show messages
+      }, 600);
+    });
+
+    // Button: Women's Day
+    document.getElementById('btnWomens').addEventListener('click', () => {
+      hideSelector();
+      setTimeout(() => {
+        resetWomensScene(); // ensure clean state before starting
+        sceneWomens.classList.add('visible');
+        startWomensScene();
+      }, 600);
+    });
+
+    /* ===== VALENTINE'S DAY MESSAGE — always shown on cover ===== */
+    function initValentinesDay() {
+      const messages = [
+        '¡Feliz Día de San Valentín!',
+        'Mi pispachita',
+        'Mi alérgica al agua',
+        'Mi pacuchita',
+        'La razón de mis canas',
+        'Te amo y adoro',
+        'Hoy y siempre',
+        'Ya van ' + calcDays() + ' días de conocernos'
+      ];
+
+      const container = document.getElementById('valentineMessageContainer');
+      container.innerHTML = '';
+
+      messages.forEach((msg, idx) => {
+        const el = document.createElement('div');
+        el.className = `valentine-element line${idx + 1}`;
+        el.textContent = msg;
+        container.appendChild(el);
+      });
+
+      // Heart rain while cover is visible
+      const heartRainInterval = setInterval(() => {
+        if (cover.classList.contains('hidden')) {
+          clearInterval(heartRainInterval);
+          return;
+        }
+        const heart = document.createElement('span');
+        heart.className = 'valentine-heart-rain';
+        heart.textContent = ['💖','💕','💗','💝'][Math.floor(Math.random()*4)];
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.top = '-50px';
+        heart.style.animationDuration = (4 + Math.random() * 2) + 's';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+      }, 1000);
+    }
+
+    /* ===== WOMENS DAY SCENE ===== */
+    function startWomensScene() {
+      const heroineContainer  = document.getElementById('heroineContainer');
+      const womensPhraseTitle = document.getElementById('womensPhraseTitle');
+      const p1 = document.getElementById('womensP1');
+      const p2 = document.getElementById('womensP2');
+      const p3 = document.getElementById('womensP3');
+      const p4 = document.getElementById('womensP4');
+      const p5 = document.getElementById('womensP5');
+      const tapHint    = document.getElementById('womensTapHint');
+      const wMonkey    = document.getElementById('womensMonkey');
+      const wSpeech    = document.getElementById('womensMonkeySpeech');
+
+      // Spawn power sparks periodically
+      const sparkInterval = setInterval(() => {
+        if (!sceneWomens.classList.contains('visible')) { clearInterval(sparkInterval); return; }
+        spawnPowerSparks();
+      }, 900);
+
+      // Reveal sequence
+      setTimeout(() => { heroineContainer.classList.add('show'); flyPrincess(); }, 400);
+      setTimeout(() => { womensPhraseTitle.classList.add('show'); }, 1000);
+
+      // Phrases appear staggered
+      [[p1,1800],[p2,2900],[p3,4000],[p4,5100],[p5,6200]].forEach(([el,delay]) => {
+        setTimeout(() => {
+          el.style.animation = 'phraseReveal 1s ease forwards';
+          el.style.opacity   = '1';
+        }, delay);
+      });
+
+      // Monkey appears after phrases start
+      setTimeout(() => {
+        wMonkey.classList.add('show');
+        // Show speech bubble after a beat
+        setTimeout(() => {
+          wSpeech.classList.add('show');
+          // Cycle speech bubbles
+          const speeches = [
+            '¡Vuela, mi amor! 💜',
+            '¡Mi superheroína! 👑',
+            '¡Eres increíble! ✨',
+            'Te amo 🐒💕'
+          ];
+          let si = 0;
+          setInterval(() => {
+            if (!sceneWomens.classList.contains('visible')) return;
+            si = (si + 1) % speeches.length;
+            wSpeech.style.opacity = '0';
+            setTimeout(() => {
+              wSpeech.textContent = speeches[si];
+              wSpeech.style.opacity = '1';
+            }, 400);
+          }, 3000);
+        }, 600);
+      }, 2500);
+
+      setTimeout(() => { tapHint.classList.add('show'); }, 7200);
+    }
+
+    // Princess flies across the screen repeatedly
+    function flyPrincess() {
+      const hero = document.getElementById('heroineContainer');
+      const screenW = window.innerWidth;
+      const duration = 5500; // ms per pass
+
+      function onePass() {
+        if (!sceneWomens.classList.contains('visible')) return;
+        // random vertical lane (20–65% from top)
+        const topPct = 20 + Math.random() * 45;
+        hero.style.transition = 'none';
+        hero.style.top  = topPct + '%';
+        hero.style.left = '-200px';
+        // flip to face right (default)
+        hero.style.transform = 'scaleX(1)';
+
+        requestAnimationFrame(() => {
+          hero.style.transition = `left ${duration}ms linear`;
+          hero.style.left = (screenW + 60) + 'px';
+          setTimeout(() => {
+            if (!sceneWomens.classList.contains('visible')) return;
+            // come back from right to left (flipped)
+            const topPct2 = 20 + Math.random() * 45;
+            hero.style.transition = 'none';
+            hero.style.top  = topPct2 + '%';
+            hero.style.left = (screenW + 60) + 'px';
+            hero.style.transform = 'scaleX(-1)';
+            requestAnimationFrame(() => {
+              hero.style.transition = `left ${duration}ms linear`;
+              hero.style.left = '-200px';
+              setTimeout(onePass, duration + 300);
+            });
+          }, duration + 300);
+        });
+      }
+      onePass();
+    }
+
+    function spawnPowerSparks() {
+      const emojis = ['✨','💜','⭐','🌸','💪','🦋','💫','👑'];
+      const spark = document.createElement('span');
+      spark.className = 'power-spark';
+      spark.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      const tx = (Math.random() * 180 - 90) + 'px';
+      const ty = (Math.random() * -160 - 30) + 'px';
+      spark.style.setProperty('--tx', tx);
+      spark.style.setProperty('--ty', ty);
+      spark.style.left = (10 + Math.random() * 80) + '%';
+      spark.style.top  = (20 + Math.random() * 60) + '%';
+      sceneWomens.appendChild(spark);
+      setTimeout(() => spark.remove(), 1600);
+    }
+
+    // Tap anywhere on womens scene → back to selector
+    sceneWomens.addEventListener('click', () => {
+      if (!sceneWomens.classList.contains('visible')) return;
+      sceneWomens.classList.remove('visible');
+      setTimeout(() => {
+        resetWomensScene();
+        selectorScreen.classList.remove('hidden');
+      }, 900);
+    });
+
+    function resetWomensScene() {
+      const heroineEl = document.getElementById('heroineContainer');
+      const phraseTitle = document.getElementById('womensPhraseTitle');
+      const tapHint   = document.getElementById('womensTapHint');
+      const wMonkey   = document.getElementById('womensMonkey');
+      const wSpeech   = document.getElementById('womensMonkeySpeech');
+
+      // Reset heroine position
+      if (heroineEl) {
+        heroineEl.classList.remove('show');
+        heroineEl.style.transition = 'none';
+        heroineEl.style.left = '-200px';
+        heroineEl.style.transform = 'scaleX(1)';
+      }
+
+      // Reset title
+      if (phraseTitle) {
+        phraseTitle.classList.remove('show');
+        phraseTitle.style.animation = 'none';
+        phraseTitle.style.opacity = '0';
+        void phraseTitle.offsetWidth; // reflow
+        phraseTitle.style.animation = '';
+      }
+
+      // Reset phrases
+      ['womensP1','womensP2','womensP3','womensP4','womensP5'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.style.animation = 'none'; el.style.opacity = '0'; void el.offsetWidth; el.style.animation = ''; }
+      });
+
+      // Reset monkey & bubble
+      if (wMonkey) wMonkey.classList.remove('show');
+      if (wSpeech) {
+        wSpeech.classList.remove('show');
+        wSpeech.style.opacity = '';
+        wSpeech.textContent = '¡Vuela, mi amor! 💜';
+      }
+
+      // Reset hint
+      if (tapHint) tapHint.classList.remove('show');
+    }
+
     /* ===== ELEMENTS ===== */
     const heartWrapper = document.getElementById('heartWrapper');
-    const cover = document.getElementById('cover');
     const scene2 = document.getElementById('scene2');
     const content = document.getElementById('content');
     const monkeyContainer = document.getElementById('monkeyContainer');
@@ -1746,14 +2575,8 @@
       },2500);
     }
 
-    /* ===== DAYS COUNTER ===== */
-    (function initCounter() {
-      const startDate = new Date(2024, 10, 23); // Nov 23, 2024 (month is 0-indexed)
-      const today = new Date();
-      const diffTime = Math.abs(today - startDate);
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      document.getElementById('daysNumber').textContent = diffDays;
-    })();
+    /* ===== DAYS COUNTER (content page) ===== */
+    document.getElementById('daysNumber').textContent = calcDays();
 
     /* ===== DATE ===== */
     document.getElementById('currentDate').textContent =
