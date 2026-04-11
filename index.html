@@ -162,8 +162,17 @@
       line-height: 1.3;
       text-align: center;
     }
+    /* Tarapoto card */
+    .card-tarapoto .selector-card-inner {
+      background: linear-gradient(145deg, rgba(0,60,40,.7) 0%, rgba(0,40,30,.75) 100%);
+      border-color: rgba(0,200,120,.4);
+      box-shadow: 0 8px 32px rgba(0,180,100,.2), inset 0 0 20px rgba(0,200,120,.07);
+    }
+    .card-tarapoto:hover .selector-card-inner { border-color: rgba(0,220,140,.85); box-shadow: 0 16px 48px rgba(0,180,100,.5), 0 0 40px rgba(0,200,120,.2); }
+
     .card-valentine .selector-card-title { color: #ff80ab; text-shadow: 0 0 15px rgba(255,80,120,.5); }
     .card-womens .selector-card-title { color: #d580ff; text-shadow: 0 0 15px rgba(180,80,255,.5); }
+    .card-tarapoto .selector-card-title { color: #80ffc8; text-shadow: 0 0 15px rgba(0,200,120,.5); }
 
     .selector-card-date {
       font-family: 'Lora', serif;
@@ -175,6 +184,7 @@
     }
     .card-valentine .selector-card-date { color: #ff4f8b; background: rgba(255,80,130,.12); border: 1px solid rgba(255,80,130,.3); }
     .card-womens .selector-card-date { color: #c87aff; background: rgba(180,80,255,.12); border: 1px solid rgba(180,80,255,.3); }
+    .card-tarapoto .selector-card-date { color: #60ffaa; background: rgba(0,200,120,.12); border: 1px solid rgba(0,200,120,.3); }
 
     /* Today's celebration highlight */
     .selector-card.today-highlight .selector-card-inner {
@@ -1092,6 +1102,672 @@
       animation:heartFlyToPrincess 1.8s ease-in-out forwards;
     }
 
+    /* ===========================================================
+       TARAPOTO TRIP SCENE
+    =========================================================== */
+    .scene-tarapoto {
+      position: fixed; inset: 0; z-index: 99;
+      background: linear-gradient(180deg, #87CEEB 0%, #5aaf6a 55%, #2d7a3d 100%);
+      display: flex; flex-direction: column; align-items: center;
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 1s ease, visibility 1s ease;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .scene-tarapoto.visible { opacity: 1; visibility: visible; pointer-events: auto; }
+
+    /* ── Sky ── */
+    .tarapoto-sky {
+      position: absolute; inset: 0; z-index: 0;
+      background: linear-gradient(180deg,
+        #4a90d9 0%,
+        #87CEEB 35%,
+        #b0e0f0 55%,
+        #d4f0d4 70%,
+        #6abf6a 85%,
+        #3a8a3a 100%);
+      transition: background 2s ease;
+    }
+    /* Sky changes per phase */
+    .scene-tarapoto.phase-river .tarapoto-sky {
+      background: linear-gradient(180deg,
+        #3a70b0 0%,
+        #6aafcf 35%,
+        #90d0d0 55%,
+        #b0d8b8 70%,
+        #50a850 85%,
+        #2a7a2a 100%);
+    }
+    .scene-tarapoto.phase-lagoon .tarapoto-sky {
+      background: linear-gradient(180deg,
+        #2a60a0 0%,
+        #5098b8 35%,
+        #78b8c8 55%,
+        #98c8a8 70%,
+        #409840 85%,
+        #1a6a1a 100%);
+    }
+
+    /* Clouds in sky */
+    .tarapoto-sky::before, .tarapoto-sky::after {
+      content: '';
+      position: absolute; border-radius: 50px;
+      background: rgba(255,255,255,.35);
+    }
+    .tarapoto-sky::before {
+      width: 180px; height: 50px; top: 8%; left: 10%;
+      animation: cloudDrift 20s linear infinite;
+    }
+    .tarapoto-sky::after {
+      width: 140px; height: 40px; top: 15%; right: 15%;
+      animation: cloudDrift 25s linear infinite reverse;
+    }
+    @keyframes cloudDrift { 0%{transform:translateX(0)} 100%{transform:translateX(60px)} }
+
+    /* ── Mountains ── */
+    .tarapoto-mountains {
+      position: absolute; bottom: 30%; left: 0; right: 0;
+      height: 40%; z-index: 1; pointer-events: none;
+      transition: opacity 2s ease;
+    }
+    .mountain {
+      position: absolute; bottom: 0;
+      width: 0; height: 0;
+      border-style: solid;
+    }
+    /* Sunny mountains (green with snow) */
+    .mountain.m1 {
+      left: -5%;
+      border-width: 0 200px 180px 200px;
+      border-color: transparent transparent #2d6b2d transparent;
+      filter: drop-shadow(0 0 8px rgba(0,0,0,.15));
+    }
+    .mountain.m1::after {
+      content: '';
+      position: absolute; top: -10px; left: -30px;
+      border-width: 0 30px 25px 30px;
+      border-style: solid;
+      border-color: transparent transparent #e8e8e8 transparent;
+    }
+    .mountain.m2 {
+      left: 25%;
+      border-width: 0 250px 220px 250px;
+      border-color: transparent transparent #1a5a1a transparent;
+      filter: drop-shadow(0 0 10px rgba(0,0,0,.2));
+    }
+    .mountain.m2::after {
+      content: '';
+      position: absolute; top: -12px; left: -35px;
+      border-width: 0 35px 30px 35px;
+      border-style: solid;
+      border-color: transparent transparent #f0f0f0 transparent;
+    }
+    .mountain.m3 {
+      right: -5%;
+      border-width: 0 220px 190px 220px;
+      border-color: transparent transparent #256525 transparent;
+      filter: drop-shadow(0 0 8px rgba(0,0,0,.15));
+    }
+    .mountain.m3::after {
+      content: '';
+      position: absolute; top: -10px; left: -28px;
+      border-width: 0 28px 22px 28px;
+      border-style: solid;
+      border-color: transparent transparent #e0e0e0 transparent;
+    }
+    /* Rainy mountains (darker, misty) */
+    .scene-tarapoto.phase-rain .mountain.m1 {
+      border-color: transparent transparent #1a3a1a transparent;
+    }
+    .scene-tarapoto.phase-rain .mountain.m1::after {
+      border-color: transparent transparent #888 transparent;
+    }
+    .scene-tarapoto.phase-rain .mountain.m2 {
+      border-color: transparent transparent #0f2a0f transparent;
+    }
+    .scene-tarapoto.phase-rain .mountain.m2::after {
+      border-color: transparent transparent #777 transparent;
+    }
+    .scene-tarapoto.phase-rain .mountain.m3 {
+      border-color: transparent transparent #153515 transparent;
+    }
+    .scene-tarapoto.phase-rain .mountain.m3::after {
+      border-color: transparent transparent #888 transparent;
+    }
+
+    /* ── Trees / Jungle midground ── */
+    .tarapoto-trees {
+      position: absolute; bottom: 18%; left: 0; right: 0;
+      height: 30%; z-index: 2; pointer-events: none;
+    }
+    .jungle-tree {
+      position: absolute; bottom: 0;
+      width: 8px;
+      background: linear-gradient(180deg, #2a5a1a, #1a3a0a);
+      border-radius: 4px;
+    }
+    .jungle-tree::before {
+      content: '🌴';
+      position: absolute; top: -28px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 2rem;
+    }
+    .jungle-tree.jt1 { left: 5%;  height: 120px; }
+    .jungle-tree.jt2 { left: 15%; height: 150px; }
+    .jungle-tree.jt3 { right: 8%; height: 130px; }
+    .jungle-tree.jt4 { right: 18%; height: 110px; }
+    .jungle-tree.jt5 { left: 50%; height: 90px; }
+
+    /* ── Ground ── */
+    .tarapoto-ground {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 22%; z-index: 3;
+      background:
+        linear-gradient(180deg,
+          #3a8a2a 0%,
+          #2a6a1a 30%,
+          #1a5a0a 60%,
+          #0a4a00 100%);
+      overflow: hidden;
+    }
+    .tarapoto-ground::before {
+      content: '';
+      position: absolute; top: -20px; left: 0; right: 0; height: 40px;
+      background:
+        repeating-linear-gradient(90deg,
+          transparent 0px, rgba(60,160,40,.3) 10px, transparent 20px);
+      animation: grassWave 4s ease-in-out infinite;
+    }
+    @keyframes grassWave {
+      0%,100% { transform: translateX(0); }
+      50% { transform: translateX(10px); }
+    }
+
+    /* ── Rain ── */
+    .tarapoto-rain {
+      position: absolute; inset: 0; z-index: 7; pointer-events: none;
+      opacity: 0; transition: opacity 1.5s ease;
+      background: repeating-linear-gradient(
+        170deg,
+        transparent 0px,
+        rgba(180,210,240,.06) 1px,
+        transparent 2px,
+        transparent 18px
+      );
+      animation: rainFall .4s linear infinite;
+    }
+    .scene-tarapoto.phase-rain .tarapoto-rain { opacity: 1; }
+    @keyframes rainFall {
+      to { transform: translateY(18px); }
+    }
+    /* Rain drops */
+    .tarapoto-rain::before, .tarapoto-rain::after {
+      content: '';
+      position: absolute; width: 2px; height: 20px;
+      background: linear-gradient(180deg, transparent, rgba(180,210,240,.4));
+      border-radius: 2px;
+    }
+    .tarapoto-rain::before {
+      left: 15%; top: -20px;
+      animation: rainDrop 1.2s linear infinite;
+    }
+    .tarapoto-rain::after {
+      left: 75%; top: -20px;
+      animation: rainDrop 1.4s linear infinite .3s;
+    }
+    @keyframes rainDrop {
+      0% { transform: translateY(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+
+    /* Floating jungle elements */
+    .tarapoto-float {
+      position: absolute; font-size: clamp(1.2rem, 2.8vw, 1.8rem);
+      opacity: .55; pointer-events: none; z-index: 4;
+      animation: tarapotoFloat 9s ease-in-out infinite;
+      filter: drop-shadow(0 0 6px rgba(0,180,80,.35));
+    }
+    .tarapoto-float.t1 { left: 6%;  top: 55%; animation-delay: -1s; }
+    .tarapoto-float.t2 { left: 18%; top: 25%; animation-delay: -3.5s; }
+    .tarapoto-float.t3 { right: 10%; top: 50%; animation-delay: -2s; }
+    .tarapoto-float.t4 { right: 22%; top: 18%; animation-delay: -5s; }
+    .tarapoto-float.t5 { left: 45%; top: 12%; animation-delay: -4s; }
+    .tarapoto-float.t6 { left: 70%; top: 62%; animation-delay: -6s; }
+    @keyframes tarapotoFloat {
+      0%,100% { transform: translateY(0) rotate(-5deg); opacity: .45; }
+      50% { transform: translateY(-16px) rotate(5deg); opacity: .8; }
+    }
+
+    /* Title */
+    .tarapoto-title {
+      position: relative; z-index: 10;
+      margin-top: 3vh;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.6rem, 5vw, 2.8rem);
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,.4), 0 0 25px rgba(0,200,120,.7);
+      opacity: 0; text-align: center;
+      padding: 0 16px;
+    }
+    .tarapoto-title.show { animation: phraseReveal 1s ease forwards; }
+
+    /* Narrative text (single reusable element) */
+    .tarapoto-narrative {
+      position: absolute; z-index: 10;
+      top: 12%; left: 50%; transform: translate(-50%, 0);
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.1rem, 3vw, 1.5rem);
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 2px 6px rgba(0,0,0,.5);
+      opacity: 0; pointer-events: none;
+      text-align: center;
+      max-width: 75vw;
+      padding: 14px 24px;
+      background: rgba(0,60,30,.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 18px;
+      border: 1px solid rgba(0,180,100,.35);
+      line-height: 1.6;
+      white-space: normal;
+    }
+    .tarapoto-narrative.show { animation: phraseReveal 1s ease forwards; }
+
+    /* ── River ── */
+    .tarapoto-river {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 18%; z-index: 5;
+      opacity: 0; transition: opacity 1.2s ease;
+      background: linear-gradient(180deg,
+        rgba(40,140,190,.5) 0%,
+        rgba(30,120,170,.65) 40%,
+        rgba(20,100,150,.75) 100%);
+      overflow: hidden;
+      border-top: 3px solid rgba(100,200,255,.3);
+    }
+    .tarapoto-river.show { opacity: 1; }
+    .tarapoto-river::before {
+      content: '';
+      position: absolute; top: 0; left: -10%; width: 120%; height: 60%;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(100,200,255,.15) 0px,
+        rgba(80,180,240,.3) 40px,
+        rgba(60,160,220,.1) 80px,
+        rgba(100,200,255,.2) 120px
+      );
+      animation: riverFlow 2.5s linear infinite;
+    }
+    .tarapoto-river::after {
+      content: '';
+      position: absolute; top: 15%; left: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(200,240,255,.6), transparent);
+      animation: riverShimmer 2s ease-in-out infinite;
+    }
+    @keyframes riverFlow { to { transform: translateX(-80px); } }
+    @keyframes riverShimmer {
+      0%,100% { opacity: .3; transform: translateX(-30px); }
+      50% { opacity: .8; transform: translateX(30px); }
+    }
+    /* River splashes */
+    .river-splash {
+      position: absolute; bottom: 20%; width: 20px; height: 20px;
+      background: rgba(150,220,255,.5); border-radius: 50%;
+      animation: splashPop 1.5s ease-in-out infinite;
+    }
+    .river-splash.s2 { left: 30%; animation-delay: .5s; }
+    .river-splash.s3 { left: 65%; animation-delay: 1s; }
+    @keyframes splashPop {
+      0%,100% { transform: scale(.5) translateY(0); opacity: .3; }
+      50% { transform: scale(1.2) translateY(-10px); opacity: .8; }
+    }
+
+    /* ── Lagoon ── */
+    .tarapoto-lagoon {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 75%; max-width: 550px; height: 24%; z-index: 6;
+      opacity: 0; transition: opacity 1.2s ease;
+      background: radial-gradient(ellipse at 50% 70%,
+        rgba(0,160,200,.55) 0%,
+        rgba(0,120,170,.4) 35%,
+        rgba(0,100,150,.25) 55%,
+        transparent 75%);
+      border-radius: 50% 50% 0 0;
+      border-top: 2px solid rgba(100,200,255,.25);
+    }
+    .tarapoto-lagoon.show { opacity: 1; }
+    .lagoon-shimmer {
+      position: absolute; top: 20%; left: 10%; right: 10%; height: 30%;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 40%, rgba(180,240,255,.3) 0%, transparent 35%),
+        radial-gradient(circle at 70% 55%, rgba(140,220,255,.25) 0%, transparent 30%);
+      animation: lagoonGlisten 3.5s ease-in-out infinite;
+    }
+    @keyframes lagoonGlisten {
+      0%,100% { opacity: .4; transform: scale(1); }
+      50% { opacity: .9; transform: scale(1.05); }
+    }
+
+    /* ── Motocross Bike ── */
+    .tarapoto-moto {
+      position: absolute; bottom: 18%; left: -300px;
+      z-index: 12; opacity: 0;
+      transition: opacity 1s ease;
+      width: 220px; height: 140px;
+    }
+    .tarapoto-moto.show { opacity: 1; }
+    .tarapoto-moto.riding {
+      animation: motoRide 7s linear forwards;
+    }
+    @keyframes motoRide {
+      0% { left: -300px; }
+      100% { left: calc(100% + 100px); }
+    }
+    .moto-body {
+      position: relative; width: 200px; height: 100px;
+    }
+    .moto-frame {
+      position: absolute; bottom: 25px; left: 30px;
+      width: 140px; height: 18px;
+      background: linear-gradient(180deg, #e53935, #c62828);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.3);
+    }
+    .moto-frame::before {
+      content: '';
+      position: absolute; top: -14px; left: 50px;
+      width: 60px; height: 16px;
+      background: linear-gradient(180deg, #d32f2f, #b71c1c);
+      border-radius: 6px;
+    }
+    .moto-seat {
+      position: absolute; bottom: 43px; left: 55px;
+      width: 55px; height: 14px;
+      background: linear-gradient(180deg, #333, #222);
+      border-radius: 8px 8px 4px 4px;
+    }
+    .moto-handlebar {
+      position: absolute; bottom: 50px; left: 130px;
+      width: 8px; height: 35px;
+      background: #555;
+      border-radius: 4px;
+      transform: rotate(-20deg);
+    }
+    .moto-handlebar::before {
+      content: '';
+      position: absolute; top: -4px; left: -12px;
+      width: 32px; height: 8px;
+      background: #444;
+      border-radius: 4px;
+    }
+    .moto-wheel {
+      position: absolute; bottom: 0;
+      width: 44px; height: 44px;
+      border: 5px solid #333;
+      border-radius: 50%;
+      background: radial-gradient(circle, #888 15%, transparent 16%);
+    }
+    .moto-wheel.front { left: 140px; }
+    .moto-wheel.rear { left: 12px; }
+    .moto-wheel::after {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px; height: 12px;
+      background: #666;
+      border-radius: 50%;
+    }
+    .tarapoto-moto.riding .moto-wheel {
+      animation: wheelSpin .3s linear infinite;
+    }
+    @keyframes wheelSpin {
+      to { transform: rotate(360deg); }
+    }
+    .moto-exhaust {
+      position: absolute; bottom: 20px; left: -5px;
+      width: 20px; height: 8px;
+      background: linear-gradient(180deg, #888, #555);
+      border-radius: 4px;
+    }
+    .moto-exhaust::after {
+      content: '💨';
+      position: absolute; left: -20px; top: -8px;
+      font-size: 1.2rem;
+      animation: exhaustPuff .5s ease-in-out infinite;
+    }
+    @keyframes exhaustPuff {
+      0%,100% { opacity: .3; transform: translateX(0) scale(.8); }
+      50% { opacity: .8; transform: translateX(-10px) scale(1.1); }
+    }
+    .moto-mud {
+      position: absolute; bottom: -5px;
+      width: 8px; height: 8px;
+      background: #8B6914;
+      border-radius: 50%;
+      opacity: 0;
+    }
+    .tarapoto-moto.riding .moto-mud {
+      animation: mudFly .6s ease-out infinite;
+    }
+    .moto-mud.m1 { left: 20px; animation-delay: 0s; }
+    .moto-mud.m2 { left: 150px; animation-delay: .3s; }
+    @keyframes mudFly {
+      0% { opacity: .8; transform: translate(0,0) scale(1); }
+      100% { opacity: 0; transform: translate(-20px, -30px) scale(0); }
+    }
+
+    /* Characters riding the moto */
+    .tarapoto-monkey-wrap.on-moto {
+      position: absolute;
+      bottom: auto;
+      left: auto;
+      top: 10px;
+      left: 20px;
+      z-index: 13;
+      opacity: 1 !important;
+      transform: scale(0.6);
+      transform-origin: bottom left;
+    }
+    .tarapoto-princess-wrap.on-moto {
+      position: absolute;
+      bottom: auto;
+      left: auto;
+      top: 5px;
+      left: 65px;
+      z-index: 13;
+      opacity: 1 !important;
+      transform: scale(0.5);
+      transform-origin: bottom left;
+    }
+
+    /* ── Characters: high z-index so they're always visible ── */
+    /* Monkey in tarapoto scene */
+    .tarapoto-monkey-wrap {
+      position: absolute; bottom: 20%; left: -150px;
+      z-index: 15; opacity: 0;
+      transition: opacity .8s ease, left .1s linear;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,.35));
+    }
+    .tarapoto-monkey-wrap.show { opacity: 1; }
+    .tarapoto-monkey-wrap.walking .monkey-body { animation: monkeyBounce .35s ease-in-out infinite; }
+    .tarapoto-monkey-wrap.walking .m-arm.l { animation: armWalkL .35s ease-in-out infinite; }
+    .tarapoto-monkey-wrap.walking .m-arm.r { animation: armWalkR .35s ease-in-out infinite; }
+    .tarapoto-monkey-wrap.walking .m-leg.l { animation: legL .35s ease-in-out infinite; }
+    .tarapoto-monkey-wrap.walking .m-leg.r { animation: legR .35s ease-in-out infinite; }
+    .tarapoto-monkey-wrap .monkey-speech {
+      position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+      min-width: 150px; max-width: 240px;
+      padding: 8px 14px;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(.78rem, 2vw, .98rem);
+      line-height: 1.4;
+      color: #004a2a;
+      background: linear-gradient(180deg, #e8fff0 0%, #c0f0d8 100%);
+      border: 1.5px solid rgba(0,180,100,.5);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,120,60,.2);
+      text-align: center;
+      white-space: nowrap;
+      opacity: 0; pointer-events: none;
+      transition: opacity .5s ease;
+      z-index: 30;
+    }
+    .tarapoto-monkey-wrap .monkey-speech::after {
+      content: '';
+      position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+      border: 7px solid transparent;
+      border-top-color: #c0f0d8;
+    }
+    .tarapoto-monkey-wrap .monkey-speech.show { opacity: 1; }
+
+    /* Princess in tarapoto scene */
+    .tarapoto-princess-wrap {
+      position: absolute; bottom: 20%; left: -280px;
+      z-index: 14; opacity: 0;
+      transition: opacity .8s ease, left .1s linear;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,.35));
+    }
+    .tarapoto-princess-wrap.show { opacity: 1; }
+    .tarapoto-princess-wrap.walking .princess { animation: princessWalkBob .5s ease-in-out infinite; }
+    .tarapoto-princess-wrap.walking .princess-arm.left { animation: pArmWalkL .45s ease-in-out infinite; }
+    .tarapoto-princess-wrap.walking .princess-arm.right { animation: pArmWalkR .45s ease-in-out infinite; }
+    @keyframes princessWalkBob {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes pArmWalkL {
+      0%,100% { transform: rotate(10deg); }
+      50% { transform: rotate(-10deg); }
+    }
+    @keyframes pArmWalkR {
+      0%,100% { transform: rotate(-10deg); }
+      50% { transform: rotate(10deg); }
+    }
+
+    /* Photo Carousel / Slider (centered in middle of scene) */
+    .tarapoto-carousel {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      z-index: 50; width: 92vw; max-width: 500px;
+      text-align: center;
+      opacity: 0; visibility: hidden;
+      transition: opacity .6s ease, visibility .6s;
+    }
+    .tarapoto-carousel.show { opacity: 1; visibility: visible; pointer-events: auto; }
+
+    .tarapoto-carousel .carousel-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.1rem, 3vw, 1.5rem);
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,.5);
+      margin-bottom: 14px;
+    }
+
+    .tarapoto-carousel .carousel-container {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+
+    .tarapoto-carousel .carousel-viewport {
+      overflow: hidden; width: calc(92vw - 100px); max-width: 400px;
+      border-radius: 16px;
+      background: rgba(0,40,25,.65);
+      border: 1.5px solid rgba(0,180,100,.4);
+      box-shadow: 0 8px 32px rgba(0,0,0,.35);
+      padding: 10px;
+    }
+
+    .tarapoto-carousel .carousel-track {
+      display: flex; transition: transform .5s cubic-bezier(.25,.46,.45,.63);
+    }
+
+    .tarapoto-carousel .carousel-slide {
+      min-width: 100%; flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    .tarapoto-carousel .carousel-slide img {
+      width: 100%; max-height: 300px;
+      object-fit: cover; border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.3);
+      display: block;
+    }
+
+    .tarapoto-carousel .carousel-slide .slide-caption {
+      margin-top: 8px;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(.8rem, 2.2vw, 1rem);
+      color: rgba(180,255,220,.9);
+      text-shadow: 0 1px 4px rgba(0,0,0,.4);
+    }
+
+    .tarapoto-carousel .carousel-btn {
+      background: rgba(0,100,60,.65);
+      border: 1.5px solid rgba(0,180,100,.5);
+      color: #fff;
+      font-size: 1.2rem;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .3s;
+      flex-shrink: 0;
+    }
+    .tarapoto-carousel .carousel-btn:hover {
+      background: rgba(0,140,80,.8);
+      box-shadow: 0 0 16px rgba(0,180,100,.4);
+    }
+
+    .tarapoto-carousel .carousel-counter {
+      margin-top: 10px;
+      font-family: 'Lora', serif;
+      font-size: .8rem;
+      color: rgba(200,255,230,.8);
+      letter-spacing: 1px;
+    }
+
+    /* Final message */
+    .tarapoto-final-message {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      z-index: 30; width: 88%; max-width: 600px;
+      text-align: center;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1rem, 2.8vw, 1.35rem);
+      line-height: 1.7;
+      color: #e0ffe8;
+      text-shadow: 0 2px 8px rgba(0,0,0,.5);
+      padding: 28px 30px;
+      background: rgba(0,50,30,.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 20px;
+      border: 1.5px solid rgba(0,180,100,.4);
+      box-shadow: 0 12px 48px rgba(0,0,0,.35);
+      opacity: 0; pointer-events: none;
+    }
+    .tarapoto-final-message.show {
+      opacity: 1;
+      animation: phraseReveal 1s ease forwards;
+    }
+
+    /* Tap hint */
+    .tarapoto-tap-hint {
+      position: absolute; bottom: 2%; left: 50%; transform: translateX(-50%);
+      font-family: 'Dancing Script', cursive; font-size: clamp(.85rem,2vw,1rem);
+      color: rgba(180,255,220,.75); z-index: 31; opacity: 0;
+      pointer-events: none; text-align: center; white-space: nowrap;
+      background: rgba(0,40,20,.55); backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      padding: 6px 20px; border-radius: 30px;
+      border: 1px solid rgba(0,180,100,.3);
+      animation: hintBlink 1.8s ease-in-out infinite;
+    }
+    .tarapoto-tap-hint.show { opacity: 1; }
+
     /* ===== PRINCESS ===== */
     .princess-container {
       position:absolute; bottom:22%; right:16%; z-index:9;
@@ -1715,6 +2391,13 @@
           <div class="selector-card-date">8 de marzo</div>
         </div>
       </button>
+      <button class="selector-card card-tarapoto" id="btnTarapoto">
+        <div class="selector-card-inner">
+          <div class="selector-card-emoji">🌴</div>
+          <div class="selector-card-title">Viaje a<br>Tarapoto</div>
+          <div class="selector-card-date">Aventura en la selva</div>
+        </div>
+      </button>
     </div>
   </section>
 
@@ -2041,6 +2724,172 @@
     <button class="scene2-continue" id="scene2Continue">✨ Continuar al mensaje especial →</button>
   </section>
 
+  <!-- ===== TARAPOTO TRIP SCENE ===== -->
+  <section class="scene-tarapoto" id="sceneTarapoto">
+    <!-- Sky layer -->
+    <div class="tarapoto-sky" id="tarapotoSky"></div>
+    
+    <!-- Rain overlay -->
+    <div class="tarapoto-rain" id="tarapotoRain"></div>
+
+    <!-- Mountains layer -->
+    <div class="tarapoto-mountains" id="tarapotoMountains">
+      <div class="mountain m1"></div>
+      <div class="mountain m2"></div>
+      <div class="mountain m3"></div>
+    </div>
+
+    <!-- Trees / jungle midground -->
+    <div class="tarapoto-trees" id="tarapotoTrees">
+      <div class="jungle-tree jt1"></div>
+      <div class="jungle-tree jt2"></div>
+      <div class="jungle-tree jt3"></div>
+      <div class="jungle-tree jt4"></div>
+      <div class="jungle-tree jt5"></div>
+    </div>
+
+    <!-- Ground -->
+    <div class="tarapoto-ground"></div>
+
+    <!-- Floating jungle elements -->
+    <span class="tarapoto-float t1">🌿</span>
+    <span class="tarapoto-float t2">🦜</span>
+    <span class="tarapoto-float t3">🌺</span>
+    <span class="tarapoto-float t4">🌴</span>
+    <span class="tarapoto-float t5">🦋</span>
+    <span class="tarapoto-float t6">🍃</span>
+
+    <!-- Title -->
+    <div class="tarapoto-title" id="tarapotoTitle">
+      🌴 Nuestro Viaje a Tarapoto 🌴
+    </div>
+
+    <!-- Phase narratives -->
+    <div class="tarapoto-narrative" id="tarapotoNarrative"></div>
+
+    <!-- River element -->
+    <div class="tarapoto-river" id="tarapotoRiver">
+      <div class="river-splash"></div>
+      <div class="river-splash s2"></div>
+      <div class="river-splash s3"></div>
+    </div>
+
+    <!-- Lagoon element -->
+    <div class="tarapoto-lagoon" id="tarapotoLagoon">
+      <div class="lagoon-shimmer"></div>
+    </div>
+
+    <!-- Motocross bike -->
+    <div class="tarapoto-moto" id="tarapotoMoto">
+      <!-- Motorcycle body -->
+      <div class="moto-body">
+        <div class="moto-frame"></div>
+        <div class="moto-seat"></div>
+        <div class="moto-handlebar"></div>
+        <div class="moto-wheel front"></div>
+        <div class="moto-wheel rear"></div>
+        <div class="moto-exhaust"></div>
+        <!-- Mud splashes -->
+        <div class="moto-mud m1"></div>
+        <div class="moto-mud m2"></div>
+      </div>
+    </div>
+
+    <!-- Monkey character (same structure as scene2) -->
+    <div class="tarapoto-monkey-wrap" id="tarapotoMonkey">
+      <div class="monkey-speech" id="tarapotoMonkeySpeech">¡Vamos a la selva, mi amor! 🌿</div>
+      <div class="monkey-body">
+        <div class="m-head">
+          <div class="m-ear l"></div>
+          <div class="m-ear r"></div>
+          <div class="m-face">
+            <div class="m-eye l"></div>
+            <div class="m-eye r"></div>
+            <div class="m-mouth"></div>
+          </div>
+        </div>
+        <div class="m-torso"><div class="m-belly"></div></div>
+        <div class="m-arm l"><div class="m-hand"></div></div>
+        <div class="m-arm r"><div class="m-hand"></div></div>
+        <div class="m-leg l"><div class="m-foot"></div></div>
+        <div class="m-leg r"><div class="m-foot"></div></div>
+        <div class="m-tail"></div>
+      </div>
+    </div>
+
+    <!-- Princess character -->
+    <div class="tarapoto-princess-wrap" id="tarapotoPrincess">
+      <div class="princess" style="position:relative;">
+        <div class="princess-crown">
+          <div class="princess-crown-base"></div>
+          <div class="princess-crown-point"></div>
+          <div class="princess-crown-point"></div>
+          <div class="princess-crown-point"></div>
+          <div class="princess-crown-gem"></div>
+        </div>
+        <div class="princess-hair-top"></div>
+        <div class="princess-hair-side-l"></div>
+        <div class="princess-hair-side-r"></div>
+        <div class="princess-curl"></div>
+        <div class="princess-curl"></div>
+        <div class="princess-curl"></div>
+        <div class="princess-curl"></div>
+        <div class="princess-curl"></div>
+        <div class="princess-curl"></div>
+        <div class="princess-curl"></div>
+        <div class="princess-curl"></div>
+        <div class="princess-head">
+          <div class="princess-eyelash left"></div>
+          <div class="princess-eyelash right"></div>
+          <div class="princess-eye left"></div>
+          <div class="princess-eye right"></div>
+          <div class="princess-blush left"></div>
+          <div class="princess-blush right"></div>
+          <div class="princess-mouth"></div>
+          <div class="princess-smile"></div>
+        </div>
+        <div class="princess-arm left"></div>
+        <div class="princess-arm right"></div>
+        <div class="princess-dress-top"></div>
+        <div class="princess-dress-bottom">
+          <div class="princess-dress-detail"></div>
+          <div class="princess-dress-sparkle">✨</div>
+          <div class="princess-dress-sparkle">✨</div>
+          <div class="princess-dress-sparkle">✨</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Photo Carousel / Slider (centered) -->
+    <div class="tarapoto-carousel" id="tarapotoCarousel">
+      <div class="carousel-title">📸 Nuestros recuerdos en Tarapoto</div>
+      <div class="carousel-container">
+        <button class="carousel-btn prev" id="carouselPrev">◀</button>
+        <div class="carousel-viewport">
+          <div class="carousel-track" id="carouselTrack"></div>
+        </div>
+        <button class="carousel-btn next" id="carouselNext">▶</button>
+      </div>
+      <div class="carousel-counter" id="carouselCounter">1 / 8</div>
+    </div>
+
+    <!-- Final tender message -->
+    <div class="tarapoto-final-message" id="tarapotoFinalMsg">
+      Mi princesa hermosa,<br><br>
+      Este viaje a Tarapoto contigo es uno de mis recuerdos favoritos 💚<br>
+      Explorar la selva a tu lado, ver tu sonrisa frente a cada cascada,<br>
+      escuchar los sonidos de la naturaleza mientras caminamos juntos...<br><br>
+      Cada momento contigo es una aventura que atesoro en mi corazón 🌴<br>
+      Eres mi compañera de viaje perfecta, mi cómplice de aventuras 🦜<br><br>
+      Te amo hoy y siempre, mi pacuchita aventurera 💕🌿
+    </div>
+
+    <!-- Tap hint -->
+    <div class="tarapoto-tap-hint" id="tarapotoTapHint">
+      Toca cualquier lugar para volver 💚
+    </div>
+  </section>
+
   <!-- ===== SCREEN 3: CONTENT ===== -->
   <section class="content" id="content">
     <div class="content-decor" aria-hidden="true">
@@ -2193,6 +3042,16 @@
         resetWomensScene(); // ensure clean state before starting
         sceneWomens.classList.add('visible');
         startWomensScene();
+      }, 600);
+    });
+
+    // Button: Tarapoto Trip
+    document.getElementById('btnTarapoto').addEventListener('click', () => {
+      hideSelector();
+      setTimeout(() => {
+        resetTarapotoScene();
+        sceneTarapoto.classList.add('visible');
+        startTarapotoScene();
       }, 600);
     });
 
@@ -2602,6 +3461,388 @@
           spawnFloatingHearts();
         }, 250);
       }, 1000);
+    });
+
+    /* ===== TARAPOTO SCENE ===== */
+    const sceneTarapoto = document.getElementById('sceneTarapoto');
+
+    function startTarapotoScene() {
+      const title = document.getElementById('tarapotoTitle');
+      const narrative = document.getElementById('tarapotoNarrative');
+      const monkey = document.getElementById('tarapotoMonkey');
+      const princess = document.getElementById('tarapotoPrincess');
+      const monkeySpeech = document.getElementById('tarapotoMonkeySpeech');
+      const river = document.getElementById('tarapotoRiver');
+      const lagoon = document.getElementById('tarapotoLagoon');
+      const moto = document.getElementById('tarapotoMoto');
+      const carousel = document.getElementById('tarapotoCarousel');
+      const finalMsg = document.getElementById('tarapotoFinalMsg');
+      const tapHint = document.getElementById('tarapotoTapHint');
+
+      // Initialize carousel
+      initTarapotoCarousel();
+
+      // Show title
+      setTimeout(() => title.classList.add('show'), 400);
+
+      // ── PHASE 1: Walking through the forest (sunny) ──
+      setTimeout(() => {
+        narrative.textContent = '🌿 El mono y la princesa caminan juntos por el bosque de Tarapoto...';
+        narrative.style.top = '12%';
+        narrative.classList.add('show');
+
+        monkey.classList.add('show');
+        princess.classList.add('show');
+        monkey.classList.add('walking');
+        princess.classList.add('walking');
+
+        setTimeout(() => monkeySpeech.classList.add('show'), 500);
+
+        const speeches1 = [
+          '¡Vamos a la selva, mi amor! 🌿',
+          '¡Mira qué hermoso camino! 🌴',
+          '¡Contigo a cualquier lugar! 💚'
+        ];
+        let si = 0;
+        const sp1 = setInterval(() => {
+          if (!sceneTarapoto.classList.contains('visible')) { clearInterval(sp1); return; }
+          si = (si + 1) % speeches1.length;
+          monkeySpeech.style.opacity = '0';
+          setTimeout(() => { monkeySpeech.textContent = speeches1[si]; monkeySpeech.style.opacity = '1'; }, 400);
+        }, 3000);
+
+        walkAcross(monkey, princess, 6500, () => {
+          narrative.classList.remove('show');
+          narrative.style.opacity = '0';
+        });
+      }, 1200);
+
+      // ── PHASE 2: Crossing the river ──
+      setTimeout(() => {
+        sceneTarapoto.classList.add('phase-river');
+        river.classList.add('show');
+        narrative.textContent = '🌊 Cruzando el río juntos, de la mano...';
+        narrative.style.animation = 'none'; void narrative.offsetWidth; narrative.style.animation = '';
+        narrative.style.top = '12%';
+        narrative.classList.add('show');
+
+        monkey.classList.remove('walking');
+        princess.classList.remove('walking');
+        monkey.style.opacity = '1'; princess.style.opacity = '1';
+        // Position them visible in the middle
+        resetToCenter(monkey, princess);
+
+        monkeySpeech.textContent = '¡Te ayudo a cruzar, princesa! 💚';
+        monkeySpeech.style.opacity = '1';
+
+        setTimeout(() => {
+          monkey.classList.add('walking');
+          princess.classList.add('walking');
+          monkeySpeech.textContent = '¡Lo logramos! 🌊✨';
+          walkAcross(monkey, princess, 5000, () => {
+            narrative.classList.remove('show');
+            narrative.style.opacity = '0';
+          });
+        }, 3000);
+
+        setTimeout(() => { river.classList.remove('show'); sceneTarapoto.classList.remove('phase-river'); }, 9500);
+      }, 9000);
+
+      // ── PHASE 3: Lagoon ──
+      setTimeout(() => {
+        sceneTarapoto.classList.add('phase-lagoon');
+        lagoon.classList.add('show');
+        narrative.textContent = '💧 Se meten a la laguna, riendo y jugando en el agua cristalina...';
+        narrative.style.animation = 'none'; void narrative.offsetWidth; narrative.style.animation = '';
+        narrative.style.top = '12%';
+        narrative.classList.add('show');
+
+        monkey.classList.remove('walking');
+        princess.classList.remove('walking');
+        monkey.style.opacity = '1'; princess.style.opacity = '1';
+        resetToCenter(monkey, princess);
+
+        monkeySpeech.textContent = '¡El agua está fresquita! 💦😄';
+        monkeySpeech.style.opacity = '1';
+
+        setTimeout(() => {
+          narrative.classList.remove('show');
+          narrative.style.opacity = '0';
+          monkeySpeech.textContent = '¡Tarapoto contigo es mágico! 🌴💕';
+          monkeySpeech.style.opacity = '1';
+          setTimeout(() => { monkeySpeech.classList.remove('show'); monkeySpeech.style.opacity = '0'; }, 3000);
+        }, 4500);
+
+        setTimeout(() => { lagoon.classList.remove('show'); sceneTarapoto.classList.remove('phase-lagoon'); }, 8500);
+      }, 19500);
+
+      // ── PHASE 4: It starts raining ──
+      setTimeout(() => {
+        sceneTarapoto.classList.add('phase-rain');
+        narrative.textContent = '🌧️ Comienza a llover... pero juntos bajo la lluvia es aún más hermoso 💚';
+        narrative.style.animation = 'none'; void narrative.offsetWidth; narrative.style.animation = '';
+        narrative.style.top = '12%';
+        narrative.classList.add('show');
+
+        monkey.style.opacity = '1'; princess.style.opacity = '1';
+        resetToCenter(monkey, princess);
+
+        monkeySpeech.textContent = '¡La lluvia nos hace más fuertes! 🌧️💕';
+        monkeySpeech.style.opacity = '1';
+
+        setTimeout(() => {
+          narrative.classList.remove('show');
+          narrative.style.opacity = '0';
+        }, 5000);
+
+        setTimeout(() => {
+          sceneTarapoto.classList.remove('phase-rain');
+          monkeySpeech.classList.remove('show');
+          monkeySpeech.style.opacity = '0';
+        }, 6500);
+      }, 29000);
+
+      // ── PHASE 5: Motocross ride ──
+      setTimeout(() => {
+        narrative.textContent = '🏍️ ¡El mono y la princesa se suben a una motocross y pasean por la selva!';
+        narrative.style.animation = 'none'; void narrative.offsetWidth; narrative.style.animation = '';
+        narrative.style.top = '12%';
+        narrative.classList.add('show');
+
+        // Hide walking characters
+        monkey.classList.remove('show', 'walking');
+        princess.classList.remove('show', 'walking');
+
+        // Show motorcycle
+        moto.classList.add('show');
+
+        // Position monkey driving the moto
+        monkey.classList.add('show', 'on-moto');
+        monkey.style.opacity = '1';
+        monkey.classList.remove('walking');
+
+        // Princess riding behind
+        princess.classList.add('show', 'on-moto');
+        princess.style.opacity = '1';
+        princess.classList.remove('walking');
+
+        monkeySpeech.textContent = '¡Wooo! ¡A toda velocidad! 🏍️💨';
+        monkeySpeech.style.opacity = '1';
+
+        // Start riding across screen
+        setTimeout(() => moto.classList.add('riding'), 300);
+
+        setTimeout(() => {
+          narrative.classList.remove('show');
+          narrative.style.opacity = '0';
+        }, 4000);
+
+        setTimeout(() => {
+          monkeySpeech.classList.remove('show');
+          monkeySpeech.style.opacity = '0';
+        }, 6000);
+
+        // End moto ride
+        setTimeout(() => {
+          moto.classList.remove('show', 'riding');
+          monkey.classList.remove('show', 'on-moto');
+          princess.classList.remove('show', 'on-moto');
+          monkey.style.cssText = '';
+          princess.style.cssText = '';
+        }, 8500);
+      }, 36500);
+
+      // ── PHASE 6: Photo slider in the middle ──
+      setTimeout(() => {
+        carousel.classList.add('show');
+      }, 46000);
+
+      // ── PHASE 7: Final message ──
+      setTimeout(() => {
+        carousel.classList.remove('show');
+        setTimeout(() => {
+          finalMsg.classList.add('show');
+          tapHint.classList.add('show');
+        }, 600);
+      }, 62000);
+    }
+
+    // Walk monkey and princess across the screen together
+    function walkAcross(monkey, princess, duration, onComplete) {
+      const screenW = window.innerWidth;
+      const startPos = -150;
+      const endPos = screenW + 50;
+
+      monkey.style.transition = 'none';
+      princess.style.transition = 'none';
+      monkey.style.left = startPos + 'px';
+      princess.style.left = (startPos + 140) + 'px';
+      monkey.style.bottom = '20%';
+      princess.style.bottom = '20%';
+      monkey.style.top = '';
+      princess.style.top = '';
+      monkey.style.position = '';
+      princess.style.position = '';
+      monkey.style.transform = '';
+      princess.style.transform = '';
+
+      void monkey.offsetWidth;
+
+      monkey.style.transition = `left ${duration}ms linear`;
+      princess.style.transition = `left ${duration}ms linear`;
+
+      requestAnimationFrame(() => {
+        monkey.style.left = endPos + 'px';
+        princess.style.left = (endPos - 140) + 'px';
+      });
+
+      setTimeout(() => {
+        if (onComplete) onComplete();
+      }, duration + 300);
+    }
+
+    // Reset characters to center, standing
+    function resetToCenter(monkey, princess) {
+      const screenW = window.innerWidth;
+      const cx = screenW / 2;
+
+      monkey.style.transition = 'left 1s ease, bottom 1s ease';
+      princess.style.transition = 'left 1s ease, bottom 1s ease';
+      monkey.style.position = '';
+      princess.style.position = '';
+      monkey.style.top = '';
+      princess.style.top = '';
+      monkey.style.transform = '';
+      princess.style.transform = '';
+      monkey.style.left = (cx - 180) + 'px';
+      princess.style.left = (cx + 50) + 'px';
+      monkey.style.bottom = '20%';
+      princess.style.bottom = '20%';
+    }
+
+    function resetTarapotoScene() {
+      const title = document.getElementById('tarapotoTitle');
+      const narrative = document.getElementById('tarapotoNarrative');
+      const monkey = document.getElementById('tarapotoMonkey');
+      const princess = document.getElementById('tarapotoPrincess');
+      const monkeySpeech = document.getElementById('tarapotoMonkeySpeech');
+      const river = document.getElementById('tarapotoRiver');
+      const lagoon = document.getElementById('tarapotoLagoon');
+      const moto = document.getElementById('tarapotoMoto');
+      const carousel = document.getElementById('tarapotoCarousel');
+      const finalMsg = document.getElementById('tarapotoFinalMsg');
+      const tapHint = document.getElementById('tarapotoTapHint');
+
+      sceneTarapoto.classList.remove('phase-river', 'phase-lagoon', 'phase-rain');
+
+      if (title) { title.classList.remove('show'); title.style.opacity = '0'; void title.offsetWidth; title.style.animation = ''; }
+
+      if (narrative) {
+        narrative.classList.remove('show');
+        narrative.style.opacity = '0';
+        narrative.style.animation = 'none';
+        narrative.textContent = '';
+        void narrative.offsetWidth;
+        narrative.style.animation = '';
+      }
+
+      if (monkey) {
+        monkey.classList.remove('show', 'walking');
+        monkey.style.cssText = '';
+        monkey.style.position = '';
+        monkey.style.transition = 'none';
+        monkey.style.left = '-150px';
+        monkey.style.bottom = '20%';
+      }
+      if (monkeySpeech) {
+        monkeySpeech.classList.remove('show');
+        monkeySpeech.style.opacity = '';
+        monkeySpeech.textContent = '¡Vamos a la selva, mi amor! 🌿';
+      }
+
+      if (princess) {
+        princess.classList.remove('show', 'walking');
+        princess.style.cssText = '';
+        princess.style.position = '';
+        princess.style.transition = 'none';
+        princess.style.left = '-280px';
+        princess.style.bottom = '20%';
+      }
+
+      if (river) river.classList.remove('show');
+      if (lagoon) lagoon.classList.remove('show');
+      if (moto) { moto.classList.remove('show', 'riding'); moto.style.left = '-300px'; }
+
+      if (carousel) { carousel.classList.remove('show'); carousel.style.opacity = '0'; }
+      if (finalMsg) { finalMsg.classList.remove('show'); finalMsg.style.opacity = '0'; void finalMsg.offsetWidth; finalMsg.style.animation = ''; }
+      if (tapHint) { tapHint.classList.remove('show'); tapHint.style.opacity = '0'; }
+    }
+
+    // Tarapoto scene click to go back
+    sceneTarapoto.addEventListener('click', (e) => {
+      if (e.target.closest('.carousel-btn')) return;
+      if (!sceneTarapoto.classList.contains('visible')) return;
+      sceneTarapoto.classList.remove('visible');
+      setTimeout(() => {
+        resetTarapotoScene();
+        selectorScreen.classList.remove('hidden');
+      }, 900);
+    });
+
+    /* ===== TARAPOTO CAROUSEL ===== */
+    let tarapotoCarouselIndex = 0;
+    const tarapotoPhotos = [
+      { file: 'tpp/IMG-20260403-WA0462.jpg', caption: 'Nuestra aventura comienza 🌴' },
+      { file: 'tpp/PXL_20260402_114306795.jpg', caption: 'Explorando juntos 💚' },
+      { file: 'tpp/PXL_20260403_190824066.jpg', caption: 'Momentos mágicos ✨' },
+      { file: 'tpp/PXL_20260403_191014187.jpg', caption: 'Recuerdos eternos 🦜' },
+      { file: 'tpp/PXL_20260403_191016407.jpg', caption: 'La selva nos envuelve 🌿' },
+      { file: 'tpp/PXL_20260403_191628044.jpg', caption: 'Tu sonrisa en Tarapoto 💕' },
+      { file: 'tpp/PXL_20260403_220942265.jpg', caption: 'Aventureros del amor 🌺' },
+      { file: 'tpp/PXL_20260404_184901807.jpg', caption: 'Siempre contigo 💚' }
+    ];
+
+    function initTarapotoCarousel() {
+      const track = document.getElementById('carouselTrack');
+      const counter = document.getElementById('carouselCounter');
+      track.innerHTML = '';
+
+      tarapotoPhotos.forEach((photo, idx) => {
+        const slide = document.createElement('div');
+        slide.className = 'carousel-slide';
+        slide.innerHTML = `
+          <img src="${photo.file}" alt="${photo.caption}" loading="lazy" />
+          <div class="slide-caption">${photo.caption}</div>
+        `;
+        track.appendChild(slide);
+      });
+
+      counter.textContent = `1 / ${tarapotoPhotos.length}`;
+      tarapotoCarouselIndex = 0;
+      updateCarouselPosition();
+    }
+
+    function updateCarouselPosition() {
+      const track = document.getElementById('carouselTrack');
+      const counter = document.getElementById('carouselCounter');
+      track.style.transform = `translateX(-${tarapotoCarouselIndex * 100}%)`;
+      counter.textContent = `${tarapotoCarouselIndex + 1} / ${tarapotoPhotos.length}`;
+    }
+
+    document.getElementById('carouselNext').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (tarapotoCarouselIndex < tarapotoPhotos.length - 1) {
+        tarapotoCarouselIndex++;
+        updateCarouselPosition();
+      }
+    });
+
+    document.getElementById('carouselPrev').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (tarapotoCarouselIndex > 0) {
+        tarapotoCarouselIndex--;
+        updateCarouselPosition();
+      }
     });
 
     /* ===== FLOATING HEARTS ===== */
