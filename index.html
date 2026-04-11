@@ -1580,7 +1580,7 @@
       position: absolute; bottom: 22%; left: -420px;
       z-index: 12; opacity: 0;
       transition: opacity 1s ease;
-      width: 300px; height: 260px;
+      width: 230px; height: 200px;
     }
     .tarapoto-moto.show { opacity: 1; }
     .tarapoto-moto.riding {
@@ -1600,8 +1600,9 @@
     }
     /* Monkey driving — sits on forward seat, leans toward handlebars */
     .moto-rider.driver {
-      bottom: 136px; left: 112px;
-      transform: scale(0.72) rotate(-18deg);
+      bottom: 62px; left: 112px;
+      z-index: 22 !important;
+      transform: scale(1.2) rotate(-18deg);
       transform-origin: bottom center;
     }
     .moto-rider.driver .monkey-body { animation: motoDriverBounce .35s ease-in-out infinite; }
@@ -1615,8 +1616,8 @@
     .moto-rider.driver .m-leg.r { transform: rotate(30deg) !important; }
     /* Princess passenger — holds monkey from behind */
     .moto-rider.passenger {
-      bottom: 132px; left: 72px;
-      transform: scale(0.64) rotate(-6deg);
+      bottom: 58px; left: 72px;
+      transform: scale(1.05) rotate(-6deg);
       transform-origin: bottom center;
     }
     .moto-rider.passenger .princess {
