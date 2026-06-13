@@ -1217,13 +1217,6 @@
     .study-book::before { left:18px; }
     .study-book::after { right:18px; }
     @keyframes studyBookRead { 0%,100%{transform:translateX(-50%) skewY(0deg)} 50%{transform:translateX(-50%) skewY(-2deg)} }
-    .study-pencil {
-      position: absolute; left: 24%; bottom: 182px;
-      width: 92px; height: 12px; z-index: 8;
-      background: linear-gradient(90deg, #f7cb3d 0 68%, #f0d5b8 69% 82%, #46332d 83% 100%);
-      border: 3px solid #3d2522;
-      transform: rotate(-18deg);
-    }
     .study-princess-wrap {
       position: absolute; left: 50%; bottom: 156px; z-index: 7;
       transform: translateX(-50%) scale(.9);
@@ -2683,6 +2676,29 @@
       .monkey-container{transform:scale(1)}
       .princess-container{right:12%;transform:scale(1)}
       .princess-container.show{transform:scale(1)}
+      .study-desk-zone{width:100vw; height:clamp(290px,52vh,390px); bottom:10%}
+      .study-desk{left:66%; width:58vw; height:82px; bottom:74px}
+      .study-lamp{right:1%; bottom:108px; transform:scale(.82)}
+      .study-book{left:66%; bottom:158px; transform:translateX(-50%) scale(.86)}
+      .study-chair{left:calc(66% - 54px); bottom:68px; transform:scale(.86); transform-origin:50% 100%}
+      .study-princess-wrap{left:66%; bottom:140px; transform:translateX(-50%) scale(.74)}
+      .study-princess-wrap.show{animation:studyPrincessReadMobile 1.3s steps(3,end) infinite}
+      @keyframes studyPrincessReadMobile {
+        0%,100% { transform: translateX(-50%) scale(.74) translateY(0); }
+        50% { transform: translateX(-50%) scale(.74) translateY(-5px); }
+      }
+      .study-monkey{left:-150px; bottom:28px; transform:scale(1.02)}
+      .study-monkey.walking{animation:studyMonkeyEnterMobile 4.4s steps(18,end) forwards}
+      @keyframes studyMonkeyEnterMobile {
+        0% { left: -150px; bottom: 22px; transform: scale(1.02) translateY(0); }
+        42% { left: 5vw; bottom: 22px; transform: scale(1.02) translateY(-8px); }
+        78% { left: 0; bottom: 38px; transform: scale(1.02) translateY(0); }
+        100% { left: 0; bottom: 46px; transform: scale(1.02) translateY(-2px); }
+      }
+      .study-monkey.kissing{left:0; bottom:46px; animation:studyKissLeanMobile 1s steps(3,end) forwards}
+      @keyframes studyKissLeanMobile { to { transform: scale(1.02) translateX(12px) rotate(4deg); } }
+      .study-kiss{left:38vw; bottom:252px; font-size:2.3rem}
+      .study-monkey-love{font-size:.48rem; min-width:76px; top:-36px; padding:8px 10px}
       .moon{width:60px;height:60px}
       .stage{height:35%}
     }
@@ -2911,7 +2927,6 @@
       <div class="study-chair"></div>
       <div class="study-lamp"></div>
       <div class="study-desk"></div>
-      <div class="study-pencil"></div>
       <div class="study-book" aria-hidden="true"></div>
       <div class="study-kiss" id="studyKiss">😘</div>
 
