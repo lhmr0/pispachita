@@ -169,10 +169,17 @@
       box-shadow: 0 8px 32px rgba(0,180,100,.2), inset 0 0 20px rgba(0,200,120,.07);
     }
     .card-tarapoto:hover .selector-card-inner { border-color: rgba(0,220,140,.85); box-shadow: 0 16px 48px rgba(0,180,100,.5), 0 0 40px rgba(0,200,120,.2); }
+    .card-study .selector-card-inner {
+      background: linear-gradient(145deg, rgba(20,42,76,.74) 0%, rgba(80,34,70,.75) 100%);
+      border-color: rgba(110,210,255,.42);
+      box-shadow: 0 8px 32px rgba(0,130,220,.22), inset 0 0 22px rgba(255,220,120,.08);
+    }
+    .card-study:hover .selector-card-inner { border-color: rgba(255,220,110,.88); box-shadow: 0 16px 48px rgba(0,150,230,.42), 0 0 42px rgba(255,220,110,.22); }
 
     .card-valentine .selector-card-title { color: #ff80ab; text-shadow: 0 0 15px rgba(255,80,120,.5); }
     .card-womens .selector-card-title { color: #d580ff; text-shadow: 0 0 15px rgba(180,80,255,.5); }
     .card-tarapoto .selector-card-title { color: #80ffc8; text-shadow: 0 0 15px rgba(0,200,120,.5); }
+    .card-study .selector-card-title { color: #ffe37a; text-shadow: 0 0 16px rgba(255,220,90,.55); }
 
     .selector-card-date {
       font-family: 'Lora', serif;
@@ -185,6 +192,7 @@
     .card-valentine .selector-card-date { color: #ff4f8b; background: rgba(255,80,130,.12); border: 1px solid rgba(255,80,130,.3); }
     .card-womens .selector-card-date { color: #c87aff; background: rgba(180,80,255,.12); border: 1px solid rgba(180,80,255,.3); }
     .card-tarapoto .selector-card-date { color: #60ffaa; background: rgba(0,200,120,.12); border: 1px solid rgba(0,200,120,.3); }
+    .card-study .selector-card-date { color: #9fe8ff; background: rgba(110,210,255,.12); border: 1px solid rgba(110,210,255,.3); }
 
     /* Today's celebration highlight */
     .selector-card.today-highlight .selector-card-inner {
@@ -1101,6 +1109,246 @@
     }
     .flying-heart-delivery.fly {
       animation:heartFlyToPrincess 1.8s ease-in-out forwards;
+    }
+
+    /* ===========================================================
+       STUDY CHAPTER SCENE
+    =========================================================== */
+    .scene-study {
+      position: fixed; inset: 0; z-index: 99;
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 1s ease, visibility 1s ease;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(9,18,38,.95) 0%, rgba(22,34,58,.96) 54%, rgba(61,42,45,.98) 100%);
+      font-family: 'Press Start 2P', cursive;
+    }
+    .scene-study.visible { opacity: 1; visibility: visible; pointer-events: auto; }
+    .study-room-grid {
+      position: absolute; inset: 0; opacity: .28;
+      background-image:
+        linear-gradient(rgba(255,230,140,.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(120,210,255,.12) 1px, transparent 1px);
+      background-size: 32px 32px;
+      image-rendering: pixelated;
+    }
+    .study-window {
+      position: absolute; right: 9%; top: 10%;
+      width: clamp(120px, 18vw, 190px); height: clamp(96px, 14vw, 150px);
+      border: 8px solid #5d3b54;
+      background: linear-gradient(180deg, #0b1630 0%, #152b56 100%);
+      box-shadow: inset 0 0 0 4px #203f78, 0 10px 0 rgba(0,0,0,.22);
+    }
+    .study-window::before, .study-window::after {
+      content:''; position:absolute; background:#5d3b54;
+    }
+    .study-window::before { left:50%; top:0; bottom:0; width:6px; transform:translateX(-50%); }
+    .study-window::after { left:0; right:0; top:50%; height:6px; transform:translateY(-50%); }
+    .study-star {
+      position: absolute; width: 6px; height: 6px; background: #ffe37a;
+      box-shadow: 0 0 12px #ffe37a;
+      animation: studyBlink 1.8s steps(2,end) infinite;
+    }
+    .study-star.s1 { left: 18%; top: 22%; }
+    .study-star.s2 { left: 70%; top: 16%; animation-delay: -.6s; }
+    .study-star.s3 { left: 82%; top: 64%; animation-delay: -1.1s; }
+    @keyframes studyBlink { 0%,100%{opacity:.35} 50%{opacity:1} }
+    .study-title {
+      position: absolute; left: 50%; top: 7%;
+      transform: translate(-50%, -20px);
+      width: min(92vw, 760px);
+      color: #ffe37a;
+      font-size: clamp(.8rem, 2.5vw, 1.35rem);
+      line-height: 1.7;
+      text-align: center;
+      text-shadow: 0 0 18px rgba(255,220,90,.72), 4px 4px 0 rgba(0,0,0,.35);
+      opacity: 0;
+    }
+    .study-title.show { animation: studyTitleIn .9s steps(8,end) forwards; }
+    @keyframes studyTitleIn { to { opacity: 1; transform: translate(-50%, 0); } }
+    .study-desk-zone {
+      position: absolute; left: 50%; bottom: 13%;
+      width: min(92vw, 760px); height: clamp(270px, 50vh, 430px);
+      transform: translateX(-50%);
+    }
+    .study-lamp {
+      position: absolute; right: 18%; bottom: 122px;
+      width: 76px; height: 120px; z-index: 5;
+      filter: drop-shadow(0 0 16px rgba(255,216,100,.8));
+    }
+    .study-lamp::before {
+      content:''; position:absolute; left:30px; bottom:0; width:10px; height:76px;
+      background:#8f6f3b; box-shadow: inset 0 0 0 2px #4d342d;
+    }
+    .study-lamp::after {
+      content:''; position:absolute; left:0; top:4px; width:72px; height:38px;
+      background:#ffd761; clip-path: polygon(22% 0, 78% 0, 100% 100%, 0 100%);
+      box-shadow: 0 42px 70px rgba(255,210,90,.38);
+    }
+    .study-desk {
+      position: absolute; left: 50%; bottom: 78px;
+      width: min(86vw, 620px); height: 92px;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, #9a623d 0%, #6b3d2d 100%);
+      border: 6px solid #3d2522;
+      box-shadow: 0 10px 0 #2a1918, inset 0 10px 0 rgba(255,220,160,.18);
+      image-rendering: pixelated;
+      z-index: 4;
+    }
+    .study-desk::before, .study-desk::after {
+      content:''; position:absolute; bottom:-92px; width: 32px; height: 92px;
+      background:#4c2e28; border: 5px solid #2a1918;
+    }
+    .study-desk::before { left: 12%; }
+    .study-desk::after { right: 12%; }
+    .study-book {
+      position: absolute; left: 50%; bottom: 174px;
+      width: 152px; height: 62px; transform: translateX(-50%);
+      background: linear-gradient(90deg, #fff3bc 0 48%, #d85f7d 49% 51%, #fff3bc 52% 100%);
+      border: 5px solid #563349;
+      box-shadow: 0 8px 0 rgba(0,0,0,.22);
+      z-index: 8;
+      animation: studyBookRead 1.8s steps(2,end) infinite;
+    }
+    .study-book::before, .study-book::after {
+      content:''; position:absolute; top:12px; width:42px; height:4px; background:#8b6d61;
+      box-shadow: 0 12px 0 #8b6d61, 0 24px 0 #8b6d61;
+    }
+    .study-book::before { left:18px; }
+    .study-book::after { right:18px; }
+    @keyframes studyBookRead { 0%,100%{transform:translateX(-50%) skewY(0deg)} 50%{transform:translateX(-50%) skewY(-2deg)} }
+    .study-pencil {
+      position: absolute; left: 24%; bottom: 182px;
+      width: 92px; height: 12px; z-index: 8;
+      background: linear-gradient(90deg, #f7cb3d 0 68%, #f0d5b8 69% 82%, #46332d 83% 100%);
+      border: 3px solid #3d2522;
+      transform: rotate(-18deg);
+    }
+    .study-princess-wrap {
+      position: absolute; left: 50%; bottom: 156px; z-index: 7;
+      transform: translateX(-50%) scale(.9);
+      opacity: 0;
+    }
+    .study-princess-wrap.show { opacity: 1; animation: studyPrincessRead 1.3s steps(3,end) infinite; }
+    @keyframes studyPrincessRead {
+      0%,100% { transform: translateX(-50%) scale(.9) translateY(0); }
+      50% { transform: translateX(-50%) scale(.9) translateY(-5px); }
+    }
+    .study-princess-wrap .princess-arm.left { transform: rotate(30deg) translateY(10px) !important; }
+    .study-princess-wrap .princess-arm.right { transform: rotate(-30deg) translateY(10px) !important; }
+    .study-chair {
+      position: absolute; left: calc(50% - 54px); bottom: 72px;
+      width: 108px; height: 126px; z-index: 3;
+      border: 6px solid #342544; border-bottom: none;
+      background: #624071;
+      box-shadow: inset 0 12px 0 rgba(255,255,255,.08);
+    }
+    .study-monkey {
+      position: absolute; left: -180px; bottom: 20px; z-index: 9;
+      opacity: 0; transform: scale(1.24);
+      transform-origin: 50% 100%;
+    }
+    .study-monkey.show { opacity: 1; }
+    .study-monkey.walking {
+      animation: studyMonkeyEnter 4.6s steps(18,end) forwards;
+    }
+    @keyframes studyMonkeyEnter {
+      0% { left: -200px; bottom: 18px; transform: scale(1.24) translateY(0); }
+      38% { left: 10%; bottom: 18px; transform: scale(1.24) translateY(-8px); }
+      72% { left: calc(50% - 560px); bottom: 32px; transform: scale(1.24) translateY(0); }
+      100% { left: calc(50% - 550px); bottom: 46px; transform: scale(1.24) translateY(-2px); }
+    }
+    .study-monkey.walking .monkey-body { animation: monkeyBounce .35s ease-in-out infinite; }
+    .study-monkey.kissing { left: calc(50% - 550px); bottom: 46px; animation: studyKissLean 1s steps(3,end) forwards; }
+    @keyframes studyKissLean { to { transform: scale(1.24) translateX(28px) rotate(4deg); } }
+    .study-monkey-love {
+      position: absolute; left: 50%; top: -42px;
+      transform: translateX(-50%) translateY(12px);
+      min-width: 92px;
+      padding: 10px 12px;
+      border: 3px solid rgba(255,130,170,.72);
+      background: #ffe6f2;
+      color: #6b1537;
+      border-radius: 12px;
+      font-family: 'Press Start 2P', cursive;
+      font-size: .55rem;
+      line-height: 1.5;
+      text-align: center;
+      box-shadow: 0 6px 0 rgba(0,0,0,.22), 0 0 20px rgba(255,130,170,.28);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .35s ease, transform .35s ease;
+      z-index: 18;
+    }
+    .study-monkey-love::after {
+      content:''; position:absolute; left:50%; bottom:-8px;
+      width:12px; height:12px; transform:translateX(-50%) rotate(45deg);
+      background:#ffe6f2;
+      border-right:3px solid rgba(255,130,170,.72);
+      border-bottom:3px solid rgba(255,130,170,.72);
+    }
+    .study-monkey-love.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .study-kiss {
+      position: absolute; left: calc(50% - 162px); bottom: 282px;
+      color: #ff86aa; font-size: 2.8rem;
+      text-shadow: 0 0 18px rgba(255,130,170,.9);
+      opacity: 0; z-index: 12;
+      font-family: 'Dancing Script', cursive;
+    }
+    .study-kiss.show { animation: studyKissPop 1.3s ease forwards; }
+    @keyframes studyKissPop {
+      0% { opacity: 0; transform: scale(.2) translateY(16px); }
+      35% { opacity: 1; transform: scale(1.25) translateY(0); }
+      100% { opacity: 0; transform: scale(1.8) translateY(-44px); }
+    }
+    .study-message-panel {
+      position: absolute; inset: 0; z-index: 30;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 20px; padding: 28px;
+      background: rgba(8,13,28,.9);
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity .9s ease, visibility .9s ease;
+    }
+    .study-message-panel.show { opacity: 1; visibility: visible; pointer-events: auto; }
+    .study-message-panel h3 {
+      color: #ffe37a;
+      font-size: clamp(.8rem, 3vw, 1.45rem);
+      text-align: center; line-height: 1.8;
+      text-shadow: 0 0 20px rgba(255,220,90,.62);
+    }
+    .study-message-panel p {
+      max-width: 760px;
+      color: #dff8ff;
+      font-family: 'Lora', serif;
+      font-size: clamp(1rem, 2.8vw, 1.45rem);
+      line-height: 1.75;
+      text-align: center;
+    }
+    .study-message-panel .study-pride {
+      color: #ffb7cf;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.6rem, 5vw, 3rem);
+      line-height: 1.15;
+    }
+    .study-photos {
+      background: rgba(8, 13, 28, .95);
+    }
+    .study-photos .photos-title { color: #ffe37a; text-shadow: 0 0 24px rgba(255,220,90,.55); }
+    .study-photos .selector-photo-frame {
+      background: linear-gradient(145deg, rgba(255,230,120,.18), rgba(110,210,255,.12));
+      border-color: rgba(255,220,110,.54);
+      box-shadow: 0 14px 52px rgba(0,130,220,.28), 0 4px 18px rgba(0,0,0,.55), inset 0 0 28px rgba(255,220,110,.1);
+    }
+    .study-photos .selector-photo-caption { color: rgba(230,248,255,.86); }
+    .study-photos .photos-btn {
+      background: linear-gradient(135deg, rgba(255,210,90,.45), rgba(80,160,210,.5));
+      border-color: rgba(255,220,110,.58);
+    }
+    .study-photos .photos-counter { color: rgba(230,248,255,.76); }
+    .study-photos .photos-back-btn {
+      color: #fff7c5;
+      background: linear-gradient(135deg, rgba(78,57,104,.76), rgba(22,70,100,.76));
+      border-color: rgba(255,220,110,.58);
     }
 
     /* ===========================================================
@@ -2528,6 +2776,13 @@
           <div class="selector-card-date">Aventura en la selva</div>
         </div>
       </button>
+      <button class="selector-card card-study" id="btnStudy">
+        <div class="selector-card-inner">
+          <div class="selector-card-emoji">📚</div>
+          <div class="selector-card-title">pispachita<br>estudiosa</div>
+          <div class="selector-card-date">Orgullo y &aacute;nimo</div>
+        </div>
+      </button>
     </div>
   </section>
 
@@ -2639,6 +2894,96 @@
         <div class="m-leg r"><div class="m-foot"></div></div>
         <div class="m-tail"></div>
       </div>
+    </div>
+  </section>
+
+  <!-- ===== STUDY CHAPTER SCENE ===== -->
+  <section class="scene-study" id="sceneStudy">
+    <div class="study-room-grid"></div>
+    <div class="study-window">
+      <span class="study-star s1"></span>
+      <span class="study-star s2"></span>
+      <span class="study-star s3"></span>
+    </div>
+    <div class="study-title" id="studyTitle">pispachita estudiosa</div>
+
+    <div class="study-desk-zone">
+      <div class="study-chair"></div>
+      <div class="study-lamp"></div>
+      <div class="study-desk"></div>
+      <div class="study-pencil"></div>
+      <div class="study-book" aria-hidden="true"></div>
+      <div class="study-kiss" id="studyKiss">😘</div>
+
+      <div class="study-princess-wrap" id="studyPrincess">
+        <div class="princess" style="position:relative;">
+          <div class="princess-crown">
+            <div class="princess-crown-base"></div>
+            <div class="princess-crown-point"></div>
+            <div class="princess-crown-point"></div>
+            <div class="princess-crown-point"></div>
+            <div class="princess-crown-gem"></div>
+          </div>
+          <div class="princess-hair-top"></div>
+          <div class="princess-hair-side-l"></div>
+          <div class="princess-hair-side-r"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-curl"></div>
+          <div class="princess-head">
+            <div class="princess-eyelash left"></div>
+            <div class="princess-eyelash right"></div>
+            <div class="princess-eye left"></div>
+            <div class="princess-eye right"></div>
+            <div class="princess-blush left"></div>
+            <div class="princess-blush right"></div>
+            <div class="princess-mouth"></div>
+            <div class="princess-smile"></div>
+          </div>
+          <div class="princess-arm left"></div>
+          <div class="princess-arm right"></div>
+          <div class="princess-dress-top"></div>
+          <div class="princess-dress-bottom">
+            <div class="princess-dress-detail"></div>
+            <div class="princess-dress-sparkle">*</div>
+            <div class="princess-dress-sparkle">*</div>
+            <div class="princess-dress-sparkle">*</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="study-monkey" id="studyMonkey">
+        <div class="study-monkey-love" id="studyMonkeyLove">te amo</div>
+        <div class="monkey-body">
+          <div class="m-head">
+            <div class="m-ear l"></div>
+            <div class="m-ear r"></div>
+            <div class="m-face">
+              <div class="m-eye l"></div>
+              <div class="m-eye r"></div>
+              <div class="m-mouth"></div>
+            </div>
+          </div>
+          <div class="m-torso"><div class="m-belly"></div></div>
+          <div class="m-arm l"><div class="m-hand"></div></div>
+          <div class="m-arm r"><div class="m-hand"></div></div>
+          <div class="m-leg l"><div class="m-foot"></div></div>
+          <div class="m-leg r"><div class="m-foot"></div></div>
+          <div class="m-tail"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="study-message-panel" id="studyMessagePanel">
+      <h3>Mi moticienta</h3>
+      <p>Estoy orgulloso de ti, de tu esfuerzo, de tu disciplina y de esa mente hermosa que sigue creciendo.</p>
+      <div class="study-pride">Sigue brillando, mi pispachita estudiosa.</div>
+      <p>Tu monito cree en ti con todo el coraz&oacute;n.</p>
     </div>
   </section>
 
@@ -3316,6 +3661,42 @@
     <button class="photos-back-btn" id="photosBackBtn">🏠 Volver al menú</button>
   </div>
 
+  <div class="tarapoto-photos study-photos" id="studyPhotos">
+    <div class="photos-title">Fotos de mi pispachita</div>
+    <div class="photos-slides">
+      <div class="photo-slide active" id="studyPhotoSlide1">
+        <div class="selector-photo-frame">
+          <img src="lo/PXL_20260404_181343915.jpg" alt="Recuerdo de mi pispachita" />
+        </div>
+        <p class="selector-photo-caption">Siempre orgulloso de ti</p>
+      </div>
+      <div class="photo-slide" id="studyPhotoSlide2">
+        <div class="selector-photo-frame">
+          <img src="lo/IMG-20260427-WA0098.jpg" alt="Recuerdo bonito" />
+        </div>
+        <p class="selector-photo-caption">Tu esfuerzo me inspira</p>
+      </div>
+      <div class="photo-slide" id="studyPhotoSlide3">
+        <div class="selector-photo-frame">
+          <img src="lo/PXL_20260503_133845208.jpg" alt="Momento especial" />
+        </div>
+        <p class="selector-photo-caption">Mi moticienta brillante</p>
+      </div>
+      <div class="photo-slide" id="studyPhotoSlide4">
+        <div class="selector-photo-frame">
+          <img src="lo/PXL_20260516_214530313.jpg" alt="Foto favorita" />
+        </div>
+        <p class="selector-photo-caption">Te admiro muchisimo</p>
+      </div>
+    </div>
+    <div class="photos-nav">
+      <button class="photos-btn" id="studyPhotosPrev">&lt;</button>
+      <button class="photos-btn" id="studyPhotosNext">&gt;</button>
+    </div>
+    <div class="photos-counter" id="studyPhotosCounter">1 / 4</div>
+    <button class="photos-back-btn" id="studyPhotosBackBtn">Volver al menu</button>
+  </div>
+
   <!-- ===== SCREEN 3: CONTENT ===== -->
   <section class="content" id="content">
     <div class="content-decor" aria-hidden="true">
@@ -3417,6 +3798,7 @@
     /* ===== SELECTOR SCREEN LOGIC ===== */
     const selectorScreen  = document.getElementById('selectorScreen');
     const sceneWomens     = document.getElementById('sceneWomens');
+    const sceneStudy      = document.getElementById('sceneStudy');
     const cover           = document.getElementById('cover');
 
     // Highlight today's occasion on the selector
@@ -3478,6 +3860,15 @@
         resetTarapotoScene();
         sceneTarapoto.classList.add('visible');
         startTarapotoScene();
+      }, 600);
+    });
+
+    document.getElementById('btnStudy').addEventListener('click', () => {
+      hideSelector();
+      setTimeout(() => {
+        resetStudyScene();
+        sceneStudy.classList.add('visible');
+        startStudyScene();
       }, 600);
     });
 
@@ -3887,6 +4278,111 @@
           spawnFloatingHearts();
         }, 250);
       }, 1000);
+    });
+
+    /* ===== STUDY CHAPTER SCENE ===== */
+    let studyPhotosIndex = 0;
+    const totalStudyPhotos = 4;
+    let studyTimers = [];
+
+    function scheduleStudy(fn, delay) {
+      const timer = setTimeout(fn, delay);
+      studyTimers.push(timer);
+      return timer;
+    }
+
+    function startStudyScene() {
+      const title = document.getElementById('studyTitle');
+      const princess = document.getElementById('studyPrincess');
+      const monkey = document.getElementById('studyMonkey');
+      const love = document.getElementById('studyMonkeyLove');
+      const kiss = document.getElementById('studyKiss');
+      const panel = document.getElementById('studyMessagePanel');
+      const photos = document.getElementById('studyPhotos');
+
+      scheduleStudy(() => title.classList.add('show'), 350);
+      scheduleStudy(() => princess.classList.add('show'), 900);
+      scheduleStudy(() => {
+        monkey.classList.add('show', 'walking');
+      }, 2600);
+      scheduleStudy(() => {
+        monkey.classList.remove('walking');
+        monkey.classList.add('kissing');
+        kiss.classList.add('show');
+        love.classList.add('show');
+      }, 7000);
+      scheduleStudy(() => {
+        love.classList.remove('show');
+      }, 8500);
+      scheduleStudy(() => {
+        panel.classList.add('show');
+      }, 8800);
+      scheduleStudy(() => {
+        photos.classList.add('visible');
+        studyPhotosIndex = 0;
+        showStudyPhotoSlide(0);
+      }, 15000);
+    }
+
+    function resetStudyScene() {
+      studyTimers.forEach(clearTimeout);
+      studyTimers = [];
+
+      const title = document.getElementById('studyTitle');
+      const princess = document.getElementById('studyPrincess');
+      const monkey = document.getElementById('studyMonkey');
+      const love = document.getElementById('studyMonkeyLove');
+      const kiss = document.getElementById('studyKiss');
+      const panel = document.getElementById('studyMessagePanel');
+      const photos = document.getElementById('studyPhotos');
+
+      if (title) { title.classList.remove('show'); title.style.animation = 'none'; void title.offsetWidth; title.style.animation = ''; }
+      if (princess) princess.classList.remove('show');
+      if (monkey) monkey.classList.remove('show', 'walking', 'kissing');
+      if (love) love.classList.remove('show');
+      if (kiss) { kiss.classList.remove('show'); kiss.style.animation = 'none'; void kiss.offsetWidth; kiss.style.animation = ''; }
+      if (panel) panel.classList.remove('show');
+      if (photos) photos.classList.remove('visible');
+      showStudyPhotoSlide(0);
+    }
+
+    function showStudyPhotoSlide(idx) {
+      for (let i = 1; i <= totalStudyPhotos; i++) {
+        const slide = document.getElementById('studyPhotoSlide' + i);
+        if (slide) {
+          slide.classList.toggle('active', i === idx + 1);
+          if (i === idx + 1) {
+            slide.style.animation = 'none';
+            void slide.offsetWidth;
+            slide.style.animation = '';
+          }
+        }
+      }
+      const counter = document.getElementById('studyPhotosCounter');
+      if (counter) counter.textContent = `${idx + 1} / ${totalStudyPhotos}`;
+    }
+
+    document.getElementById('studyPhotosNext').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (studyPhotosIndex < totalStudyPhotos - 1) {
+        studyPhotosIndex++;
+        showStudyPhotoSlide(studyPhotosIndex);
+      }
+    });
+
+    document.getElementById('studyPhotosPrev').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (studyPhotosIndex > 0) {
+        studyPhotosIndex--;
+        showStudyPhotoSlide(studyPhotosIndex);
+      }
+    });
+
+    document.getElementById('studyPhotosBackBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      resetStudyScene();
+      sceneStudy.classList.remove('visible');
+      selectorScreen.classList.remove('hidden');
     });
 
     /* ===== TARAPOTO SCENE ===== */
