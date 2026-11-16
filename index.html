@@ -7,2736 +7,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Press+Start+2P&display=swap" rel="stylesheet" />
-  <style>
-    /* ===== RESET & BASE ===== */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Lora', Georgia, serif; overflow: hidden; min-height: 100vh; color: #4a2040; }
-
-    .stars-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-
-    /* ===== PANTALLA DE SELECCIÓN ===== */
-    .selector-screen {
-      position: fixed; inset: 0; z-index: 200;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: linear-gradient(135deg, rgba(13,0,21,.97) 0%, rgba(26,10,46,.97) 40%, rgba(13,0,21,.97) 100%);
-      transition: opacity 1s ease, visibility 1s ease;
-      overflow: hidden;
-    }
-    .selector-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-
-    .selector-title {
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(1.8rem, 5vw, 3rem);
-      color: #f9c0d8;
-      text-align: center;
-      margin-bottom: 8px;
-      animation: fadeInUp 1s ease both;
-      text-shadow: none;
-    }
-    body.is-valentines-day .selector-title {
-      text-shadow: 0 0 30px rgba(255,150,200,.5), 0 0 60px rgba(255,80,130,.3);
-    }
-    .selector-subtitle {
-      font-family: 'Lora', serif;
-      font-size: clamp(0.8rem, 2vw, 1rem);
-      color: rgba(255,200,230,.55);
-      text-align: center;
-      margin-bottom: 40px;
-      animation: fadeInUp 1s ease .2s both;
-      letter-spacing: 1px;
-    }
-
-    .selector-days-badge {
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,182,193,.3);
-      border-radius: 50px;
-      padding: 10px 26px;
-      margin-bottom: 50px;
-      display: flex; align-items: center; gap: 10px;
-      animation: fadeInUp 1s ease .4s both;
-      backdrop-filter: blur(6px);
-    }
-    .selector-days-badge .badge-icon { font-size: 1.3rem; animation: heartbeat 1.2s infinite; }
-    .selector-days-badge .badge-text {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.1rem;
-      color: #ffb3cc;
-    }
-    .selector-days-badge .badge-num {
-      font-family: 'Press Start 2P', cursive;
-      font-size: .85rem;
-      color: #ff4f8b;
-    }
-
-    /* Photo in selector */
-    .selector-photo {
-      animation: fadeInUp 1s ease .5s both;
-      margin-bottom: 36px;
-      text-align: center;
-    }
-    .selector-photo-frame {
-      display: inline-block;
-      padding: 7px;
-      background: linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-      border-radius: 18px;
-      border: 1.5px solid rgba(255,182,193,.35);
-      box-shadow:
-        0 8px 32px rgba(233,30,99,.25),
-        0 2px 8px rgba(0,0,0,.35),
-        inset 0 0 18px rgba(255,130,170,.08);
-      transform: rotate(-2deg);
-      transition: transform .5s cubic-bezier(.34,1.56,.64,1), box-shadow .5s;
-      backdrop-filter: blur(6px);
-    }
-    .selector-photo-frame:hover {
-      transform: rotate(0deg) scale(1.03);
-      box-shadow: 0 16px 48px rgba(233,30,99,.4), 0 4px 16px rgba(0,0,0,.4),
-                  inset 0 0 24px rgba(255,130,170,.14);
-    }
-    .selector-photo-frame img {
-      display: block;
-      width: clamp(130px, 30vw, 200px);
-      height: clamp(130px, 30vw, 200px);
-      object-fit: cover;
-      border-radius: 12px;
-    }
-    .selector-photo-caption {
-      margin-top: 10px;
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(.85rem, 2.2vw, 1.05rem);
-      color: rgba(255,182,193,.75);
-      letter-spacing: .5px;
-    }
-
-    .selector-cards {
-      display: flex; gap: 28px; flex-wrap: wrap; justify-content: center;
-      animation: fadeInUp 1s ease .7s both;
-    }
-
-    .selector-card {
-      cursor: pointer;
-      border: none;
-      background: none;
-      padding: 0;
-      width: clamp(150px, 38vw, 220px);
-      border-radius: 24px;
-      overflow: hidden;
-      transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s;
-      position: relative;
-    }
-    .selector-card:hover { transform: translateY(-8px) scale(1.04); }
-    .selector-card:active { transform: scale(.97); }
-
-    .selector-card-inner {
-      border-radius: 24px;
-      padding: 36px 24px 28px;
-      border: 2px solid transparent;
-      display: flex; flex-direction: column; align-items: center; gap: 14px;
-      transition: border-color .3s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Valentine card */
-    .card-valentine .selector-card-inner {
-      background: linear-gradient(145deg, rgba(100,10,40,.7) 0%, rgba(60,0,30,.75) 100%);
-      border-color: rgba(255,80,130,.45);
-      box-shadow: 0 8px 32px rgba(233,30,99,.25), inset 0 0 20px rgba(255,80,130,.08);
-    }
-    .card-valentine:hover .selector-card-inner { border-color: rgba(255,80,130,.85); box-shadow: 0 16px 48px rgba(233,30,99,.5), 0 0 40px rgba(255,80,130,.2); }
-
-    /* Womens day card */
-    .card-womens .selector-card-inner {
-      background: linear-gradient(145deg, rgba(50,0,80,.7) 0%, rgba(30,0,60,.75) 100%);
-      border-color: rgba(180,80,255,.4);
-      box-shadow: 0 8px 32px rgba(150,0,255,.2), inset 0 0 20px rgba(180,80,255,.07);
-    }
-    .card-womens:hover .selector-card-inner { border-color: rgba(200,100,255,.85); box-shadow: 0 16px 48px rgba(150,0,255,.5), 0 0 40px rgba(200,100,255,.2); }
-
-    .selector-card-emoji { font-size: clamp(2.8rem, 7vw, 4rem); line-height: 1; }
-    .selector-card-title {
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(1.1rem, 3vw, 1.4rem);
-      font-weight: 700;
-      line-height: 1.3;
-      text-align: center;
-    }
-    /* Tarapoto card */
-    .card-tarapoto .selector-card-inner {
-      background: linear-gradient(145deg, rgba(0,60,40,.7) 0%, rgba(0,40,30,.75) 100%);
-      border-color: rgba(0,200,120,.4);
-      box-shadow: 0 8px 32px rgba(0,180,100,.2), inset 0 0 20px rgba(0,200,120,.07);
-    }
-    .card-tarapoto:hover .selector-card-inner { border-color: rgba(0,220,140,.85); box-shadow: 0 16px 48px rgba(0,180,100,.5), 0 0 40px rgba(0,200,120,.2); }
-    .card-study .selector-card-inner {
-      background: linear-gradient(145deg, rgba(20,42,76,.74) 0%, rgba(80,34,70,.75) 100%);
-      border-color: rgba(110,210,255,.42);
-      box-shadow: 0 8px 32px rgba(0,130,220,.22), inset 0 0 22px rgba(255,220,120,.08);
-    }
-    .card-study:hover .selector-card-inner { border-color: rgba(255,220,110,.88); box-shadow: 0 16px 48px rgba(0,150,230,.42), 0 0 42px rgba(255,220,110,.22); }
-
-    .card-valentine .selector-card-title { color: #ff80ab; text-shadow: 0 0 15px rgba(255,80,120,.5); }
-    .card-womens .selector-card-title { color: #d580ff; text-shadow: 0 0 15px rgba(180,80,255,.5); }
-    .card-tarapoto .selector-card-title { color: #80ffc8; text-shadow: 0 0 15px rgba(0,200,120,.5); }
-    .card-study .selector-card-title { color: #ffe37a; text-shadow: 0 0 16px rgba(255,220,90,.55); }
-
-    .selector-card-date {
-      font-family: 'Lora', serif;
-      font-size: .72rem;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 4px 14px;
-      border-radius: 20px;
-    }
-    .card-valentine .selector-card-date { color: #ff4f8b; background: rgba(255,80,130,.12); border: 1px solid rgba(255,80,130,.3); }
-    .card-womens .selector-card-date { color: #c87aff; background: rgba(180,80,255,.12); border: 1px solid rgba(180,80,255,.3); }
-    .card-tarapoto .selector-card-date { color: #60ffaa; background: rgba(0,200,120,.12); border: 1px solid rgba(0,200,120,.3); }
-    .card-study .selector-card-date { color: #9fe8ff; background: rgba(110,210,255,.12); border: 1px solid rgba(110,210,255,.3); }
-
-    /* Today's celebration highlight */
-    .selector-card.today-highlight .selector-card-inner {
-      animation: cardGlow 2s ease-in-out infinite;
-    }
-    .card-valentine.today-highlight .selector-card-inner { animation: cardGlowValentine 2s ease-in-out infinite; }
-    .card-womens.today-highlight .selector-card-inner   { animation: cardGlowWomens 2s ease-in-out infinite; }
-    @keyframes cardGlowValentine {
-      0%,100% { box-shadow: 0 8px 32px rgba(233,30,99,.25), inset 0 0 20px rgba(255,80,130,.08); border-color: rgba(255,80,130,.45); }
-      50% { box-shadow: 0 16px 52px rgba(233,30,99,.65), 0 0 50px rgba(255,80,130,.35); border-color: rgba(255,80,130,.9); }
-    }
-    @keyframes cardGlowWomens {
-      0%,100% { box-shadow: 0 8px 32px rgba(150,0,255,.2), inset 0 0 20px rgba(180,80,255,.07); border-color: rgba(180,80,255,.4); }
-      50% { box-shadow: 0 16px 52px rgba(150,0,255,.65), 0 0 50px rgba(200,100,255,.35); border-color: rgba(200,100,255,.9); }
-    }
-
-    .selector-card-today-badge {
-      position: absolute; top: -10px; right: -10px;
-      background: linear-gradient(135deg, #ffd700, #ff9800);
-      color: #3a1a00;
-      font-family: 'Lora', serif;
-      font-size: .6rem;
-      font-weight: 700;
-      letter-spacing: .5px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      box-shadow: 0 2px 10px rgba(255,180,0,.5);
-      white-space: nowrap;
-      z-index: 5;
-      animation: badgePop .5s cubic-bezier(.34,1.56,.64,1) both;
-    }
-    @keyframes badgePop { 0%{transform:scale(0) rotate(-10deg)} 100%{transform:scale(1) rotate(0)} }
-
-    /* Floating particles on selector */
-    .sel-float {
-      position: absolute; pointer-events: none; font-size: clamp(.9rem, 2.2vw, 1.4rem);
-      opacity: .45; animation: coverFloatHeart 8.5s ease-in-out infinite;
-    }
-    .sel-float.f1 { left:6%; top:72%; animation-delay:-1s; }
-    .sel-float.f2 { left:18%; top:18%; animation-delay:-3.5s; }
-    .sel-float.f3 { right:8%; top:65%; animation-delay:-2s; }
-    .sel-float.f4 { right:20%; top:20%; animation-delay:-5s; }
-    .sel-float.f5 { left:50%; top:88%; animation-delay:-4s; }
-    .sel-float.f6 { left:32%; top:8%;  animation-delay:-6s; }
-    .sel-float.f7 { right:35%; top:82%; animation-delay:-1.5s; }
-    .sel-float.f8 { left:78%; top:38%; animation-delay:-3s; }
-    .sel-float.f9 { left:10%; top:45%; animation-delay:-2.5s; }
-
-    @keyframes selectorShootingStar {
-      0%   { opacity:0; transform:translate(0,0) rotate(-25deg); }
-      8%   { opacity:1; }
-      35%  { opacity:0; transform:translate(145vw,45vh) rotate(-25deg); }
-      100% { opacity:0; transform:translate(145vw,45vh) rotate(-25deg); }
-    }
-    .sel-shooting-star {
-      position:absolute; width:120px; height:2px;
-      background:linear-gradient(90deg,rgba(255,255,255,.9),rgba(255,255,255,0));
-      border-radius:2px; filter:drop-shadow(0 0 8px #fff8);
-      transform:rotate(-25deg); opacity:0; z-index:0;
-      animation: selectorShootingStar 7s linear infinite;
-    }
-    .sel-shooting-star.ss1 { top:12%; left:-20%; animation-delay:0s; }
-    .sel-shooting-star.ss2 { top:60%; left:-30%; animation-delay:3.5s; }
-    .sel-shooting-star::before {
-      content:''; position:absolute; right:0; top:-2px;
-      width:7px; height:7px; border-radius:50%;
-      background:#fff; box-shadow:0 0 10px #fff;
-    }
-
-    /* ===== COVER ===== */
-    .cover {
-      position: fixed; inset: 0;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: linear-gradient(135deg, #1a0a1e 0%, #2d1135 40%, #1a0a1e 100%);
-      z-index: 100; transition: opacity 1.2s ease, visibility 1.2s ease;
-    }
-    .cover.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-    .cover::before, .cover::after {
-      content: ''; position: absolute; border-radius: 50%;
-      background: rgba(255,130,170,.06); animation: floatBubble 8s ease-in-out infinite;
-    }
-    .cover::before { width: 300px; height: 300px; top: 10%; left: -5%; animation-delay: -2s; }
-    .cover::after { width: 200px; height: 200px; bottom: 15%; right: -3%; animation-delay: -5s; }
-    @keyframes floatBubble { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-30px) scale(1.08)} }
-
-    .heart-wrapper { position: relative; cursor: pointer; -webkit-tap-highlight-color: transparent; z-index: 2; margin-top: 120px; }
-    .heart {
-      width: 140px; height: 140px;
-      animation: heartbeat 1.2s ease-in-out infinite;
-      filter: drop-shadow(0 0 28px rgba(255,80,120,.6));
-    }
-    .heart:hover { filter: drop-shadow(0 0 40px rgba(255,80,120,.9)); }
-    @keyframes heartbeat { 0%{transform:scale(1)} 14%{transform:scale(1.15)} 28%{transform:scale(1)} 42%{transform:scale(1.1)} 56%{transform:scale(1)} 100%{transform:scale(1)} }
-    .heart-wrapper.exploding .heart { animation: explodeHeart .8s forwards ease-out; }
-    @keyframes explodeHeart {
-      0%{transform:scale(1);opacity:1;filter:drop-shadow(0 0 28px rgba(255,80,120,.6))}
-      30%{transform:scale(1.5);opacity:1;filter:drop-shadow(0 0 60px rgba(255,80,120,1))}
-      100%{transform:scale(2.5);opacity:0;filter:drop-shadow(0 0 100px rgba(255,80,120,0))}
-    }
-    .particle { position:absolute; width:10px; height:10px; border-radius:50%; pointer-events:none; z-index:3; }
-    .cover-text {
-      margin-top: 60px; font-family:'Dancing Script',cursive; font-size:1.4rem;
-      color:rgba(255,200,220,.8); letter-spacing:1px; z-index:2;
-      animation: fadeInUp 2s ease .5s both, pulse-text 3s ease-in-out infinite 2.5s;
-    }
-    @keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes pulse-text { 0%,100%{opacity:.8} 50%{opacity:1} }
-    .cover-shooting-star {
-      position:absolute; width:120px; height:2px;
-      background:linear-gradient(90deg,rgba(255,255,255,.95),rgba(255,255,255,0));
-      border-radius:2px; filter:drop-shadow(0 0 8px rgba(255,255,255,.8));
-      transform:rotate(-25deg); opacity:0; z-index:1;
-      animation:coverShootingStar 7s linear infinite;
-    }
-    .cover-shooting-star::before {
-      content:''; position:absolute; right:0; top:-2px;
-      width:7px; height:7px; border-radius:50%;
-      background:#fff; box-shadow:0 0 10px rgba(255,255,255,.9);
-    }
-    .cover-shooting-star.s1 { top:18%; left:-20%; animation-delay:0s; }
-    .cover-shooting-star.s2 { top:35%; left:-30%; animation-delay:3.2s; }
-    @keyframes coverShootingStar {
-      0% { opacity:0; transform:translate(0,0) rotate(-25deg); }
-      8% { opacity:1; }
-      35% { opacity:0; transform:translate(145vw,45vh) rotate(-25deg); }
-      100% { opacity:0; transform:translate(145vw,45vh) rotate(-25deg); }
-    }
-    .cover-romantic {
-      position:absolute; inset:0; pointer-events:none; z-index:1;
-    }
-    .cover-float-heart {
-      position:absolute; font-size:clamp(1rem,2.6vw,1.7rem);
-      opacity:.55;
-      filter:drop-shadow(0 0 8px rgba(255,110,150,.45));
-      animation:coverFloatHeart 8.5s ease-in-out infinite;
-    }
-    .cover-float-heart.h1 { left:12%; top:68%; animation-delay:-1.2s; }
-    .cover-float-heart.h2 { left:22%; top:28%; animation-delay:-3.8s; }
-    .cover-float-heart.h3 { right:17%; top:62%; animation-delay:-2.1s; }
-    .cover-float-heart.h4 { right:26%; top:24%; animation-delay:-5.2s; }
-    .cover-float-heart.h5 { left:50%; top:16%; animation-delay:-4.1s; }
-    .cover-float-heart.h6 { left:62%; top:74%; animation-delay:-6.4s; }
-    @keyframes coverFloatHeart {
-      0%,100% { transform:translateY(0) scale(.95) rotate(-4deg); opacity:.35; }
-      50% { transform:translateY(-18px) scale(1.12) rotate(4deg); opacity:.85; }
-    }
-
-    /* ===========================================================
-       WOMENS DAY SCENE
-    =========================================================== */
-    .scene-womens {
-      position: fixed; inset: 0; z-index: 99;
-      background: linear-gradient(180deg, #0a0018 0%, #1a0035 35%, #2a0050 65%, #0a0018 100%);
-      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-      opacity: 0; visibility: hidden; pointer-events: none;
-      transition: opacity 1s ease, visibility 1s ease;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    .scene-womens.visible { opacity: 1; visibility: visible; pointer-events: auto; }
-
-    /* Power rays background */
-    .womens-rays {
-      position: absolute; inset: 0; pointer-events: none; z-index: 0;
-      background: conic-gradient(from 0deg at 50% 50%,
-        transparent 0deg, rgba(200,100,255,.07) 10deg,
-        transparent 20deg, rgba(255,100,200,.07) 35deg,
-        transparent 50deg, rgba(200,100,255,.07) 65deg,
-        transparent 80deg, rgba(255,100,200,.07) 95deg,
-        transparent 110deg, rgba(200,100,255,.07) 125deg,
-        transparent 140deg, rgba(255,100,200,.07) 155deg,
-        transparent 170deg, rgba(200,100,255,.07) 185deg,
-        transparent 200deg, rgba(255,100,200,.07) 215deg,
-        transparent 230deg, rgba(200,100,255,.07) 245deg,
-        transparent 260deg, rgba(255,100,200,.07) 275deg,
-        transparent 290deg, rgba(200,100,255,.07) 305deg,
-        transparent 320deg, rgba(255,100,200,.07) 335deg,
-        transparent 350deg, rgba(200,100,255,.07) 360deg);
-      animation: raysRotate 20s linear infinite;
-    }
-    @keyframes raysRotate { to { transform: rotate(360deg); } }
-
-    .womens-glow {
-      position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%);
-      width: 420px; height: 420px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(180,50,255,.22) 0%, transparent 70%);
-      pointer-events: none; z-index: 0;
-      animation: womensGlowPulse 2.5s ease-in-out infinite;
-    }
-    @keyframes womensGlowPulse { 0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.7} 50%{transform:translate(-50%,-50%) scale(1.35);opacity:1} }
-
-    /* ── HEROINE: same princess, flying superhero style ── */
-    .heroine-container {
-      position: absolute;
-      z-index: 5;
-      opacity: 0;
-      /* will be animated via JS to fly across */
-      top: 35%;
-      left: -200px;
-      filter: drop-shadow(0 0 18px rgba(200,80,255,.75));
-    }
-    .heroine-container.show { opacity: 1; }
-
-    /* Cape that trails behind her */
-    .heroine-cape-wrap {
-      position: absolute;
-      top: 42px; right: -10px;
-      width: 52px; height: 36px;
-      background: linear-gradient(135deg, #9b00e8, #c800ff 60%, #6600aa);
-      border-radius: 0 50% 50% 0;
-      transform-origin: left center;
-      animation: capeFlap 0.7s ease-in-out infinite alternate;
-      z-index: 0;
-      box-shadow: 0 0 14px rgba(180,0,255,.6);
-    }
-    @keyframes capeFlap {
-      0%  { transform: scaleY(.85) skewY(-6deg); }
-      100%{ transform: scaleY(1.12) skewY(6deg); }
-    }
-
-    /* Floating-bob for the princess during flight */
-    .heroine-inner {
-      position: relative;
-      animation: heroBob 1.6s ease-in-out infinite;
-    }
-    @keyframes heroBob {
-      0%,100%{ transform: translateY(0) rotate(-4deg); }
-      50%    { transform: translateY(-14px) rotate(3deg); }
-    }
-
-    /* Power aura rings around flying princess */
-    .heroine-aura {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-      width: 120px; height: 120px; border-radius: 50%;
-      border: 2px solid rgba(200,0,255,.45);
-      pointer-events: none;
-      animation: auraRing 2s ease-out infinite;
-    }
-    .heroine-aura.a2 { width: 160px; height: 160px; animation-delay: .7s; }
-    .heroine-aura.a3 { width: 200px; height: 200px; animation-delay: 1.4s; }
-    @keyframes auraRing { 0%{opacity:.8;transform:translate(-50%,-50%) scale(.75)} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.35)} }
-
-    /* Speed-trail lines */
-    .heroine-trail {
-      position: absolute; top: 50%; right: 100%; transform: translateY(-50%);
-      display: flex; flex-direction: column; gap: 6px; pointer-events: none; z-index: -1;
-    }
-    .heroine-trail span {
-      display: block; height: 2px; border-radius: 2px;
-      background: linear-gradient(90deg, transparent, rgba(200,100,255,.6));
-      animation: trailFade .6s ease-in-out infinite alternate;
-    }
-    .heroine-trail span:nth-child(1){ width: 60px; animation-delay:0s; }
-    .heroine-trail span:nth-child(2){ width: 90px; animation-delay:.1s; }
-    .heroine-trail span:nth-child(3){ width: 50px; animation-delay:.2s; }
-    .heroine-trail span:nth-child(4){ width: 80px; animation-delay:.15s; }
-    .heroine-trail span:nth-child(5){ width: 40px; animation-delay:.05s; }
-    @keyframes trailFade { 0%{opacity:.7} 100%{opacity:.15} }
-
-    /* Womens day phrases */
-    .womens-phrase {
-      position: absolute;
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(.95rem, 2.8vw, 1.35rem);
-      font-weight: 700;
-      color: #e080ff;
-      text-shadow: 0 0 20px rgba(200,0,255,.7), 0 0 40px rgba(200,0,255,.3);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 10;
-      text-align: center;
-      max-width: 68vw;
-      padding: 12px 22px;
-      background: rgba(30,0,50,.6);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      border: 1px solid rgba(200,0,255,.35);
-    }
-    @keyframes phraseReveal {
-      0%{opacity:0;transform:translateY(24px) scale(.88)}
-      100%{opacity:1;transform:translateY(0) scale(1)}
-    }
-
-    .womens-phrase-title {
-      position: absolute;
-      top: 6%;
-      left: 0; right: 0;
-      width: 100%;
-      text-align: center;
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(1.5rem, 4.5vw, 2.6rem);
-      font-weight: 700;
-      color: #f0a0ff;
-      text-shadow: 0 0 30px rgba(200,0,255,.8), 0 0 60px rgba(200,0,255,.4);
-      opacity: 0;
-      z-index: 10;
-      padding: 0 16px;
-    }
-    .womens-phrase-title.show { animation: phraseReveal 1s ease forwards; }
-
-    .womens-phrase.p1 { bottom: 74%; left: 4vw; }
-    .womens-phrase.p2 { bottom: 60%; right: 3vw; }
-    .womens-phrase.p3 { bottom: 46%; left: 3vw; }
-    .womens-phrase.p4 { bottom: 32%; right: 3vw; }
-    .womens-phrase.p5 { bottom: 18%; left: 4vw; }
-
-    .womens-tap-hint {
-      position: absolute; bottom: 2%; left: 50%; transform: translateX(-50%);
-      font-family: 'Dancing Script', cursive; font-size: clamp(.9rem,2.2vw,1.1rem);
-      color: rgba(220,160,255,.7); z-index: 11; opacity: 0;
-      pointer-events: none; text-align: center; white-space: nowrap;
-      background: rgba(20,0,40,.45); backdrop-filter: blur(6px);
-      padding: 6px 20px; border-radius: 30px;
-      border: 1px solid rgba(200,80,255,.3);
-      animation: hintBlink 1.8s ease-in-out infinite;
-    }
-    .womens-tap-hint.show { opacity: 1; }
-    @keyframes hintBlink { 0%,100%{opacity:.35} 50%{opacity:.9} }
-
-    .womens-float-icon {
-      position: absolute; font-size: clamp(1rem, 2.4vw, 1.6rem);
-      opacity: .5; animation: coverFloatHeart 9s ease-in-out infinite;
-      pointer-events: none; z-index: 1;
-    }
-    .womens-float-icon.w1 { left:8%;   top:70%; animation-delay:-1s; }
-    .womens-float-icon.w2 { left:20%;  top:22%; animation-delay:-3s; }
-    .womens-float-icon.w3 { right:10%; top:60%; animation-delay:-2s; }
-    .womens-float-icon.w4 { right:22%; top:18%; animation-delay:-5s; }
-    .womens-float-icon.w5 { left:48%;  top:12%; animation-delay:-4s; }
-    .womens-float-icon.w6 { left:65%;  top:78%; animation-delay:-6s; }
-
-    /* Power sparks */
-    .power-spark {
-      position: absolute; pointer-events: none; z-index: 6;
-      font-size: 1.2rem;
-      animation: sparkFly 1.5s ease-out forwards;
-    }
-    @keyframes sparkFly {
-      0%  { opacity: 1; transform: translate(0,0) scale(1); }
-      100%{ opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
-    }
-
-    /* ── Monkey in womens scene — fixed bottom-right watching pose ── */
-    .womens-monkey {
-      position: absolute;
-      bottom: 0;
-      right: 5%;
-      z-index: 20;
-      transform: scaleX(-1); /* face left, watching princess */
-      opacity: 0;
-      transition: opacity 1s ease;
-      filter: drop-shadow(0 0 14px rgba(200,80,255,.5));
-    }
-    .womens-monkey.show { opacity: 1; }
-    /* gentle idle sway */
-    .womens-monkey.show .monkey-body { animation: monkeyIdle 2.4s ease-in-out infinite; }
-    @keyframes monkeyIdle {
-      0%,100% { transform: translateY(0) rotate(0deg); }
-      40%     { transform: translateY(-6px) rotate(-2deg); }
-      70%     { transform: translateY(-3px) rotate(1deg); }
-    }
-    /* eyes follow (head tilt toward princess) */
-    .womens-monkey.show .m-head { animation: headWatch 3s ease-in-out infinite; }
-    @keyframes headWatch {
-      0%,100% { transform: translateX(-50%) rotate(0deg); }
-      50%     { transform: translateX(-50%) rotate(-8deg); }
-    }
-    /* arms raised in awe */
-    .womens-monkey .m-arm.l { transform: rotate(-45deg) translateY(-4px) !important; }
-    .womens-monkey .m-arm.r { transform: rotate(45deg)  translateY(-4px) !important; }
-    /* speech bubble (un-flipped) */
-    .womens-monkey-speech {
-      position: absolute;
-      bottom: 100%; right: 0;
-      min-width: 140px; max-width: 200px;
-      padding: 8px 12px;
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(.78rem, 2vw, .98rem);
-      line-height: 1.4;
-      color: #4a004a;
-      background: linear-gradient(180deg, #fff4ff 0%, #f0d0ff 100%);
-      border: 1.5px solid rgba(200,80,255,.5);
-      border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(180,0,255,.2);
-      text-align: center;
-      white-space: nowrap;
-      opacity: 0; pointer-events: none;
-      transform: scaleX(-1); /* un-flip text */
-      transition: opacity .5s ease;
-      z-index: 30;
-    }
-    .womens-monkey-speech::after {
-      content: '';
-      position: absolute; top: 100%; right: 20px;
-      border: 7px solid transparent;
-      border-top-color: #f0d0ff;
-    }
-    .womens-monkey-speech.show { opacity: 1; }
-
-    /* ===========================================================
-       SCENE 2 — MONKEY + PRINCESS
-    =========================================================== */
-    .scene2 {
-      position:fixed; inset:0; z-index:99;
-      background: linear-gradient(180deg,#070118 0%,#0d0230 30%,#110340 55%,#070118 100%);
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      opacity:0; visibility:hidden; pointer-events:none;
-      transition: opacity 1s ease, visibility 1s ease;
-      animation: dayNightCycle 60s ease-in-out infinite;
-    }
-    @keyframes dayNightCycle {
-      0% {
-        background: linear-gradient(180deg, #0a0215 0%, #0f0a25 30%, #0d0935 55%, #0a0215 100%);
-      }
-      5% {
-        background: linear-gradient(180deg, #0f0820 0%, #12102d 30%, #10103d 55%, #0f0820 100%);
-      }
-      10% {
-        background: linear-gradient(180deg, #14102a 0%, #16153a 30%, #121a42 55%, #14102a 100%);
-      }
-      15% {
-        background: linear-gradient(180deg, #1a1535 0%, #1c1a45 30%, #14254d 55%, #1a1535 100%);
-      }
-      20% {
-        background: linear-gradient(180deg, #251a50 0%, #2a2060 30%, #1d3a6a 55%, #251a50 100%);
-      }
-      25% {
-        background: linear-gradient(180deg, #3a2a70 0%, #404080 30%, #2a5090 55%, #3a2a70 100%);
-      }
-      30% {
-        background: linear-gradient(180deg, #5a4a9a 0%, #6a5aaa 30%, #3a7aaa 55%, #5a4a9a 100%);
-      }
-      35% {
-        background: linear-gradient(180deg, #7a8acf 0%, #8a9adf 30%, #4a9eff 55%, #7a8acf 100%);
-      }
-      40% {
-        background: linear-gradient(180deg, #87ceeb 0%, #b0e0ff 30%, #87ceeb 55%, #87ceeb 100%);
-      }
-      45% {
-        background: linear-gradient(180deg, #87ceeb 0%, #d0f0ff 30%, #87ceeb 55%, #87ceeb 100%);
-      }
-      50% {
-        background: linear-gradient(180deg, #87ceeb 0%, #e0f6ff 30%, #87ceeb 55%, #87ceeb 100%);
-      }
-      55% {
-        background: linear-gradient(180deg, #87ceeb 0%, #d0f0ff 30%, #87ceeb 55%, #87ceeb 100%);
-      }
-      60% {
-        background: linear-gradient(180deg, #87ceeb 0%, #b0e0ff 30%, #87ceeb 55%, #87ceeb 100%);
-      }
-      65% {
-        background: linear-gradient(180deg, #7a8acf 0%, #8a9adf 30%, #4a9eff 55%, #7a8acf 100%);
-      }
-      70% {
-        background: linear-gradient(180deg, #5a4a9a 0%, #6a5aaa 30%, #3a7aaa 55%, #5a4a9a 100%);
-      }
-      75% {
-        background: linear-gradient(180deg, #3a2a70 0%, #404080 30%, #2a5090 55%, #3a2a70 100%);
-      }
-      80% {
-        background: linear-gradient(180deg, #251a50 0%, #2a2060 30%, #1d3a6a 55%, #251a50 100%);
-      }
-      85% {
-        background: linear-gradient(180deg, #1a1535 0%, #1c1a45 30%, #14254d 55%, #1a1535 100%);
-      }
-      90% {
-        background: linear-gradient(180deg, #14102a 0%, #16153a 30%, #121a42 55%, #14102a 100%);
-      }
-      95% {
-        background: linear-gradient(180deg, #0f0820 0%, #12102d 30%, #10103d 55%, #0f0820 100%);
-      }
-      100% {
-        background: linear-gradient(180deg, #0a0215 0%, #0f0a25 30%, #0d0935 55%, #0a0215 100%);
-      }
-    }
-    @keyframes moonVisibility {
-      0% { opacity: 1; filter: drop-shadow(0 0 50px rgba(255,224,130,.25)); }
-      30% { opacity: 0.3; filter: drop-shadow(0 0 20px rgba(255,224,130,.1)); }
-      40% { opacity: 0; filter: drop-shadow(0 0 0px rgba(255,224,130,0)); }
-      60% { opacity: 0; filter: drop-shadow(0 0 0px rgba(255,224,130,0)); }
-      70% { opacity: 0.3; filter: drop-shadow(0 0 20px rgba(255,224,130,.1)); }
-      100% { opacity: 1; filter: drop-shadow(0 0 50px rgba(255,224,130,.25)); }
-    }
-    .scene2.visible { opacity:1; visibility:visible; pointer-events:auto; animation: dayNightCycle 60s ease-in-out infinite; }
-    .scene2.hidden { opacity:0; visibility:hidden; pointer-events:none; animation: none; }
-
-    .scene2-narrative {
-      position:absolute; top:6%; width:88%; max-width:550px; text-align:center;
-      font-family:'Press Start 2P',cursive; color:#ffd6e8; font-size:clamp(0.65rem,2.5vw,1.1rem);
-      line-height:1.6; opacity:0; z-index:15; letter-spacing:0px; word-spacing:2px;
-      text-shadow: 
-        -2px -2px 0 #000,
-        -2px -1px 0 #000,
-        -2px  0px 0 #000,
-        -2px  1px 0 #000,
-        -2px  2px 0 #000,
-        -1px -2px 0 #000,
-        -1px -1px 0 #000,
-        -1px  0px 0 #000,
-        -1px  1px 0 #000,
-        -1px  2px 0 #000,
-         0px -2px 0 #000,
-         0px -1px 0 #000,
-         0px  0px 0 #000,
-         0px  1px 0 #000,
-         0px  2px 0 #000,
-         1px -2px 0 #000,
-         1px -1px 0 #000,
-         1px  0px 0 #000,
-         1px  1px 0 #000,
-         1px  2px 0 #000,
-         2px -2px 0 #000,
-         2px -1px 0 #000,
-         2px  0px 0 #000,
-         2px  1px 0 #000,
-         2px  2px 0 #000;
-    }
-    .scene2-narrative.show { animation: typewriterShow 5s ease forwards; }
-    @keyframes typewriterShow {
-      0% { opacity:0; transform:translateY(-20px); }
-      100% { opacity:1; transform:translateY(0); }
-    }
-
-    .stage {
-      position:absolute; bottom:0; left:0; right:0; width:100%; height:25%;
-      background:
-        radial-gradient(120% 80% at 50% -10%, rgba(100,185,85,.22) 0%, rgba(100,185,85,0) 55%),
-        linear-gradient(180deg,#1f5b22 0%,#154a1b 26%,#0f3b15 56%,#0a2f11 78%,#07270d 100%);
-      border-top:2px solid #3ea446;
-      box-shadow: inset 0 16px 28px rgba(117,194,90,.18), inset 0 -25px 35px rgba(2,20,8,.32);
-      overflow:hidden;
-    }
-    .stage::before {
-      content:''; position:absolute; top:-52px; width:100%; height:56px;
-      background:linear-gradient(180deg,transparent,rgba(32,90,36,.72));
-      pointer-events:none;
-    }
-    .stage::after {
-      content:'';
-      position:absolute; inset:0;
-      background:
-        repeating-linear-gradient(110deg, rgba(255,255,255,.03) 0 2px, rgba(0,0,0,0) 2px 10px),
-        repeating-linear-gradient(70deg, rgba(8,32,14,.17) 0 1px, rgba(0,0,0,0) 1px 7px);
-      mix-blend-mode:soft-light;
-      opacity:.45;
-      pointer-events:none;
-    }
-    .ground-flower {
-      position:absolute; font-size:1.1rem; bottom:5px; z-index:2;
-      animation:flowerSway 3s ease-in-out infinite alternate;
-    }
-    @keyframes flowerSway { 0%{transform:rotate(-5deg)} 100%{transform:rotate(5deg)} }
-    .grass {
-      position:absolute; top:-6px; left:0; width:100%; height:24px;
-      overflow:visible; z-index:5; display:flex; justify-content:space-around;
-      filter: drop-shadow(0 2px 0 rgba(7,45,14,.45));
-    }
-    .grass span {
-      display:inline-block; width:5px; height:14px; margin:0 2px;
-      background:linear-gradient(180deg,#59cf59 0%,#2f962f 70%,#216f21 100%);
-      border-radius:55% 55% 0 0;
-      transform-origin:bottom; animation:sway 2.5s ease-in-out infinite alternate;
-    }
-    .grass span:nth-child(even) { height:11px; background:linear-gradient(180deg,#6ddf6d,#3ea43e 72%,#2d7f2d); animation-delay:-.7s; }
-    .grass span:nth-child(3n) { height:17px; background:linear-gradient(180deg,#4fc24f,#319631 72%,#266f26); animation-delay:-.3s; }
-    @keyframes sway { 0%{transform:rotate(-10deg)} 100%{transform:rotate(10deg)} }
-    .bush {
-      position:absolute; bottom:8px; width:80px; height:34px; z-index:2;
-      background:radial-gradient(ellipse at 50% 35%,#3caa46 0%,#2f8f37 65%,#226829 100%);
-      border-radius:55% 45% 42% 58%;
-      box-shadow:inset -8px -6px 12px rgba(14,55,20,.35), 0 3px 0 rgba(7,35,13,.35);
-      animation:bushSway 4.8s ease-in-out infinite alternate;
-      transform-origin:bottom center;
-    }
-    .bush::before,
-    .bush::after {
-      content:''; position:absolute; background:inherit; border-radius:50%;
-    }
-    .bush::before { width:42px; height:28px; left:8px; top:-10px; }
-    .bush::after { width:36px; height:24px; right:10px; top:-8px; }
-    .bush.small { width:58px; height:26px; opacity:.92; animation-duration:5.6s; }
-    .stone {
-      position:absolute; bottom:5px; width:18px; height:10px; z-index:2;
-      background:linear-gradient(180deg,#9ba79c,#6f7f70);
-      border-radius:55% 45% 40% 60%;
-      box-shadow:inset -4px -3px 5px rgba(32,42,34,.4);
-    }
-    .fireweed {
-      position:absolute; bottom:8px; z-index:3; font-size:.9rem;
-      filter: drop-shadow(0 0 6px rgba(255,195,80,.45));
-      animation: fireweedBlink 2.6s ease-in-out infinite;
-    }
-    @keyframes bushSway { 0%{transform:rotate(-2deg)} 100%{transform:rotate(2deg)} }
-    @keyframes fireweedBlink { 0%,100%{opacity:.45; transform:translateY(0)} 50%{opacity:1; transform:translateY(-2px)} }
-
-    .tree { position:absolute; bottom:30%; z-index:1; opacity:.15; }
-    .tree-trunk { width:12px; height:60px; background:#1a3a1a; margin:0 auto; }
-    .tree-top { width:60px; height:60px; background:#1a4a1a; border-radius:50%; margin-bottom:-10px; }
-
-    .moon {
-      position:absolute; top:7%; right:12%; width:112px; height:112px;
-      border-radius:50%; z-index:2; overflow:hidden;
-      background:radial-gradient(circle at 35% 35%,#efe2b3 0%,#c8af68 60%,#8d7a48 100%);
-      animation: moonSunBody 60s ease-in-out infinite;
-    }
-    .moon::before {
-      content:'';
-      position:absolute; inset:-18px;
-      border-radius:50%;
-      background:repeating-conic-gradient(from 0deg, rgba(255,193,7,.45) 0 12deg, rgba(255,193,7,0) 12deg 24deg);
-      animation: sunRaysVisibility 60s ease-in-out infinite;
-      z-index:-1;
-    }
-    .moon::after {
-      content:'';
-      position:absolute; top:-3px; left:44px;
-      width:112px; height:112px; border-radius:50%;
-      background:rgba(10,8,24,.9);
-      animation: crescentMaskVisibility 60s ease-in-out infinite;
-      pointer-events:none;
-    }
-    @keyframes moonSunBody {
-      0%, 30%, 70%, 100% {
-        background:radial-gradient(circle at 35% 35%,#efe2b3 0%,#c8af68 60%,#8d7a48 100%);
-        box-shadow:0 0 18px rgba(239,226,179,.25), inset -18px -18px 26px rgba(35,26,14,.35);
-      }
-      40%, 60% {
-        background:radial-gradient(circle at 42% 38%,#fff36d 0%,#ffc928 52%,#ff9800 100%);
-        box-shadow:0 0 36px rgba(255,193,7,.85), 0 0 72px rgba(255,152,0,.45), inset 0 0 16px rgba(255,255,150,.35);
-      }
-      50% {
-        background:radial-gradient(circle at 42% 38%,#fff57d 0%,#ffd54f 50%,#ff9800 100%);
-        box-shadow:0 0 42px rgba(255,193,7,.95), 0 0 90px rgba(255,152,0,.55), inset 0 0 20px rgba(255,255,170,.45);
-      }
-    }
-    @keyframes crescentMaskVisibility {
-      0%, 30%, 70%, 100% { opacity:1; }
-      38%, 62% { opacity:0; }
-      50% { opacity:0; }
-    }
-    @keyframes sunRaysVisibility {
-      0%, 30%, 70%, 100% { opacity:0; transform:rotate(0deg) scale(.9); }
-      40%, 60% { opacity:.65; transform:rotate(8deg) scale(1); }
-      50% { opacity:.85; transform:rotate(16deg) scale(1.05); }
-    }
-
-    /* Clouds */
-    .cloud {
-      position:absolute; z-index:3; opacity:0;
-      width:150px; height:52px;
-      border-radius:40px;
-      background:linear-gradient(180deg,#ffffff 0%,#f5f7fb 100%);
-      box-shadow:0 6px 12px rgba(36,68,102,.10), inset 0 -6px 12px rgba(190,205,225,.28);
-      animation: cloudFloat 60s linear infinite;
-    }
-    .cloud::before,
-    .cloud::after {
-      content:''; position:absolute; border-radius:50%;
-      background:inherit;
-      box-shadow:inherit;
-    }
-    .cloud::before { width:64px; height:64px; left:18px; top:-28px; }
-    .cloud::after  { width:82px; height:82px; left:62px; top:-38px; }
-    @keyframes cloudFloat {
-      0%, 34% { opacity:0; transform:translateX(-220px); }
-      40%, 60% { opacity:.92; }
-      66%, 100% { opacity:0; transform:translateX(calc(100vw + 220px)); }
-    }
-    .cloud1 { top:11%; left:-220px; animation-delay:0s; }
-    .cloud2 { top:19%; left:-260px; animation-delay:10s; transform:scale(.85); }
-    .cloud3 { top:15%; left:-240px; animation-delay:20s; transform:scale(.95); }
-
-    /* Day birds */
-    .bird {
-      position:absolute; width:22px; height:10px; z-index:4; opacity:0;
-      border-top:3px solid rgba(58,76,92,.7);
-      border-radius:50% 50% 0 0;
-      animation:birdFly 60s linear infinite;
-    }
-    .bird::after {
-      content:''; position:absolute; left:18px; top:-3px;
-      width:22px; height:10px;
-      border-top:3px solid rgba(58,76,92,.7);
-      border-radius:50% 50% 0 0;
-    }
-    @keyframes birdFly {
-      0%, 34% { opacity:0; transform:translateX(-120px) translateY(0); }
-      42%, 58% { opacity:.7; }
-      66%, 100% { opacity:0; transform:translateX(calc(100vw + 120px)) translateY(-14px); }
-    }
-    .bird1 { top:14%; left:-120px; animation-delay:4s; }
-    .bird2 { top:18%; left:-150px; animation-delay:14s; transform:scale(.8); }
-    .scene2-star {
-      position:absolute; width:3px; height:3px; background:#fff;
-      border-radius:50%; animation:twinkle 3s ease-in-out infinite, nightOnly 60s ease-in-out infinite;
-    }
-    @keyframes twinkle { 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:1;transform:scale(1.5)} }
-    .firefly {
-      position:absolute; width:4px; height:4px; border-radius:50%;
-      background:#fff8e1; box-shadow:0 0 8px #fff176,0 0 20px rgba(255,241,118,.4);
-      animation:fireflyFloat 6s ease-in-out infinite, nightOnly 60s ease-in-out infinite; z-index:3;
-    }
-    @keyframes fireflyFloat {
-      0%,100%{transform:translate(0,0);opacity:.2}
-      25%{transform:translate(30px,-25px);opacity:1}
-      50%{transform:translate(-15px,-45px);opacity:.4}
-      75%{transform:translate(25px,-15px);opacity:.9}
-    }
-    @keyframes nightOnly {
-      0%, 30%, 70%, 100% { opacity:1; }
-      40%, 60% { opacity:0; }
-    }
-
-    /* ===== MONKEY — COMPLETELY REBUILT ===== */
-    .monkey-container {
-      position:absolute; bottom:22%; z-index:25;
-      left:-130px; opacity:0;
-    }
-    .monkey-container.show { opacity:1; }
-    .monkey-container.walking { animation: monkeyWalk 5.5s ease-in-out forwards; }
-    @keyframes monkeyWalk {
-      0%   { left: -130px; }
-      70%  { left: calc(70% - 150px); }
-      100% { left: calc(70% - 150px); }
-    }
-    .monkey-container.walking .monkey-body { animation: monkeyBounce .35s ease-in-out infinite; }
-    @keyframes monkeyBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-    .monkey-container.celebrating { animation: monkeyCelebrate 1.2s ease-in-out infinite; }
-    @keyframes monkeyCelebrate { 0%,100%{transform:translateY(0)} 25%{transform:translateY(-12px)} 50%{transform:translateY(0)} 75%{transform:translateY(-8px)} }
-
-    .monkey { width:110px; height:140px; position:relative; }
-    .monkey-body { position:relative; width:110px; height:140px; }
-
-    /* Monkey Head */
-    .m-head {
-      position:absolute; top:3px; left:50%; transform:translateX(-50%);
-      width:65px; height:60px; background:radial-gradient(circle at 40% 35%,#a0522d,#7a3b10);
-      border-radius:50%; z-index:5;
-    }
-    .m-face {
-      position:absolute; top:16px; left:50%; transform:translateX(-50%);
-      width:48px; height:40px; background:radial-gradient(circle at 50% 40%,#f5d5a8,#deb887);
-      border-radius:50%;
-    }
-    .m-eye {
-      position:absolute; top:9px; width:10px; height:12px;
-      background:#1a1a1a; border-radius:50%;
-    }
-    .m-eye::after {
-      content:''; position:absolute; top:2px; left:2px; width:4px; height:4px;
-      background:white; border-radius:50%;
-    }
-    .m-eye.l { left:8px; }
-    .m-eye.r { right:8px; }
-    .m-mouth {
-      position:absolute; bottom:5px; left:50%; transform:translateX(-50%);
-      width:14px; height:8px; border:2px solid #5a2d0c; border-top:none;
-      border-radius:0 0 14px 14px;
-    }
-    .m-ear {
-      position:absolute; top:13px; width:20px; height:20px;
-      background:#a0522d; border-radius:50%; z-index:4;
-    }
-    .m-ear::after {
-      content:''; position:absolute; top:4px; left:4px; width:12px; height:12px;
-      background:#deb887; border-radius:50%;
-    }
-    .m-ear.l { left:-5px; }
-    .m-ear.r { right:-5px; }
-
-    /* Monkey Torso */
-    .m-torso {
-      position:absolute; top:55px; left:50%; transform:translateX(-50%);
-      width:48px; height:42px; background:radial-gradient(ellipse at 50% 30%,#a0522d,#7a3b10);
-      border-radius:24px 24px 16px 16px; z-index:3;
-    }
-    .m-belly {
-      position:absolute; top:6px; left:50%; transform:translateX(-50%);
-      width:28px; height:26px; background:radial-gradient(circle,#f5d5a8,#deb887);
-      border-radius:50%;
-    }
-
-    /* Monkey Arms */
-    .m-arm {
-      position:absolute; top:57px; width:17px; height:42px;
-      background:linear-gradient(180deg,#a0522d,#8B4513);
-      border-radius:9px; z-index:6; transform-origin:top center;
-    }
-    .m-arm.l { left:24px; transform:rotate(8deg); }
-    .m-arm.r { right:24px; transform:rotate(-8deg); }
-    .m-arm.l.carrying { animation:armUpL .45s ease forwards; }
-    .m-arm.r.carrying { animation:armUpR .45s ease forwards; }
-    .monkey-container.walking .m-arm.l,
-    .monkey-container.walking .m-arm.l.carrying { animation:armWalkL .35s ease-in-out infinite; }
-    .monkey-container.walking .m-arm.r,
-    .monkey-container.walking .m-arm.r.carrying { animation:armWalkR .35s ease-in-out infinite; }
-    .monkey-container.celebrating .m-arm.l,
-    .monkey-container.celebrating .m-arm.l.carrying { animation:armCheerL .65s ease-in-out infinite; }
-    .monkey-container.celebrating .m-arm.r,
-    .monkey-container.celebrating .m-arm.r.carrying { animation:armCheerR .65s ease-in-out infinite; }
-    @keyframes armUpL { to{transform:rotate(-20deg) translateY(-4px)} }
-    @keyframes armUpR { to{transform:rotate(20deg) translateY(-4px)} }
-    @keyframes armWalkL {
-      0%,100% { transform:rotate(-18deg) translateY(0); }
-      50% { transform:rotate(-2deg) translateY(-2px); }
-    }
-    @keyframes armWalkR {
-      0%,100% { transform:rotate(18deg) translateY(0); }
-      50% { transform:rotate(2deg) translateY(-2px); }
-    }
-    @keyframes armCheerL {
-      0%,100% { transform:rotate(-28deg) translateY(0); }
-      50% { transform:rotate(-45deg) translateY(-5px); }
-    }
-    @keyframes armCheerR {
-      0%,100% { transform:rotate(28deg) translateY(0); }
-      50% { transform:rotate(45deg) translateY(-5px); }
-    }
-    .m-hand {
-      position:absolute; bottom:-4px; left:50%; transform:translateX(-50%);
-      width:15px; height:15px; background:#deb887; border-radius:50%;
-    }
-    .monkey-container.walking .m-arm.l .m-hand { animation:handSwingL .35s ease-in-out infinite; }
-    .monkey-container.walking .m-arm.r .m-hand { animation:handSwingR .35s ease-in-out infinite; }
-    .monkey-container.celebrating .m-arm.l .m-hand { animation:handCheerL .6s ease-in-out infinite; }
-    .monkey-container.celebrating .m-arm.r .m-hand { animation:handCheerR .6s ease-in-out infinite; }
-    @keyframes handSwingL {
-      0%,100% { transform:translateX(-50%) translateY(0) rotate(-8deg); }
-      50% { transform:translateX(-50%) translateY(-2px) rotate(8deg); }
-    }
-    @keyframes handSwingR {
-      0%,100% { transform:translateX(-50%) translateY(0) rotate(8deg); }
-      50% { transform:translateX(-50%) translateY(-2px) rotate(-8deg); }
-    }
-    @keyframes handCheerL {
-      0%,100% { transform:translateX(-50%) translateY(0) scale(1) rotate(-12deg); }
-      50% { transform:translateX(-50%) translateY(-4px) scale(1.08) rotate(12deg); }
-    }
-    @keyframes handCheerR {
-      0%,100% { transform:translateX(-50%) translateY(0) scale(1) rotate(12deg); }
-      50% { transform:translateX(-50%) translateY(-4px) scale(1.08) rotate(-12deg); }
-    }
-
-    /* Monkey Legs */
-    .m-leg {
-      position:absolute; top:92px; width:18px; height:32px;
-      background:linear-gradient(180deg,#8B4513,#6b3410);
-      border-radius:9px; z-index:2; transform-origin:top center;
-    }
-    .m-leg.l { left:31px; }
-    .m-leg.r { right:31px; }
-    .monkey-container.walking .m-leg.l { animation:legL .35s ease-in-out infinite; }
-    .monkey-container.walking .m-leg.r { animation:legR .35s ease-in-out infinite; }
-    @keyframes legL { 0%,100%{transform:rotate(-12deg)} 50%{transform:rotate(12deg)} }
-    @keyframes legR { 0%,100%{transform:rotate(12deg)} 50%{transform:rotate(-12deg)} }
-    .m-foot {
-      position:absolute; bottom:-6px; left:-2px;
-      width:22px; height:11px; background:#5a2d0c;
-      border-radius:11px 11px 5px 5px;
-    }
-
-    /* Monkey Tail */
-    .m-tail {
-      position:absolute; top:65px; left:-14px;
-      width:45px; height:45px; border:5px solid #8B4513;
-      border-color:#8B4513 transparent transparent transparent;
-      border-radius:50%; transform:rotate(-30deg); z-index:1;
-    }
-
-    /* Heart carried by monkey */
-    .monkey-heart {
-      position:absolute; top:-24px; left:50%; transform:translateX(-50%);
-      font-size:2.5rem; z-index:8;
-      filter:drop-shadow(0 0 12px rgba(255,80,120,.9));
-      animation:heartFloat 1s ease-in-out infinite;
-    }
-    @keyframes heartFloat { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
-    .monkey-speech {
-      position:absolute; top:-88px; left:50%; transform:translateX(-50%) translateY(8px);
-      min-width:170px; max-width:240px;
-      padding:8px 12px;
-      font-family:'Press Start 2P',cursive;
-      font-size:clamp(.44rem,1.2vw,.58rem);
-      line-height:1.5;
-      color:#6b1537;
-      background:linear-gradient(180deg,#fff4fb 0%,#ffe1ef 100%);
-      border:2px solid rgba(255,112,164,.6);
-      border-radius:12px;
-      box-shadow:0 8px 18px rgba(233,30,99,.25);
-      text-align:center;
-      opacity:0; pointer-events:none; z-index:30;
-      transition:opacity .25s ease, transform .25s ease;
-    }
-    .monkey-speech::after {
-      content:'';
-      position:absolute; bottom:-8px; left:50%; transform:translateX(-50%);
-      width:12px; height:12px;
-      background:#ffe6f2;
-      border-right:2px solid rgba(255,112,164,.6);
-      border-bottom:2px solid rgba(255,112,164,.6);
-      transform-origin:center;
-      rotate:45deg;
-    }
-    .monkey-speech.show {
-      opacity:1;
-      transform:translateX(-50%) translateY(0);
-    }
-
-    /* Flying heart (delivery) */
-    .flying-heart-delivery {
-      position:absolute; font-size:2.5rem; z-index:20;
-      filter:drop-shadow(0 0 16px rgba(255,80,120,.9));
-      opacity:0; pointer-events:none;
-    }
-    .flying-heart-delivery.fly {
-      animation:heartFlyToPrincess 1.8s ease-in-out forwards;
-    }
-
-    /* ===========================================================
-       STUDY CHAPTER SCENE
-    =========================================================== */
-    .scene-study {
-      position: fixed; inset: 0; z-index: 99;
-      opacity: 0; visibility: hidden; pointer-events: none;
-      transition: opacity 1s ease, visibility 1s ease;
-      overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(9,18,38,.95) 0%, rgba(22,34,58,.96) 54%, rgba(61,42,45,.98) 100%);
-      font-family: 'Press Start 2P', cursive;
-    }
-    .scene-study.visible { opacity: 1; visibility: visible; pointer-events: auto; }
-    .study-room-grid {
-      position: absolute; inset: 0; opacity: .28;
-      background-image:
-        linear-gradient(rgba(255,230,140,.18) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(120,210,255,.12) 1px, transparent 1px);
-      background-size: 32px 32px;
-      image-rendering: pixelated;
-    }
-    .study-window {
-      position: absolute; right: 9%; top: 10%;
-      width: clamp(120px, 18vw, 190px); height: clamp(96px, 14vw, 150px);
-      border: 8px solid #5d3b54;
-      background: linear-gradient(180deg, #0b1630 0%, #152b56 100%);
-      box-shadow: inset 0 0 0 4px #203f78, 0 10px 0 rgba(0,0,0,.22);
-    }
-    .study-window::before, .study-window::after {
-      content:''; position:absolute; background:#5d3b54;
-    }
-    .study-window::before { left:50%; top:0; bottom:0; width:6px; transform:translateX(-50%); }
-    .study-window::after { left:0; right:0; top:50%; height:6px; transform:translateY(-50%); }
-    .study-star {
-      position: absolute; width: 6px; height: 6px; background: #ffe37a;
-      box-shadow: 0 0 12px #ffe37a;
-      animation: studyBlink 1.8s steps(2,end) infinite;
-    }
-    .study-star.s1 { left: 18%; top: 22%; }
-    .study-star.s2 { left: 70%; top: 16%; animation-delay: -.6s; }
-    .study-star.s3 { left: 82%; top: 64%; animation-delay: -1.1s; }
-    @keyframes studyBlink { 0%,100%{opacity:.35} 50%{opacity:1} }
-    .study-title {
-      position: absolute; left: 50%; top: 7%;
-      transform: translate(-50%, -20px);
-      width: min(92vw, 760px);
-      color: #ffe37a;
-      font-size: clamp(.8rem, 2.5vw, 1.35rem);
-      line-height: 1.7;
-      text-align: center;
-      text-shadow: 0 0 18px rgba(255,220,90,.72), 4px 4px 0 rgba(0,0,0,.35);
-      opacity: 0;
-    }
-    .study-title.show { animation: studyTitleIn .9s steps(8,end) forwards; }
-    @keyframes studyTitleIn { to { opacity: 1; transform: translate(-50%, 0); } }
-    .study-desk-zone {
-      position: absolute; left: 50%; bottom: 13%;
-      width: min(92vw, 760px); height: clamp(270px, 50vh, 430px);
-      transform: translateX(-50%);
-    }
-    .study-lamp {
-      position: absolute; right: 18%; bottom: 122px;
-      width: 76px; height: 120px; z-index: 5;
-      filter: drop-shadow(0 0 16px rgba(255,216,100,.8));
-    }
-    .study-lamp::before {
-      content:''; position:absolute; left:30px; bottom:0; width:10px; height:76px;
-      background:#8f6f3b; box-shadow: inset 0 0 0 2px #4d342d;
-    }
-    .study-lamp::after {
-      content:''; position:absolute; left:0; top:4px; width:72px; height:38px;
-      background:#ffd761; clip-path: polygon(22% 0, 78% 0, 100% 100%, 0 100%);
-      box-shadow: 0 42px 70px rgba(255,210,90,.38);
-    }
-    .study-desk {
-      position: absolute; left: 50%; bottom: 78px;
-      width: min(86vw, 620px); height: 92px;
-      transform: translateX(-50%);
-      background: linear-gradient(180deg, #9a623d 0%, #6b3d2d 100%);
-      border: 6px solid #3d2522;
-      box-shadow: 0 10px 0 #2a1918, inset 0 10px 0 rgba(255,220,160,.18);
-      image-rendering: pixelated;
-      z-index: 4;
-    }
-    .study-desk::before, .study-desk::after {
-      content:''; position:absolute; bottom:-92px; width: 32px; height: 92px;
-      background:#4c2e28; border: 5px solid #2a1918;
-    }
-    .study-desk::before { left: 12%; }
-    .study-desk::after { right: 12%; }
-    .study-book {
-      position: absolute; left: 50%; bottom: 174px;
-      width: 152px; height: 62px; transform: translateX(-50%);
-      background: linear-gradient(90deg, #fff3bc 0 48%, #d85f7d 49% 51%, #fff3bc 52% 100%);
-      border: 5px solid #563349;
-      box-shadow: 0 8px 0 rgba(0,0,0,.22);
-      z-index: 8;
-      animation: studyBookRead 1.8s steps(2,end) infinite;
-    }
-    .study-book::before, .study-book::after {
-      content:''; position:absolute; top:12px; width:42px; height:4px; background:#8b6d61;
-      box-shadow: 0 12px 0 #8b6d61, 0 24px 0 #8b6d61;
-    }
-    .study-book::before { left:18px; }
-    .study-book::after { right:18px; }
-    @keyframes studyBookRead { 0%,100%{transform:translateX(-50%) skewY(0deg)} 50%{transform:translateX(-50%) skewY(-2deg)} }
-    .study-princess-wrap {
-      position: absolute; left: 50%; bottom: 156px; z-index: 7;
-      transform: translateX(-50%) scale(.9);
-      opacity: 0;
-    }
-    .study-princess-wrap.show { opacity: 1; animation: studyPrincessRead 1.3s steps(3,end) infinite; }
-    @keyframes studyPrincessRead {
-      0%,100% { transform: translateX(-50%) scale(.9) translateY(0); }
-      50% { transform: translateX(-50%) scale(.9) translateY(-5px); }
-    }
-    .study-princess-wrap .princess-arm.left { transform: rotate(30deg) translateY(10px) !important; }
-    .study-princess-wrap .princess-arm.right { transform: rotate(-30deg) translateY(10px) !important; }
-    .study-chair {
-      position: absolute; left: calc(50% - 54px); bottom: 72px;
-      width: 108px; height: 126px; z-index: 3;
-      border: 6px solid #342544; border-bottom: none;
-      background: #624071;
-      box-shadow: inset 0 12px 0 rgba(255,255,255,.08);
-    }
-    .study-monkey {
-      position: absolute; left: -180px; bottom: 20px; z-index: 9;
-      opacity: 0; transform: scale(1.24);
-      transform-origin: 50% 100%;
-    }
-    .study-monkey.show { opacity: 1; }
-    .study-monkey.walking {
-      animation: studyMonkeyEnter 4.6s steps(18,end) forwards;
-    }
-    @keyframes studyMonkeyEnter {
-      0% { left: -200px; bottom: 18px; transform: scale(1.24) translateY(0); }
-      38% { left: 10%; bottom: 18px; transform: scale(1.24) translateY(-8px); }
-      72% { left: calc(50% - 560px); bottom: 32px; transform: scale(1.24) translateY(0); }
-      100% { left: calc(50% - 550px); bottom: 46px; transform: scale(1.24) translateY(-2px); }
-    }
-    .study-monkey.walking .monkey-body { animation: monkeyBounce .35s ease-in-out infinite; }
-    .study-monkey.kissing { left: calc(50% - 550px); bottom: 46px; animation: studyKissLean 1s steps(3,end) forwards; }
-    @keyframes studyKissLean { to { transform: scale(1.24) translateX(28px) rotate(4deg); } }
-    .study-monkey-love {
-      position: absolute; left: 50%; top: -42px;
-      transform: translateX(-50%) translateY(12px);
-      min-width: 92px;
-      padding: 10px 12px;
-      border: 3px solid rgba(255,130,170,.72);
-      background: #ffe6f2;
-      color: #6b1537;
-      border-radius: 12px;
-      font-family: 'Press Start 2P', cursive;
-      font-size: .55rem;
-      line-height: 1.5;
-      text-align: center;
-      box-shadow: 0 6px 0 rgba(0,0,0,.22), 0 0 20px rgba(255,130,170,.28);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .35s ease, transform .35s ease;
-      z-index: 18;
-    }
-    .study-monkey-love::after {
-      content:''; position:absolute; left:50%; bottom:-8px;
-      width:12px; height:12px; transform:translateX(-50%) rotate(45deg);
-      background:#ffe6f2;
-      border-right:3px solid rgba(255,130,170,.72);
-      border-bottom:3px solid rgba(255,130,170,.72);
-    }
-    .study-monkey-love.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .study-kiss {
-      position: absolute; left: calc(50% - 162px); bottom: 282px;
-      color: #ff86aa; font-size: 2.8rem;
-      text-shadow: 0 0 18px rgba(255,130,170,.9);
-      opacity: 0; z-index: 12;
-      font-family: 'Dancing Script', cursive;
-    }
-    .study-kiss.show { animation: studyKissPop 1.3s ease forwards; }
-    @keyframes studyKissPop {
-      0% { opacity: 0; transform: scale(.2) translateY(16px); }
-      35% { opacity: 1; transform: scale(1.25) translateY(0); }
-      100% { opacity: 0; transform: scale(1.8) translateY(-44px); }
-    }
-    .study-message-panel {
-      position: absolute; inset: 0; z-index: 30;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 20px; padding: 28px;
-      background: rgba(8,13,28,.9);
-      opacity: 0; visibility: hidden; pointer-events: none;
-      transition: opacity .9s ease, visibility .9s ease;
-    }
-    .study-message-panel.show { opacity: 1; visibility: visible; pointer-events: auto; }
-    .study-message-panel h3 {
-      color: #ffe37a;
-      font-size: clamp(.8rem, 3vw, 1.45rem);
-      text-align: center; line-height: 1.8;
-      text-shadow: 0 0 20px rgba(255,220,90,.62);
-    }
-    .study-message-panel p {
-      max-width: 760px;
-      color: #dff8ff;
-      font-family: 'Lora', serif;
-      font-size: clamp(1rem, 2.8vw, 1.45rem);
-      line-height: 1.75;
-      text-align: center;
-    }
-    .study-message-panel .study-pride {
-      color: #ffb7cf;
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(1.6rem, 5vw, 3rem);
-      line-height: 1.15;
-    }
-    .study-photos {
-      background: rgba(8, 13, 28, .95);
-    }
-    .study-photos .photos-title { color: #ffe37a; text-shadow: 0 0 24px rgba(255,220,90,.55); }
-    .study-photos .selector-photo-frame {
-      background: linear-gradient(145deg, rgba(255,230,120,.18), rgba(110,210,255,.12));
-      border-color: rgba(255,220,110,.54);
-      box-shadow: 0 14px 52px rgba(0,130,220,.28), 0 4px 18px rgba(0,0,0,.55), inset 0 0 28px rgba(255,220,110,.1);
-    }
-    .study-photos .selector-photo-caption { color: rgba(230,248,255,.86); }
-    .study-photos .photos-btn {
-      background: linear-gradient(135deg, rgba(255,210,90,.45), rgba(80,160,210,.5));
-      border-color: rgba(255,220,110,.58);
-    }
-    .study-photos .photos-counter { color: rgba(230,248,255,.76); }
-    .study-photos .photos-back-btn {
-      color: #fff7c5;
-      background: linear-gradient(135deg, rgba(78,57,104,.76), rgba(22,70,100,.76));
-      border-color: rgba(255,220,110,.58);
-    }
-
-    /* ===========================================================
-       TARAPOTO TRIP SCENE
-    =========================================================== */
-    .scene-tarapoto {
-      position: fixed; inset: 0; z-index: 99;
-      background: linear-gradient(180deg, #87CEEB 0%, #5aaf6a 55%, #2d7a3d 100%);
-      display: flex; flex-direction: column; align-items: center;
-      opacity: 0; visibility: hidden; pointer-events: none;
-      transition: opacity 1s ease, visibility 1s ease;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    .scene-tarapoto.visible { opacity: 1; visibility: visible; pointer-events: auto; }
-
-    /* ── Sky ── */
-    .tarapoto-sky {
-      position: absolute; inset: 0; z-index: 0;
-      background: linear-gradient(180deg,
-        #4a90d9 0%,
-        #87CEEB 35%,
-        #b0e0f0 55%,
-        #d4f0d4 70%,
-        #6abf6a 85%,
-        #3a8a3a 100%);
-      transition: background 2s ease;
-    }
-    /* Sky changes per phase */
-    .scene-tarapoto.phase-river .tarapoto-sky {
-      background: linear-gradient(180deg,
-        #3a70b0 0%,
-        #6aafcf 35%,
-        #90d0d0 55%,
-        #b0d8b8 70%,
-        #50a850 85%,
-        #2a7a2a 100%);
-    }
-    .scene-tarapoto.phase-lagoon .tarapoto-sky {
-      background: linear-gradient(180deg,
-        #2a60a0 0%,
-        #5098b8 35%,
-        #78b8c8 55%,
-        #98c8a8 70%,
-        #409840 85%,
-        #1a6a1a 100%);
-    }
-    .scene-tarapoto.phase-rain .tarapoto-sky {
-      background: linear-gradient(180deg,
-        #3a4a5a 0%,
-        #5a6a7a 35%,
-        #6a7a8a 55%,
-        #7a8a7a 70%,
-        #4a6a4a 85%,
-        #2a4a2a 100%);
-    }
-
-    /* ── Sun ── */
-    .tarapoto-sun {
-      position: absolute; top: 6%; right: 12%;
-      width: 70px; height: 70px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 40% 40%, #fff7a0, #ffdd00 40%, #ffaa00 80%);
-      box-shadow:
-        0 0 40px rgba(255,220,0,.6),
-        0 0 80px rgba(255,200,0,.3),
-        0 0 120px rgba(255,180,0,.15);
-      z-index: 1;
-      transition: opacity 2s ease, transform 2s ease;
-    }
-    .tarapoto-sun::before {
-      content: '';
-      position: absolute; inset: -20px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,220,0,.15) 0%, transparent 70%);
-      animation: sunPulse 4s ease-in-out infinite;
-    }
-    @keyframes sunPulse {
-      0%,100% { transform: scale(1); opacity: .6; }
-      50% { transform: scale(1.2); opacity: 1; }
-    }
-    /* Sun rays */
-    .tarapoto-sun::after {
-      content: '';
-      position: absolute; inset: -15px;
-      border-radius: 50%;
-      background:
-        conic-gradient(from 0deg,
-          rgba(255,220,0,.3) 0deg, transparent 15deg,
-          rgba(255,220,0,.3) 30deg, transparent 45deg,
-          rgba(255,220,0,.3) 60deg, transparent 75deg,
-          rgba(255,220,0,.3) 90deg, transparent 105deg,
-          rgba(255,220,0,.3) 120deg, transparent 135deg,
-          rgba(255,220,0,.3) 150deg, transparent 165deg,
-          rgba(255,220,0,.3) 180deg, transparent 195deg,
-          rgba(255,220,0,.3) 210deg, transparent 225deg,
-          rgba(255,220,0,.3) 240deg, transparent 255deg,
-          rgba(255,220,0,.3) 270deg, transparent 285deg,
-          rgba(255,220,0,.3) 300deg, transparent 315deg,
-          rgba(255,220,0,.3) 330deg, transparent 345deg,
-          rgba(255,220,0,.3) 360deg);
-      animation: sunRotate 20s linear infinite;
-    }
-    @keyframes sunRotate { to { transform: rotate(360deg); } }
-    /* Hide sun during rain */
-    .scene-tarapoto.phase-rain .tarapoto-sun { opacity: 0; transform: scale(.5); }
-
-    /* ── Clouds ── */
-    .tarapoto-clouds {
-      position: absolute; inset: 0; z-index: 1; pointer-events: none;
-    }
-    .sky-cloud {
-      position: absolute;
-      border-radius: 50px;
-      background: rgba(255,255,255,.5);
-      transition: background 2s ease, opacity 2s ease;
-    }
-    .sky-cloud::before, .sky-cloud::after {
-      content: '';
-      position: absolute;
-      border-radius: 50%;
-      background: inherit;
-    }
-    /* Cloud 1 */
-    .sky-cloud.c1 {
-      width: 160px; height: 45px;
-      top: 8%; left: 5%;
-      animation: cloudFloat1 30s linear infinite;
-    }
-    .sky-cloud.c1::before { width: 55px; height: 55px; top: -25px; left: 20px; }
-    .sky-cloud.c1::after { width: 70px; height: 70px; top: -35px; left: 55px; }
-    /* Cloud 2 */
-    .sky-cloud.c2 {
-      width: 130px; height: 38px;
-      top: 14%; left: 55%;
-      animation: cloudFloat2 25s linear infinite;
-      animation-delay: -10s;
-    }
-    .sky-cloud.c2::before { width: 45px; height: 45px; top: -22px; left: 15px; }
-    .sky-cloud.c2::after { width: 55px; height: 55px; top: -28px; left: 45px; }
-    /* Cloud 3 */
-    .sky-cloud.c3 {
-      width: 120px; height: 35px;
-      top: 20%; left: 30%;
-      animation: cloudFloat3 35s linear infinite;
-      animation-delay: -20s;
-    }
-    .sky-cloud.c3::before { width: 40px; height: 40px; top: -20px; left: 12px; }
-    .sky-cloud.c3::after { width: 50px; height: 50px; top: -25px; left: 40px; }
-    @keyframes cloudFloat1 { 0%{transform:translateX(-200px)} 100%{transform:translateX(calc(100vw + 200px))} }
-    @keyframes cloudFloat2 { 0%{transform:translateX(-180px)} 100%{transform:translateX(calc(100vw + 180px))} }
-    @keyframes cloudFloat3 { 0%{transform:translateX(-160px)} 100%{transform:translateX(calc(100vw + 160px))} }
-
-    /* Dark clouds during rain */
-    .scene-tarapoto.phase-rain .sky-cloud {
-      background: rgba(80,90,100,.7);
-    }
-    .scene-tarapoto.phase-rain .sky-cloud::before,
-    .scene-tarapoto.phase-rain .sky-cloud::after {
-      background: rgba(80,90,100,.7);
-    }
-
-    /* ── Mountains ── */
-    .tarapoto-mountains {
-      position: absolute; bottom: 26%; left: 0; right: 0;
-      height: 48%; z-index: 1; pointer-events: none;
-      transition: filter 2s ease;
-    }
-    .mountains-svg { width: 100%; height: 100%; display: block; }
-    /* Rain: fade and desaturate mountains */
-    .scene-tarapoto.phase-rain .tarapoto-mountains {
-      filter: brightness(0.58) saturate(0.5);
-    }
-
-    /* ── Trees / Jungle midground ── */
-    .tarapoto-trees {
-      position: absolute; bottom: 18%; left: 0; right: 0;
-      height: 30%; z-index: 2; pointer-events: none;
-    }
-    .jungle-tree {
-      position: absolute; bottom: 0;
-      width: 8px;
-      background: linear-gradient(180deg, #2a5a1a, #1a3a0a);
-      border-radius: 4px;
-    }
-    .jungle-tree::before {
-      content: '🌴';
-      position: absolute; top: -28px; left: 50%;
-      transform: translateX(-50%);
-      font-size: 2rem;
-    }
-    .jungle-tree.jt1 { left: 5%;  height: 120px; }
-    .jungle-tree.jt2 { left: 15%; height: 150px; }
-    .jungle-tree.jt3 { right: 8%; height: 130px; }
-    .jungle-tree.jt4 { right: 18%; height: 110px; }
-    .jungle-tree.jt5 { left: 50%; height: 90px; }
-
-    /* ── Ground ── */
-    .tarapoto-ground {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      height: 22%; z-index: 3;
-      background:
-        linear-gradient(180deg,
-          #7a5c2e 0%,
-          #6b4e24 30%,
-          #5a3e18 60%,
-          #4a3010 100%);
-      overflow: hidden;
-    }
-    .tarapoto-ground::before {
-      content: '';
-      position: absolute; top: -20px; left: 0; right: 0; height: 40px;
-      background:
-        repeating-linear-gradient(90deg,
-          transparent 0px, rgba(60,160,40,.3) 10px, transparent 20px);
-      animation: grassWave 4s ease-in-out infinite;
-    }
-    @keyframes grassWave {
-      0%,100% { transform: translateX(0); }
-      50% { transform: translateX(10px); }
-    }
-
-    /* ── Rain ── */
-    .tarapoto-rain {
-      position: absolute; inset: 0; z-index: 7; pointer-events: none;
-      opacity: 0; transition: opacity 1.5s ease;
-      overflow: hidden;
-    }
-    .scene-tarapoto.phase-rain .tarapoto-rain { opacity: 1; }
-
-    /* Rain drops generated via JS */
-    .rain-drop {
-      position: absolute;
-      width: 2px;
-      background: linear-gradient(180deg, transparent, rgba(170,210,255,.55));
-      border-radius: 0 0 2px 2px;
-      animation: rainDropFall linear infinite;
-    }
-    @keyframes rainDropFall {
-      0% { transform: translateY(-20px); opacity: 0; }
-      5% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(100vh); opacity: 0; }
-    }
-
-    /* Rain mist overlay */
-    .tarapoto-rain::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: rgba(150,180,210,.12);
-      backdrop-filter: blur(1px);
-      -webkit-backdrop-filter: blur(1px);
-    }
-
-    /* Floating jungle elements */
-    .tarapoto-float {
-      position: absolute; font-size: clamp(1.2rem, 2.8vw, 1.8rem);
-      opacity: .55; pointer-events: none; z-index: 4;
-      animation: tarapotoFloat 9s ease-in-out infinite;
-      filter: drop-shadow(0 0 6px rgba(0,180,80,.35));
-    }
-    .tarapoto-float.t1 { left: 6%;  top: 55%; animation-delay: -1s; }
-    .tarapoto-float.t2 { left: 18%; top: 25%; animation-delay: -3.5s; }
-    .tarapoto-float.t3 { right: 10%; top: 50%; animation-delay: -2s; }
-    .tarapoto-float.t4 { right: 22%; top: 18%; animation-delay: -5s; }
-    .tarapoto-float.t5 { left: 45%; top: 12%; animation-delay: -4s; }
-    .tarapoto-float.t6 { left: 70%; top: 62%; animation-delay: -6s; }
-    @keyframes tarapotoFloat {
-      0%,100% { transform: translateY(0) rotate(-5deg); opacity: .45; }
-      50% { transform: translateY(-16px) rotate(5deg); opacity: .8; }
-    }
-
-    /* Title */
-    .tarapoto-title {
-      position: relative; z-index: 10;
-      margin-top: 3vh;
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(1.6rem, 5vw, 2.8rem);
-      font-weight: 700;
-      color: #fff;
-      text-shadow: 0 2px 8px rgba(0,0,0,.4), 0 0 25px rgba(0,200,120,.7);
-      opacity: 0; text-align: center;
-      padding: 0 16px;
-    }
-    .tarapoto-title.show { animation: phraseReveal 1s ease forwards; }
-
-    /* Narrative text (single reusable element) */
-    .tarapoto-narrative {
-      position: absolute; z-index: 10;
-      top: 12%; left: 50%; transform: translate(-50%, 0);
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(1.1rem, 3vw, 1.5rem);
-      font-weight: 700;
-      color: #fff;
-      text-shadow: 0 2px 6px rgba(0,0,0,.5);
-      opacity: 0; pointer-events: none;
-      text-align: center;
-      max-width: 75vw;
-      padding: 14px 24px;
-      background: rgba(0,60,30,.65);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 18px;
-      border: 1px solid rgba(0,180,100,.35);
-      line-height: 1.6;
-      white-space: normal;
-    }
-    .tarapoto-narrative.show { animation: phraseReveal 1s ease forwards; }
-
-    /* ── River ── */
-    .tarapoto-river {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      height: 18%; z-index: 5;
-      opacity: 0; transition: opacity 1.2s ease;
-      background: linear-gradient(180deg,
-        rgba(40,140,190,.5) 0%,
-        rgba(30,120,170,.65) 40%,
-        rgba(20,100,150,.75) 100%);
-      overflow: hidden;
-      border-top: 3px solid rgba(100,200,255,.3);
-    }
-    .tarapoto-river.show { opacity: 1; }
-    .tarapoto-river::before {
-      content: '';
-      position: absolute; top: 0; left: -10%; width: 120%; height: 60%;
-      background: repeating-linear-gradient(
-        90deg,
-        rgba(100,200,255,.15) 0px,
-        rgba(80,180,240,.3) 40px,
-        rgba(60,160,220,.1) 80px,
-        rgba(100,200,255,.2) 120px
-      );
-      animation: riverFlow 2.5s linear infinite;
-    }
-    .tarapoto-river::after {
-      content: '';
-      position: absolute; top: 15%; left: 0; width: 100%; height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(200,240,255,.6), transparent);
-      animation: riverShimmer 2s ease-in-out infinite;
-    }
-    @keyframes riverFlow { to { transform: translateX(-80px); } }
-    @keyframes riverShimmer {
-      0%,100% { opacity: .3; transform: translateX(-30px); }
-      50% { opacity: .8; transform: translateX(30px); }
-    }
-    /* River splashes */
-    .river-splash {
-      position: absolute; bottom: 20%; width: 20px; height: 20px;
-      background: rgba(150,220,255,.5); border-radius: 50%;
-      animation: splashPop 1.5s ease-in-out infinite;
-    }
-    .river-splash.s2 { left: 30%; animation-delay: .5s; }
-    .river-splash.s3 { left: 65%; animation-delay: 1s; }
-    @keyframes splashPop {
-      0%,100% { transform: scale(.5) translateY(0); opacity: .3; }
-      50% { transform: scale(1.2) translateY(-10px); opacity: .8; }
-    }
-
-    /* ── Lagoon ── */
-    .tarapoto-lagoon {
-      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-      width: 100%; height: 36%; z-index: 6;
-      opacity: 0; transition: opacity 1.2s ease;
-      border-radius: 65% 65% 0 0;
-      overflow: hidden;
-    }
-    .tarapoto-lagoon.show { opacity: 1; }
-    /* Lagoon water body */
-    .tarapoto-lagoon::before {
-      content: '';
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse at 30% 50%, #007fc4 0%, #005a98 40%),
-        radial-gradient(ellipse at 70% 60%, #0068a8 0%, #004880 38%),
-        radial-gradient(ellipse at 50% 30%, #0088cc 0%, #005890 45%),
-        linear-gradient(180deg, #006090 0%, #003d6e 100%);
-      border-radius: 65% 65% 0 0;
-    }
-    /* Lagoon sandy shore */
-    .tarapoto-lagoon::after {
-      content: '';
-      position: absolute; bottom: 0; left: -5%; right: -5%; height: 20%;
-      background: linear-gradient(180deg, transparent, rgba(80,50,20,.35) 40%, rgba(90,60,15,.55));
-      border-radius: 50% 50% 0 0;
-    }
-    .lagoon-shimmer {
-      position: absolute; top: 12%; left: 10%; right: 10%; height: 40%;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 22% 32%, rgba(140,230,255,.6) 0%, transparent 28%),
-        radial-gradient(circle at 52% 58%, rgba(120,210,255,.55) 0%, transparent 22%),
-        radial-gradient(circle at 78% 28%, rgba(160,240,255,.5) 0%, transparent 26%);
-      animation: lagoonGlisten 3.5s ease-in-out infinite;
-      z-index: 1;
-    }
-    .lagoon-shimmer.s2 {
-      position: absolute; top: 45%; left: 5%; right: 5%; height: 28%;
-      border-radius: 50%;
-      background: radial-gradient(circle at 62% 42%, rgba(100,200,255,.4) 0%, transparent 38%);
-      animation: lagoonGlisten 4.8s ease-in-out infinite;
-      animation-delay: -2.2s;
-      z-index: 1;
-    }
-    /* Lagoon ripples */
-    .lagoon-ripple {
-      position: absolute;
-      border-radius: 50%;
-      border: 1.5px solid rgba(180,235,255,.3);
-      animation: rippleExpand 3s ease-in-out infinite;
-    }
-    .lagoon-ripple:nth-child(2) { width: 50px; height: 14px; top: 28%; left: 22%; animation-delay: 0s; }
-    .lagoon-ripple:nth-child(3) { width: 68px; height: 18px; top: 42%; left: 48%; animation-delay: 1s; }
-    .lagoon-ripple:nth-child(4) { width: 42px; height: 12px; top: 32%; left: 68%; animation-delay: 2s; }
-    .lagoon-ripple.r4 { width: 58px; height: 16px; top: 58%; left: 32%; animation-delay: 1.5s; }
-    .lagoon-ripple.r5 { width: 38px; height: 10px; top: 20%; left: 58%; animation-delay: 2.8s; }
-    /* Lily pads floating on lagoon */
-    .lagoon-lily {
-      position: absolute;
-      font-size: clamp(1.4rem, 2.8vw, 2.2rem);
-      z-index: 2;
-      filter: drop-shadow(0 3px 8px rgba(0,0,0,.35));
-      animation: lilyFloat 5s ease-in-out infinite;
-    }
-    .lagoon-lily.l1 { bottom: 30%; left: 14%; animation-delay: 0s; }
-    .lagoon-lily.l2 { bottom: 50%; right: 10%; animation-delay: -1.8s; }
-    .lagoon-lily.l3 { bottom: 65%; left: 42%; animation-delay: -3.2s; }
-    .lagoon-lily.l4 { bottom: 22%; right: 28%; animation-delay: -2.5s; }
-    @keyframes lilyFloat {
-      0%,100% { transform: translateY(0) rotate(-4deg); }
-      50% { transform: translateY(-7px) rotate(4deg); }
-    }
-    /* Fish swimming */
-    .lagoon-fish {
-      position: absolute;
-      font-size: clamp(.85rem, 1.6vw, 1.3rem);
-      z-index: 2; opacity: .75;
-    }
-    .lagoon-fish.f1 { bottom: 18%; left: 18%; animation: fishSwimL 7s ease-in-out infinite; }
-    .lagoon-fish.f2 { bottom: 38%; right: 22%; animation: fishSwimR 9s ease-in-out infinite; animation-delay: -3s; }
-    @keyframes fishSwimL {
-      0%,100% { transform: translateX(0); opacity: .6; }
-      40% { transform: translateX(40px); opacity: .9; }
-      80% { transform: translateX(20px); opacity: .75; }
-    }
-    @keyframes fishSwimR {
-      0%,100% { transform: scaleX(-1) translateX(0); opacity: .6; }
-      40% { transform: scaleX(-1) translateX(-35px); opacity: .9; }
-      80% { transform: scaleX(-1) translateX(-15px); opacity: .75; }
-    }
-    /* Vegetation around lagoon edge */
-    .lagoon-veg {
-      position: absolute;
-      font-size: clamp(1.2rem, 2.4vw, 1.8rem);
-      bottom: 5%; z-index: 3;
-      filter: drop-shadow(0 2px 6px rgba(0,50,20,.5));
-      animation: vegSway 3.5s ease-in-out infinite alternate;
-    }
-    .lagoon-veg.v1 { left: 1%; animation-delay: 0s; }
-    .lagoon-veg.v2 { left: 6%; animation-delay: -.8s; }
-    .lagoon-veg.v3 { right: 2%; animation-delay: -.3s; }
-    .lagoon-veg.v4 { right: 8%; animation-delay: -1.2s; }
-    @keyframes vegSway {
-      0% { transform: rotate(-8deg) translateY(0); }
-      100% { transform: rotate(6deg) translateY(-4px); }
-    }
-    @keyframes rippleExpand {
-      0%,100% { transform: scale(1); opacity: .25; }
-      50% { transform: scale(1.5); opacity: .65; }
-    }
-    @keyframes lagoonGlisten {
-      0%,100% { opacity: .4; transform: scale(1); }
-      50% { opacity: .85; transform: scale(1.06); }
-    }
-
-    /* ── Motocross Motorcycle ── */
-    .tarapoto-moto {
-      position: absolute; bottom: 22%; left: -420px;
-      z-index: 12; opacity: 0;
-      transition: opacity 1s ease;
-      width: 230px; height: 200px;
-    }
-    .tarapoto-moto.show { opacity: 1; }
-    .tarapoto-moto.riding {
-      animation: motoRide 6s linear forwards;
-    }
-    @keyframes motoRide {
-      0% { left: -400px; }
-      100% { left: calc(100% + 100px); }
-    }
-    .moto-body {
-      position: absolute; inset: 0;
-    }
-
-    /* ── Riders ── */
-    .moto-rider {
-      position: absolute; z-index: 20 !important; opacity: 1 !important; pointer-events: none;
-    }
-    /* Monkey driving — sits on forward seat, leans toward handlebars */
-    .moto-rider.driver {
-      bottom: 62px; left: 112px;
-      z-index: 22 !important;
-      transform: scale(1.2) rotate(-18deg);
-      transform-origin: bottom center;
-    }
-    .moto-rider.driver .monkey-body { animation: motoDriverBounce .35s ease-in-out infinite; }
-    @keyframes motoDriverBounce {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-3px); }
-    }
-    .moto-rider.driver .m-arm.l { transform: rotate(-42deg) translateX(8px) !important; }
-    .moto-rider.driver .m-arm.r { transform: rotate(-42deg) translateX(-8px) !important; }
-    .moto-rider.driver .m-leg.l { transform: rotate(-30deg) !important; }
-    .moto-rider.driver .m-leg.r { transform: rotate(30deg) !important; }
-    /* Princess passenger — holds monkey from behind */
-    .moto-rider.passenger {
-      bottom: 58px; left: 72px;
-      transform: scale(1.05) rotate(-6deg);
-      transform-origin: bottom center;
-    }
-    .moto-rider.passenger .princess {
-      animation: motoPassengerBounce .35s ease-in-out infinite;
-    }
-    @keyframes motoPassengerBounce {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-3px); }
-    }
-    .moto-rider.passenger .princess-arm.left {
-      animation: princessHoldL 2.2s ease-in-out infinite !important;
-    }
-    .moto-rider.passenger .princess-arm.right {
-      animation: princessHoldR 2.2s ease-in-out infinite !important;
-    }
-    @keyframes princessHoldL {
-      0%,100% { transform: rotate(-45deg); }
-      50% { transform: rotate(-55deg); }
-    }
-    @keyframes princessHoldR {
-      0%,100% { transform: rotate(-35deg); }
-      50% { transform: rotate(-45deg); }
-    }
-
-    /* SVG motocross bike — wheel spin & exhaust */
-    .tarapoto-moto.riding .moto-wheel-rear,
-    .tarapoto-moto.riding .moto-wheel-front {
-      animation: wheelSpin .35s linear infinite;
-      transform-box: fill-box;
-      transform-origin: center;
-    }
-    @keyframes wheelSpin { to { transform: rotate(360deg); } }
-    .moto-exhaust-puff { animation: exhaustPuff .5s ease-in-out infinite; }
-    @keyframes exhaustPuff {
-      0%,100% { opacity: .35; transform: translateX(0) scale(.8); }
-      50% { opacity: .75; transform: translateX(-6px) scale(1.1); }
-    }
-    @keyframes mudFly {
-      0% { opacity: .8; transform: translate(0,0) scale(1); }
-      100% { opacity: 0; transform: translate(-20px,-40px) scale(0); }
-    }
-
-    /* ── Characters: high z-index so they're always visible ── */
-
-    /* Monkey in tarapoto scene */
-    .tarapoto-monkey-wrap {
-      position: absolute; bottom: 20%; left: -150px;
-      z-index: 15; opacity: 0;
-      transition: opacity .8s ease, left .1s linear;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,.35));
-    }
-    .tarapoto-monkey-wrap.show { opacity: 1; }
-    .tarapoto-monkey-wrap.walking .monkey-body { animation: monkeyBounce .35s ease-in-out infinite; }
-    .tarapoto-monkey-wrap.walking .m-arm.l { animation: armWalkL .35s ease-in-out infinite; }
-    .tarapoto-monkey-wrap.walking .m-arm.r { animation: armWalkR .35s ease-in-out infinite; }
-    .tarapoto-monkey-wrap.walking .m-leg.l { animation: legL .35s ease-in-out infinite; }
-    .tarapoto-monkey-wrap.walking .m-leg.r { animation: legR .35s ease-in-out infinite; }
-    .tarapoto-monkey-wrap .monkey-speech {
-      position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
-      min-width: 180px; max-width: 280px;
-      padding: 10px 18px;
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(1.05rem, 2.8vw, 1.35rem);
-      line-height: 1.5;
-      color: #004a2a;
-      background: linear-gradient(180deg, #e8fff0 0%, #c0f0d8 100%);
-      border: 1.5px solid rgba(0,180,100,.5);
-      border-radius: 14px;
-      box-shadow: 0 6px 18px rgba(0,120,60,.2);
-      text-align: center;
-      white-space: normal;
-      word-break: keep-all;
-      opacity: 0; pointer-events: none;
-      transition: opacity .5s ease;
-      z-index: 30;
-    }
-    .tarapoto-monkey-wrap .monkey-speech::after {
-      content: '';
-      position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-      border: 7px solid transparent;
-      border-top-color: #c0f0d8;
-    }
-    .tarapoto-monkey-wrap .monkey-speech.show { opacity: 1; }
-
-    /* Princess in tarapoto scene */
-    .tarapoto-princess-wrap {
-      position: absolute; bottom: 20%; left: -280px;
-      z-index: 14; opacity: 0;
-      transition: opacity .8s ease, left .1s linear;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,.35));
-    }
-    .tarapoto-princess-wrap.show { opacity: 1; }
-    .tarapoto-princess-wrap.walking .princess { animation: princessWalkBob .5s ease-in-out infinite; }
-    .tarapoto-princess-wrap.walking .princess-arm.left { animation: pArmWalkL .45s ease-in-out infinite; }
-    .tarapoto-princess-wrap.walking .princess-arm.right { animation: pArmWalkR .45s ease-in-out infinite; }
-    @keyframes princessWalkBob {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-    @keyframes pArmWalkL {
-      0%,100% { transform: rotate(10deg); }
-      50% { transform: rotate(-10deg); }
-    }
-    @keyframes pArmWalkR {
-      0%,100% { transform: rotate(-10deg); }
-      50% { transform: rotate(10deg); }
-    }
-
-    /* Photo slideshow — fullscreen portal */
-    .tarapoto-photos {
-      position: fixed; inset: 0;
-      z-index: 10001;
-      display: none;          /* toggled by JS via classList */
-      flex-direction: column; align-items: center; justify-content: center;
-      gap: 0;
-      background: rgba(0, 20, 10, .94);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-    .tarapoto-photos.visible {
-      display: flex;
-      animation: photosAppear .8s ease both;
-    }
-    @keyframes photosAppear {
-      from { opacity: 0; transform: scale(.97); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-
-    .tarapoto-photos .photos-title {
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(1.5rem, 4vw, 2.2rem);
-      font-weight: 700;
-      color: #80ffcc;
-      text-shadow: 0 0 24px rgba(0,220,150,.55), 0 2px 8px rgba(0,0,0,.4);
-      margin-bottom: 18px;
-      text-align: center;
-    }
-
-    .tarapoto-photos .photo-slide {
-      display: none;
-    }
-    .tarapoto-photos .photo-slide.active {
-      display: block;
-      animation: photoSlideIn .65s cubic-bezier(.34,1.56,.64,1) both;
-    }
-    @keyframes photoSlideIn {
-      0% { opacity: 0; transform: scale(.82) rotate(-4deg); }
-      100% { opacity: 1; transform: scale(1) rotate(-1.5deg); }
-    }
-
-    /* Override photo frame style for jungle theme */
-    .tarapoto-photos .selector-photo-frame {
-      padding: 10px;
-      background: linear-gradient(145deg, rgba(0,120,80,.18), rgba(0,60,40,.12));
-      border-radius: 20px;
-      border: 2px solid rgba(0,220,140,.45);
-      box-shadow:
-        0 14px 52px rgba(0,160,90,.35),
-        0 4px 18px rgba(0,0,0,.55),
-        inset 0 0 28px rgba(0,200,120,.1);
-      transform: rotate(-1.5deg);
-      transition: transform .5s cubic-bezier(.34,1.56,.64,1);
-    }
-    .tarapoto-photos .selector-photo-frame:hover { transform: rotate(0deg) scale(1.04); }
-    .tarapoto-photos .selector-photo-frame img {
-      display: block;
-      width: clamp(240px, 52vw, 420px);
-      height: clamp(200px, 38vh, 340px);
-      object-fit: cover;
-      border-radius: 14px;
-    }
-    .tarapoto-photos .selector-photo-caption {
-      color: rgba(180,255,220,.85);
-      margin-top: 10px;
-      text-align: center;
-    }
-
-    .tarapoto-photos .photos-nav {
-      display: flex; justify-content: center; gap: 18px; margin-top: 14px;
-    }
-
-    .tarapoto-photos .photos-btn {
-      background: linear-gradient(135deg, rgba(0,160,90,.55), rgba(0,110,60,.55));
-      border: 1.5px solid rgba(0,220,140,.55);
-      color: #fff;
-      font-size: 1.4rem;
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all .3s;
-      box-shadow: 0 4px 16px rgba(0,180,100,.3);
-      backdrop-filter: blur(6px);
-    }
-    .tarapoto-photos .photos-btn:hover {
-      background: linear-gradient(135deg, rgba(0,200,120,.78), rgba(0,150,85,.78));
-      box-shadow: 0 0 22px rgba(0,210,130,.55);
-      transform: scale(1.1);
-    }
-
-    .tarapoto-photos .photos-counter {
-      margin-top: 10px;
-      font-family: 'Lora', serif;
-      font-size: .88rem;
-      color: rgba(180,255,220,.7);
-      letter-spacing: 1.2px;
-    }
-
-    .photos-back-btn {
-      margin-top: 22px;
-      padding: 12px 32px;
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #e0ffe8;
-      background: linear-gradient(135deg, rgba(0,130,70,.7), rgba(0,80,40,.7));
-      border: 1.5px solid rgba(0,220,140,.55);
-      border-radius: 30px;
-      cursor: pointer;
-      box-shadow: 0 4px 18px rgba(0,180,100,.35);
-      backdrop-filter: blur(6px);
-      transition: all .3s;
-    }
-    .photos-back-btn:hover {
-      background: linear-gradient(135deg, rgba(0,180,100,.9), rgba(0,120,60,.9));
-      box-shadow: 0 0 24px rgba(0,210,130,.6);
-      transform: translateY(-2px) scale(1.04);
-    }
-
-    /* Final message */
-    .tarapoto-final-message {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      z-index: 200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-    }
-    .tarapoto-final-message.show {
-      display: flex;
-      pointer-events: auto;
-    }
-    .tarapoto-final-message-inner {
-      width: 92%; max-width: 460px;
-      max-height: 90vh; overflow-y: auto;
-      text-align: center;
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(.95rem, 2.5vw, 1.2rem);
-      line-height: 1.65;
-      color: #e0ffe8;
-      text-shadow: 0 2px 8px rgba(0,0,0,.5);
-      padding: 18px 24px 24px;
-      background: rgba(0,50,30,.93);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 20px;
-      border: 1.5px solid rgba(0,180,100,.4);
-      box-shadow: 0 12px 48px rgba(0,0,0,.5);
-    }
-    .tarapoto-final-message.show .tarapoto-final-message-inner {
-      animation: finalReveal 1s ease forwards;
-    }
-    @keyframes finalReveal {
-      0%  { opacity:0; transform: translateY(20px) scale(.93); }
-      100%{ opacity:1; transform: translateY(0)    scale(1);   }
-    }
-    .tarapoto-final-message .final-photo {
-      margin-bottom: 14px;
-    }
-    .tarapoto-final-message .final-photo img {
-      width: clamp(180px, 70%, 340px);
-      height: clamp(130px, 22vh, 200px);
-      object-fit: cover;
-      border-radius: 14px;
-      border: 2.5px solid rgba(0,220,140,.5);
-      box-shadow: 0 8px 32px rgba(0,0,0,.55), 0 0 0 4px rgba(0,180,100,.15);
-      display: block; margin: 0 auto;
-    }
-
-    /* ===== PRINCESS ===== */
-    .princess-container {
-      position:absolute; bottom:22%; right:16%; z-index:9;
-      opacity:0; transform:scale(.85);
-      transition:opacity 1.2s ease,transform 1.2s ease;
-    }
-    .princess-container.show { opacity:1; transform:scale(1); }
-    .princess { position:relative; width:100px; height:130px; }
-
-    .princess-head {
-      width:48px; height:46px; background:radial-gradient(circle at 40% 35%,#ffe8cc,#ffe0bd);
-      border-radius:50%; position:absolute; top:4px; left:26px; z-index:3;
-    }
-    .princess-hair-top {
-      position:absolute; top:-8px; left:16px; width:68px; height:38px;
-      background:linear-gradient(180deg,#f7dc6f,#f0c929);
-      border-radius:50% 50% 25% 25%; z-index:4;
-    }
-    .princess-hair-side-l {
-      position:absolute; top:16px; left:10px; width:22px; height:60px;
-      background:linear-gradient(180deg,#f7dc6f,#e8b90a);
-      border-radius:50% 20% 40% 50%; z-index:2;
-    }
-    .princess-hair-side-r {
-      position:absolute; top:16px; right:10px; width:22px; height:60px;
-      background:linear-gradient(180deg,#f7dc6f,#e8b90a);
-      border-radius:20% 50% 50% 40%; z-index:2;
-    }
-    .princess-curl {
-      position:absolute; border-radius:50%; z-index:2;
-      border:5px solid #f5d442; border-color:#f5d442 transparent transparent transparent;
-    }
-    .princess-curl:nth-child(1) { width:18px; height:22px; top:50px; left:6px; transform:rotate(-20deg); }
-    .princess-curl:nth-child(2) { width:16px; height:30px; top:55px; left:2px; transform:rotate(-30deg); border-color:#e6c433 transparent transparent transparent; }
-    .princess-curl:nth-child(3) { width:14px; height:26px; top:62px; left:10px; transform:rotate(-10deg); border-color:#dbb620 transparent transparent transparent; }
-    .princess-curl:nth-child(4) { width:18px; height:22px; top:50px; right:6px; transform:rotate(20deg); }
-    .princess-curl:nth-child(5) { width:16px; height:30px; top:55px; right:2px; transform:rotate(30deg); border-color:#e6c433 transparent transparent transparent; }
-    .princess-curl:nth-child(6) { width:14px; height:26px; top:62px; right:10px; transform:rotate(10deg); border-color:#dbb620 transparent transparent transparent; }
-    .princess-curl:nth-child(7) { width:12px; height:20px; top:68px; left:16px; transform:rotate(-25deg); border-color:#c9a417 transparent transparent transparent; }
-    .princess-curl:nth-child(8) { width:12px; height:20px; top:68px; right:16px; transform:rotate(25deg); border-color:#c9a417 transparent transparent transparent; }
-
-    .princess-eye { width:6px; height:8px; background:#2e86c1; border-radius:50%; position:absolute; top:16px; z-index:5; }
-    .princess-eye.left { left:13px; }
-    .princess-eye.right { right:13px; }
-    .princess-eye::after { content:''; width:2px; height:2px; background:#fff; border-radius:50%; position:absolute; top:1px; left:1.5px; }
-    .princess-eyelash { width:10px; height:5px; border:2px solid #5d4037; border-bottom:none; border-radius:10px 10px 0 0; position:absolute; top:11px; z-index:5; }
-    .princess-eyelash.left { left:10px; }
-    .princess-eyelash.right { right:10px; }
-    .princess-blush { width:9px; height:5px; background:rgba(255,130,130,.5); border-radius:50%; position:absolute; top:24px; z-index:5; }
-    .princess-blush.left { left:6px; }
-    .princess-blush.right { right:6px; }
-    .princess-mouth { width:8px; height:4px; background:#ef5350; border-radius:0 0 8px 8px; position:absolute; bottom:8px; left:20px; z-index:5; }
-    .princess-smile { display:none; }
-    .princess-container.happy .princess-mouth { display:none; }
-    .princess-container.happy .princess-smile {
-      display:block; width:16px; height:8px; border:2.5px solid #ef5350; border-top:none;
-      border-radius:0 0 16px 16px; position:absolute; bottom:6px; left:16px; z-index:5;
-    }
-
-    .princess-crown { position:absolute; top:-18px; left:26px; z-index:6; width:48px; height:22px; }
-    .princess-crown-base { width:48px; height:11px; background:linear-gradient(135deg,#ffd700,#ffa000); border-radius:2px; position:absolute; bottom:0; box-shadow:0 0 8px rgba(255,215,0,.4); }
-    .princess-crown-point { width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent; border-bottom:14px solid #ffd700; position:absolute; bottom:9px; }
-    .princess-crown-point:nth-child(2) { left:2px; }
-    .princess-crown-point:nth-child(3) { left:16px; border-bottom-color:#ffb300; }
-    .princess-crown-point:nth-child(4) { left:30px; }
-    .princess-crown-gem { width:6px; height:6px; background:#e91e63; border-radius:50%; position:absolute; bottom:2px; left:21px; box-shadow:0 0 6px #e91e63; }
-
-    .princess-dress-top {
-      width:42px; height:30px; background:linear-gradient(180deg,#e91e63,#c2185b);
-      border-radius:12px 12px 0 0; position:absolute; top:42px; left:29px; z-index:2;
-    }
-    .princess-dress-bottom {
-      width:76px; height:48px; position:absolute; top:66px; left:12px; z-index:1;
-      background:linear-gradient(180deg,#e91e63,#ad1457);
-      border-radius:0 0 50% 50%; clip-path:polygon(12% 0%,88% 0%,100% 100%,0% 100%);
-    }
-    .princess-dress-detail { position:absolute; bottom:4px; left:5%; right:5%; height:12px; border-top:2px dashed rgba(255,255,255,.25); }
-    .princess-dress-sparkle { position:absolute; font-size:.55rem; opacity:.6; }
-    .princess-dress-sparkle:nth-child(2) { top:8px; left:12px; }
-    .princess-dress-sparkle:nth-child(3) { top:20px; right:14px; }
-    .princess-dress-sparkle:nth-child(4) { top:30px; left:24px; }
-
-    .princess-arm { width:12px; height:30px; background:#ffe0bd; border-radius:6px; position:absolute; top:45px; z-index:3; transform-origin:top; }
-    .princess-arm.left { left:18px; transform:rotate(15deg); }
-    .princess-arm.right { right:18px; transform:rotate(-15deg); }
-    .princess-container.happy .princess-arm.left { animation:pJoyL 1s ease-in-out infinite; }
-    .princess-container.happy .princess-arm.right { animation:pJoyR 1s ease-in-out infinite; }
-    @keyframes pJoyL { 0%,100%{transform:rotate(15deg)} 50%{transform:rotate(-60deg) translateY(-5px)} }
-    @keyframes pJoyR { 0%,100%{transform:rotate(-15deg)} 50%{transform:rotate(60deg) translateY(-5px)} }
-    .princess-container.happy .princess { animation:pBounce .6s ease-in-out infinite; }
-    @keyframes pBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-
-    /* Received heart above princess */
-    .princess-received-heart {
-      position:absolute; top:-30px; left:50%; transform:translateX(-50%);
-      font-size:1.8rem; opacity:0; z-index:10;
-      filter:drop-shadow(0 0 10px rgba(255,80,120,.8));
-    }
-    .princess-received-heart.show {
-      opacity:1; animation:heartFloat 1s ease-in-out infinite;
-    }
-
-    /* Delivery explosion */
-    .delivery-explosion {
-      position:absolute; top:38%; left:50%; transform:translate(-50%,-50%);
-      z-index:20; pointer-events:none; opacity:0;
-    }
-    .delivery-explosion.boom { opacity:1; }
-    .big-heart-burst {
-      font-size:5.5rem; animation:burstHeart 1.8s ease forwards;
-      filter:drop-shadow(0 0 40px rgba(255,80,120,.9));
-    }
-    @keyframes burstHeart {
-      0%{transform:scale(0) rotate(-10deg);opacity:0}
-      25%{transform:scale(2) rotate(5deg);opacity:1}
-      50%{transform:scale(1.4) rotate(-3deg);opacity:1}
-      100%{transform:scale(3.5) rotate(0);opacity:0}
-    }
-    .sparkle-ring {
-      position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-      width:10px; height:10px; border-radius:50%; opacity:0;
-    }
-    .sparkle-ring.burst { animation:ringExpand 1.4s ease-out forwards; }
-    .sparkle-ring.burst2 { animation:ringExpand 1.8s ease-out .3s forwards; }
-    @keyframes ringExpand {
-      0%{width:10px;height:10px;border:3px solid #ff4f8b;opacity:1}
-      100%{width:400px;height:400px;border:2px solid transparent;opacity:0}
-    }
-
-    .scene2-emoji { position:fixed; font-size:1.8rem; pointer-events:none; z-index:25; animation:emojiRise 3.5s ease-out forwards; }
-    @keyframes emojiRise {
-      0%{opacity:1;transform:translateY(0) scale(1) rotate(0)}
-      100%{opacity:0;transform:translateY(-220px) scale(.4) rotate(45deg)}
-    }
-    .confetti { position:fixed; width:8px; height:8px; pointer-events:none; z-index:24; animation:confettiFall 3s ease-out forwards; }
-    @keyframes confettiFall {
-      0%{opacity:1;transform:translateY(0) rotate(0) scale(1)}
-      100%{opacity:0;transform:translateY(80vh) rotate(720deg) scale(.3)}
-    }
-
-    .scene2-narrative-end {
-      position:absolute; bottom:10%; width:90%; max-width:580px;
-      text-align:center; font-family:'Press Start 2P',cursive;
-      color:#ffd6e8; font-size:clamp(0.65rem,2.5vw,1.1rem);
-      opacity:0; line-height:1.6; z-index:30;
-      left:50%; transform:translateX(-50%); padding:0 8px; letter-spacing:0px; word-spacing:2px;
-      text-shadow: 
-        -2px -2px 0 #000,
-        -2px -1px 0 #000,
-        -2px  0px 0 #000,
-        -2px  1px 0 #000,
-        -2px  2px 0 #000,
-        -1px -2px 0 #000,
-        -1px -1px 0 #000,
-        -1px  0px 0 #000,
-        -1px  1px 0 #000,
-        -1px  2px 0 #000,
-         0px -2px 0 #000,
-         0px -1px 0 #000,
-         0px  0px 0 #000,
-         0px  1px 0 #000,
-         0px  2px 0 #000,
-         1px -2px 0 #000,
-         1px -1px 0 #000,
-         1px  0px 0 #000,
-         1px  1px 0 #000,
-         1px  2px 0 #000,
-         2px -2px 0 #000,
-         2px -1px 0 #000,
-         2px  0px 0 #000,
-         2px  1px 0 #000,
-         2px  2px 0 #000;
-    }
-    .scene2-narrative-end.show { animation:narrativeFade 2s ease forwards; }
-
-    .scene2-continue {
-      position:absolute; bottom:6%; left:50%; transform:translateX(-50%);
-      font-family:'Press Start 2P',cursive; font-size:clamp(0.7rem,2vw,0.95rem);
-      color:#fff3fa;
-      background:linear-gradient(135deg,#ff5a95 0%,#e91e63 45%,#c2185b 100%);
-      border:2px solid rgba(255,255,255,.45);
-      padding:13px 34px; border-radius:999px; cursor:pointer; z-index:31;
-      box-shadow:0 8px 24px rgba(233,30,99,.4), inset 0 0 0 1px rgba(255,255,255,.2);
-      opacity:0; transition:opacity .8s,transform .3s,box-shadow .3s,filter .3s; letter-spacing:0px; word-spacing:1px;
-      animation:continuePulse 2.1s ease-in-out infinite;
-      overflow:hidden;
-    }
-    .scene2-continue.show { opacity:1; }
-    .scene2-continue::before {
-      content:'';
-      position:absolute; top:-120%; left:-28%; width:24%; height:300%;
-      background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
-      transform:rotate(18deg);
-      animation:continueShine 3.1s ease-in-out infinite;
-      pointer-events:none;
-    }
-    .scene2-continue:hover {
-      transform:translateX(-50%) scale(1.06);
-      box-shadow:0 12px 30px rgba(233,30,99,.52), inset 0 0 0 1px rgba(255,255,255,.34);
-      filter:saturate(1.08);
-    }
-    .scene2-continue:active { transform:translateX(-50%) scale(1.01); }
-    @keyframes continuePulse {
-      0%,100% { box-shadow:0 8px 24px rgba(233,30,99,.4), inset 0 0 0 1px rgba(255,255,255,.2); }
-      50% { box-shadow:0 12px 30px rgba(233,30,99,.55), 0 0 0 6px rgba(233,30,99,.12), inset 0 0 0 1px rgba(255,255,255,.3); }
-    }
-    @keyframes continueShine {
-      0%, 20% { left:-28%; opacity:0; }
-      30% { opacity:1; }
-      65% { left:118%; opacity:0; }
-      100% { left:118%; opacity:0; }
-    }
-
-    /* ===== DAYS COUNTER ===== */
-    .days-counter {
-      position:fixed; top:16px; left:16px; z-index:50;
-      background:rgba(255,255,255,.85); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
-      border-radius:16px; padding:14px 20px;
-      border:1px solid rgba(255,182,193,.35);
-      box-shadow:0 4px 20px rgba(194,24,91,.08);
-      opacity:0; transform:translateX(-30px);
-      transition:opacity .8s ease,transform .8s ease;
-      text-align:center;
-    }
-    .days-counter.show { opacity:1; transform:translateX(0); }
-    .days-counter .counter-icon { font-size:1.3rem; margin-bottom:4px; }
-    .days-counter .counter-number {
-      font-family:'Dancing Script',cursive; font-size:2.2rem; font-weight:700;
-      color:#c2185b; line-height:1; margin-bottom:2px;
-      background:linear-gradient(135deg,#e91e63,#c2185b);
-      background-clip:text;
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-    }
-    .days-counter .counter-label {
-      font-family:'Lora',serif; font-size:.7rem; color:#b06080;
-      text-transform:uppercase; letter-spacing:1.5px; margin-bottom:6px;
-    }
-    .days-counter .counter-since {
-      font-family:'Lora',serif; font-size:.68rem; color:#c2185b;
-      border-top:1px solid rgba(255,182,193,.3); padding-top:6px;
-    }
-    .days-counter .counter-since strong {
-      display:block; font-size:.75rem; color:#880e4f;
-    }
-
-    /* ===== VALENTINE'S DAY SPECIAL ELEMENTS ===== */
-    .valentine-message-container {
-      position: absolute;
-      top: 8%;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1;
-      pointer-events: none;
-      background: linear-gradient(135deg, rgba(26, 10, 30, 0.7) 0%, rgba(45, 17, 53, 0.65) 50%, rgba(26, 10, 30, 0.7) 100%);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 25px;
-      padding: 50px 55px;
-      border: 2px solid rgba(255, 182, 193, 0.45);
-      box-shadow: 0 8px 40px rgba(233, 30, 99, 0.25),
-                  inset 0 0 25px rgba(255, 130, 170, 0.12),
-                  0 0 60px rgba(233, 30, 99, 0.1);
-      max-width: 720px;
-      width: 90vw;
-      text-align: center;
-      animation: valentineContainerFade 7.5s ease forwards;
-      overflow: hidden;
-    }
-    .valentine-message-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255, 182, 193, 0.6), transparent);
-    }
-
-    .valentine-message-container::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255, 182, 193, 0.6), transparent);
-    }
-
-    @keyframes valentineContainerFade {
-      0% {
-        opacity: 1;
-        z-index: 103;
-        transform: translateX(-50%) scale(1);
-      }
-      85% {
-        opacity: 1;
-        z-index: 103;
-        transform: translateX(-50%) scale(1);
-      }
-      100% {
-        opacity: 0;
-        z-index: 1;
-        transform: translateX(-50%) scale(0.95);
-        pointer-events: none;
-      }
-    }
-
-    .valentine-element {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.5rem;
-      color: #ff80ab;
-      font-weight: 700;
-      text-shadow: 0 0 20px rgba(255, 80, 120, 0.8),
-                    0 0 40px rgba(233, 30, 99, 0.5),
-                    2px 2px 4px rgba(0, 0, 0, 0.4);
-      opacity: 0;
-      filter: drop-shadow(0 0 15px rgba(255, 130, 170, 0.9));
-      animation: valentineAppear 0.8s ease forwards;
-      line-height: 1.8;
-      margin: 10px 0;
-      display: inline-block;
-      width: 100%;
-      position: relative;
-      z-index: 2;
-    }
-
-    @keyframes valentineAppear {
-      0% {
-        opacity: 0;
-        transform: scale(0.4) translateY(-15px);
-        filter: drop-shadow(0 0 0px rgba(255, 130, 170, 0));
-      }
-      50% {
-        opacity: 1;
-        filter: drop-shadow(0 0 30px rgba(255, 130, 170, 1));
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-        filter: drop-shadow(0 0 18px rgba(255, 130, 170, 0.95));
-      }
-    }
-
-    .valentine-element.line1 {
-      animation-delay: 0s;
-      font-size: 2rem;
-      color: #ff1744;
-      font-weight: 900;
-      letter-spacing: 1px;
-      margin-bottom: 15px;
-    }
-
-    .valentine-element.line2 {
-      animation-delay: 0.3s;
-      font-size: 1.6rem;
-      margin-top: 12px;
-      letter-spacing: 0.5px;
-    }
-
-    .valentine-element.line3 {
-      animation-delay: 0.6s;
-      font-size: 1.4rem;
-      margin-top: 8px;
-    }
-
-    .valentine-element.line4 {
-      animation-delay: 0.9s;
-      font-size: 1.4rem;
-      margin-top: 8px;
-    }
-
-    .valentine-element.line5 {
-      animation-delay: 1.2s;
-      font-size: 1.4rem;
-      margin-top: 8px;
-      margin-bottom: 15px;
-    }
-
-    .valentine-element.line6 {
-      animation-delay: 1.5s;
-      font-size: 1.6rem;
-      margin-top: 15px;
-      letter-spacing: 0.5px;
-    }
-
-    .valentine-element.line7 {
-      animation-delay: 1.8s;
-      font-size: 1.5rem;
-      margin-top: 8px;
-    }
-
-    .valentine-element.line8 {
-      animation-delay: 2.1s;
-      font-size: 1.7rem;
-      color: #e91e63;
-      font-weight: 900;
-      margin-top: 15px;
-      letter-spacing: 0.5px;
-    }
-
-    .valentine-heart-rain {
-      position: fixed;
-      font-size: 2.5rem;
-      color: #e91e63;
-      pointer-events: none;
-      z-index: 1;
-      animation: heartRainFall 5s linear forwards;
-      filter: drop-shadow(0 0 8px rgba(255, 130, 170, 0.6));
-      opacity: 0;
-    }
-
-    @keyframes heartRainFall {
-      0% {
-        opacity: 1;
-        transform: translateY(-100px) rotate(0deg);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(100vh) rotate(360deg);
-      }
-    }
-
-    /* ===== CONTENT SCREEN ===== */
-    .content {
-      min-height:100vh;
-      background:linear-gradient(170deg,#fff5f8 0%,#fce4ec 30%,#fff0f5 60%,#fdf2f8 100%);
-      opacity:0; visibility:hidden;
-      transition:opacity 1s ease .5s,visibility 0s 0s;
-      position:relative;
-    }
-    .content.visible { opacity:1; visibility:visible; }
-    .content::before {
-      content:''; position:fixed; width:400px; height:400px; border-radius:50%;
-      background:radial-gradient(circle,rgba(255,182,193,.15) 0%,transparent 70%);
-      top:-100px; right:-100px; pointer-events:none;
-    }
-    .content-decor {
-      position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden;
-    }
-    .content-petal, .content-spark {
-      position:fixed; pointer-events:none; opacity:.75;
-    }
-    .content-petal {
-      font-size:1.2rem;
-      animation:petalDrift linear infinite;
-      filter:drop-shadow(0 0 4px rgba(233,30,99,.2));
-    }
-    .content-spark {
-      width:5px; height:5px; border-radius:50%;
-      background:radial-gradient(circle,#fff,#ffd1e1 70%,transparent 100%);
-      box-shadow:0 0 8px rgba(255,182,193,.8);
-      animation:sparkFloat ease-in-out infinite;
-    }
-    @keyframes petalDrift {
-      0% { transform:translateY(-8vh) translateX(0) rotate(0deg); opacity:0; }
-      10% { opacity:.85; }
-      50% { transform:translateY(50vh) translateX(25px) rotate(120deg); opacity:.8; }
-      100% { transform:translateY(110vh) translateX(-20px) rotate(260deg); opacity:0; }
-    }
-    @keyframes sparkFloat {
-      0%,100% { transform:translateY(0) scale(.7); opacity:.2; }
-      50% { transform:translateY(-18px) scale(1.15); opacity:.95; }
-    }
-    .content-petal.p1 { left:8%; animation-duration:15s; animation-delay:-2s; }
-    .content-petal.p2 { left:24%; animation-duration:18s; animation-delay:-8s; }
-    .content-petal.p3 { left:42%; animation-duration:16s; animation-delay:-5s; }
-    .content-petal.p4 { left:61%; animation-duration:19s; animation-delay:-11s; }
-    .content-petal.p5 { left:79%; animation-duration:17s; animation-delay:-4s; }
-    .content-petal.p6 { left:92%; animation-duration:20s; animation-delay:-10s; }
-    .content-spark.s1 { top:22%; left:14%; animation-duration:4s; }
-    .content-spark.s2 { top:34%; left:86%; animation-duration:5s; animation-delay:-1s; }
-    .content-spark.s3 { top:58%; left:18%; animation-duration:4.5s; animation-delay:-2s; }
-    .content-spark.s4 { top:72%; left:82%; animation-duration:5.5s; animation-delay:-3s; }
-    .content-inner { max-width:680px; margin:0 auto; padding:60px 28px 40px; position:relative; z-index:2; }
-
-    .content-header { text-align:center; margin-bottom:48px; opacity:0; transform:translateY(30px); }
-    .content-header.animate { animation:revealUp 1s ease forwards; }
-    .content-header h1 { font-family:'Dancing Script',cursive; font-size:clamp(2rem,6vw,3.2rem); font-weight:700; color:#c2185b; line-height:1.3; margin-bottom:8px; }
-    .content-header .subtitle { font-size:1rem; color:#b06080; font-style:italic; }
-    .divider { width:80px; height:2px; background:linear-gradient(90deg,transparent,#e91e63,transparent); margin:20px auto 0; border:none; }
-
-    .photo-section { text-align:center; margin-bottom:44px; opacity:0; transform:translateY(30px); }
-    .photo-section.animate { animation:revealUp 1s ease .2s forwards; }
-    .photo-frame {
-      display:inline-block; padding:8px; background:white; border-radius:16px;
-      box-shadow:0 8px 32px rgba(194,24,91,.1),0 2px 8px rgba(0,0,0,.06);
-      transform:rotate(-2deg); transition:transform .5s,box-shadow .5s;
-    }
-    .photo-frame:hover { transform:rotate(0) scale(1.02); box-shadow:0 12px 48px rgba(194,24,91,.18),0 4px 12px rgba(0,0,0,.08); }
-    .photo-frame img { display:block; width:100%; max-width:300px; height:auto; border-radius:10px; object-fit:cover; }
-    .photo-caption { margin-top:14px; font-family:'Dancing Script',cursive; font-size:1.15rem; color:#c2185b; }
-
-    .love-letter {
-      background:rgba(255,255,255,.7); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-      border-radius:20px; padding:36px 32px; margin-bottom:44px;
-      box-shadow:0 4px 24px rgba(194,24,91,.06); border:1px solid rgba(255,182,193,.3);
-      position:relative; opacity:0; transform:translateY(30px);
-    }
-    .love-letter.animate { animation:revealUp 1s ease .4s forwards; }
-    .love-letter::before { content:'💌'; position:absolute; top:-18px; left:50%; transform:translateX(-50%); font-size:2rem; background:#fff5f8; padding:0 12px; border-radius:50%; }
-    .love-letter h2 { font-family:'Dancing Script',cursive; font-size:1.7rem; color:#c2185b; text-align:center; margin-bottom:20px; }
-    .love-letter p { font-family:'Lora',serif; font-size:1.05rem; line-height:1.85; color:#5c3050; text-align:justify; margin-bottom:14px; }
-    .love-letter p:last-child { margin-bottom:0; }
-    .love-letter .signature { text-align:right; font-family:'Dancing Script',cursive; font-size:1.3rem; color:#e91e63; margin-top:24px; }
-
-    .reasons { margin-bottom:50px; opacity:0; transform:translateY(30px); }
-    .reasons.animate { animation:revealUp 1s ease .6s forwards; }
-    .reasons h2 { font-family:'Dancing Script',cursive; font-size:1.7rem; color:#c2185b; text-align:center; margin-bottom:28px; }
-    .reason-card {
-      display:flex; align-items:flex-start; gap:18px;
-      background:rgba(255,255,255,.65); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-      border-radius:16px; padding:22px 24px; margin-bottom:16px;
-      border:1px solid rgba(255,182,193,.25); box-shadow:0 2px 16px rgba(194,24,91,.05);
-      transition:transform .35s,box-shadow .35s;
-    }
-    .reason-card:hover { transform:translateY(-3px); box-shadow:0 6px 24px rgba(194,24,91,.12); }
-    .reason-icon { flex-shrink:0; width:48px; height:48px; background:linear-gradient(135deg,#fce4ec,#f8bbd0); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.4rem; }
-    .reason-text h3 { font-family:'Lora',serif; font-size:1.05rem; font-weight:600; color:#880e4f; margin-bottom:4px; }
-    .reason-text p { font-size:.95rem; color:#7c4060; line-height:1.55; }
-
-    .content-footer { text-align:center; padding:32px 0 40px; border-top:1px solid rgba(255,182,193,.3); opacity:0; transform:translateY(20px); }
-    .content-footer.animate { animation:revealUp 1s ease .8s forwards; }
-    .content-footer p { font-family:'Dancing Script',cursive; font-size:1.15rem; color:#c2185b; margin-bottom:8px; }
-    .content-footer .date { font-family:'Lora',serif; font-size:.85rem; color:#b06080; letter-spacing:1px; }
-    .content-footer .mini-hearts { margin-top:16px; font-size:.9rem; letter-spacing:6px; color:#e91e63; animation:pulse-text 2s ease-in-out infinite; }
-
-    .floating-heart { position:fixed; color:rgba(233,30,99,.08); font-size:1.5rem; pointer-events:none; z-index:0; animation:floatUp linear infinite; }
-    @keyframes floatUp { 0%{transform:translateY(100vh) rotate(0);opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{transform:translateY(-10vh) rotate(360deg);opacity:0} }
-    @keyframes revealUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-
-    @media(max-width:768px){
-      .scene2-narrative{font-size:0.8rem;top:5%;width:92%}
-      .scene2-narrative-end{font-size:0.8rem;bottom:11%;width:92%}
-      .scene2-continue{font-size:0.6rem;padding:10px 20px;bottom:7%}
-      .monkey-container{transform:scale(1)}
-      .princess-container{right:12%;transform:scale(1)}
-      .princess-container.show{transform:scale(1)}
-      .study-desk-zone{width:100vw; height:clamp(290px,52vh,390px); bottom:10%}
-      .study-desk{left:66%; width:58vw; height:82px; bottom:74px}
-      .study-lamp{right:1%; bottom:108px; transform:scale(.82)}
-      .study-book{left:66%; bottom:158px; transform:translateX(-50%) scale(.86)}
-      .study-chair{left:calc(66% - 54px); bottom:68px; transform:scale(.86); transform-origin:50% 100%}
-      .study-princess-wrap{left:66%; bottom:140px; transform:translateX(-50%) scale(.74)}
-      .study-princess-wrap.show{animation:studyPrincessReadMobile 1.3s steps(3,end) infinite}
-      @keyframes studyPrincessReadMobile {
-        0%,100% { transform: translateX(-50%) scale(.74) translateY(0); }
-        50% { transform: translateX(-50%) scale(.74) translateY(-5px); }
-      }
-      .study-monkey{left:-150px; bottom:28px; transform:scale(1.02)}
-      .study-monkey.walking{animation:studyMonkeyEnterMobile 4.4s steps(18,end) forwards}
-      @keyframes studyMonkeyEnterMobile {
-        0% { left: -150px; bottom: 22px; transform: scale(1.02) translateY(0); }
-        42% { left: 5vw; bottom: 22px; transform: scale(1.02) translateY(-8px); }
-        78% { left: 0; bottom: 38px; transform: scale(1.02) translateY(0); }
-        100% { left: 0; bottom: 46px; transform: scale(1.02) translateY(-2px); }
-      }
-      .study-monkey.kissing{left:0; bottom:46px; animation:studyKissLeanMobile 1s steps(3,end) forwards}
-      @keyframes studyKissLeanMobile { to { transform: scale(1.02) translateX(12px) rotate(4deg); } }
-      .study-kiss{left:38vw; bottom:252px; font-size:2.3rem}
-      .study-monkey-love{font-size:.48rem; min-width:76px; top:-36px; padding:8px 10px}
-      .moon{width:60px;height:60px}
-      .stage{height:35%}
-    }
-    @media(max-width:600px){
-      .content-inner{padding:40px 18px 30px}
-      .love-letter{padding:28px 20px}
-      .reason-card{padding:18px 16px;gap:14px}
-      .heart{width:90px;height:90px}
-      .monkey-container{transform:scale(1)}
-      .princess-container{right:10%;transform:scale(1)}
-      .princess-container.show{transform:scale(1)}
-      .scene2-narrative{font-size:0.65rem;top:4%;width:95%}
-      .scene2-narrative-end{font-size:0.65rem;bottom:12%;width:95%;line-height:1.5}
-      .scene2-continue{font-size:0.52rem;padding:9px 16px;bottom:8%}
-      .moon{width:50px;height:50px;top:5%;right:8%}
-      .stage{height:38%}
-      .days-counter{padding:8px 12px;top:10px;left:10px}
-      .days-counter .counter-number{font-size:1.5rem}
-      .days-counter .counter-label{font-size:.6rem}
-    }
-    @media(max-width:480px){
-      .scene2-narrative{font-size:0.55rem;top:3%}
-      .scene2-narrative-end{font-size:0.55rem;bottom:14%}
-      .scene2-continue{font-size:0.46rem;padding:8px 14px}
-      .monkey-container{transform:scale(1)}
-      .princess-container{right:8%;transform:scale(.95)}
-      .princess-container.show{transform:scale(.95)}
-      .stage{height:40%}
-    }
-    ::-webkit-scrollbar{width:6px}
-    ::-webkit-scrollbar-track{background:#fce4ec}
-    ::-webkit-scrollbar-thumb{background:#f48fb1;border-radius:3px}
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <!-- Stars background (fixed, shared across all scenes) -->
   <canvas class="stars-canvas" id="starsCanvas"></canvas>
+
+  <!-- ===== FLOATING GLOBAL BACK BUTTON ===== -->
+  <button class="global-back-btn" id="globalBackBtn" aria-label="Volver al menú principal" title="Volver al menú">
+    <span class="back-icon">←</span>
+    <span class="back-label">Menú</span>
+  </button>
 
   <!-- ===== SELECTOR SCREEN ===== -->
   <section class="selector-screen" id="selectorScreen">
@@ -2744,14 +26,14 @@
     <div class="sel-shooting-star ss2"></div>
     <!-- Floating decorative icons -->
     <span class="sel-float f1">🌽</span>
-    <span class="sel-float f2">🌽</span>
-    <span class="sel-float f3">🌽</span>
-    <span class="sel-float f4">�</span>
+    <span class="sel-float f2">✨</span>
+    <span class="sel-float f3">💖</span>
+    <span class="sel-float f4">🌸</span>
     <span class="sel-float f5">🌽</span>
-    <span class="sel-float f6">🌽</span>
-    <span class="sel-float f7">🌽</span>
-    <span class="sel-float f8">🌽</span>
-    <span class="sel-float f9">�</span>
+    <span class="sel-float f6">💫</span>
+    <span class="sel-float f7">💕</span>
+    <span class="sel-float f8">🍿</span>
+    <span class="sel-float f9">✨</span>
 
     <h1 class="selector-title">✨ Para mi pispachita ✨</h1>
     <p class="selector-subtitle">Elige qué celebrar hoy</p>
@@ -2797,6 +79,20 @@
           <div class="selector-card-emoji">📚</div>
           <div class="selector-card-title">pispachita<br>estudiosa</div>
           <div class="selector-card-date">maestría en san marcos</div>
+        </div>
+      </button>
+      <button class="selector-card card-lawyer" id="btnLawyer">
+        <div class="selector-card-inner">
+          <div class="selector-card-emoji">⚖️</div>
+          <div class="selector-card-title">Mi abogada<br>favorita</div>
+          <div class="selector-card-date">Sustentación & Título</div>
+        </div>
+      </button>
+            <button class="selector-card card-papa" id="btnPapa">
+        <div class="selector-card-inner">
+          <div class="selector-card-emoji">🕊️</div>
+          <div class="selector-card-title">Visita del Papa<br>León XIV</div>
+          <div class="selector-card-date">Misa en Pampas de Pimentel</div>
         </div>
       </button>
     </div>
@@ -2847,70 +143,16 @@
         <!-- Cape -->
         <div class="heroine-cape-wrap"></div>
         <!-- Reuse exact princess markup -->
-        <div class="princess" style="position:relative;">
-          <div class="princess-crown">
-            <div class="princess-crown-base"></div>
-            <div class="princess-crown-point"></div>
-            <div class="princess-crown-point"></div>
-            <div class="princess-crown-point"></div>
-            <div class="princess-crown-gem"></div>
-          </div>
-          <div class="princess-hair-top"></div>
-          <div class="princess-hair-side-l"></div>
-          <div class="princess-hair-side-r"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-head">
-            <div class="princess-eyelash left"></div>
-            <div class="princess-eyelash right"></div>
-            <div class="princess-eye left"></div>
-            <div class="princess-eye right"></div>
-            <div class="princess-blush left"></div>
-            <div class="princess-blush right"></div>
-            <div class="princess-mouth"></div>
-            <div class="princess-smile"></div>
-          </div>
-          <!-- Arms raised in superhero pose -->
-          <div class="princess-arm left"  style="transform:rotate(-75deg) translateY(-6px);"></div>
-          <div class="princess-arm right" style="transform:rotate(75deg) translateY(-6px);"></div>
-          <div class="princess-dress-top"></div>
-          <div class="princess-dress-bottom">
-            <div class="princess-dress-detail"></div>
-            <div class="princess-dress-sparkle">✦</div>
-            <div class="princess-dress-sparkle">✦</div>
-            <div class="princess-dress-sparkle">✦</div>
-          </div>
-        </div>
+        <div class="princess arms-up" data-char="princess"></div>
       </div>
     </div>
 
     <!-- Monkey watching the flying princess -->
     <div class="womens-monkey" id="womensMonkey">
       <div class="womens-monkey-speech" id="womensMonkeySpeech">¡Vuela, mi amor! 💜</div>
-      <div class="monkey-body">
-        <div class="m-head">
-          <div class="m-ear l"></div>
-          <div class="m-ear r"></div>
-          <div class="m-face">
-            <div class="m-eye l"></div>
-            <div class="m-eye r"></div>
-            <div class="m-mouth"></div>
-          </div>
-        </div>
-        <div class="m-torso"><div class="m-belly"></div></div>
-        <div class="m-arm l"><div class="m-hand"></div></div>
-        <div class="m-arm r"><div class="m-hand"></div></div>
-        <div class="m-leg l"><div class="m-foot"></div></div>
-        <div class="m-leg r"><div class="m-foot"></div></div>
-        <div class="m-tail"></div>
-      </div>
+      <div class="monkey-body" data-char="monkey"></div>
     </div>
+    <div class="womens-tap-hint" id="womensTapHint">Toca la pantalla para continuar ✨</div>
   </section>
 
   <!-- ===== STUDY CHAPTER SCENE ===== -->
@@ -2931,66 +173,12 @@
       <div class="study-kiss" id="studyKiss">😘</div>
 
       <div class="study-princess-wrap" id="studyPrincess">
-        <div class="princess" style="position:relative;">
-          <div class="princess-crown">
-            <div class="princess-crown-base"></div>
-            <div class="princess-crown-point"></div>
-            <div class="princess-crown-point"></div>
-            <div class="princess-crown-point"></div>
-            <div class="princess-crown-gem"></div>
-          </div>
-          <div class="princess-hair-top"></div>
-          <div class="princess-hair-side-l"></div>
-          <div class="princess-hair-side-r"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-head">
-            <div class="princess-eyelash left"></div>
-            <div class="princess-eyelash right"></div>
-            <div class="princess-eye left"></div>
-            <div class="princess-eye right"></div>
-            <div class="princess-blush left"></div>
-            <div class="princess-blush right"></div>
-            <div class="princess-mouth"></div>
-            <div class="princess-smile"></div>
-          </div>
-          <div class="princess-arm left"></div>
-          <div class="princess-arm right"></div>
-          <div class="princess-dress-top"></div>
-          <div class="princess-dress-bottom">
-            <div class="princess-dress-detail"></div>
-            <div class="princess-dress-sparkle">*</div>
-            <div class="princess-dress-sparkle">*</div>
-            <div class="princess-dress-sparkle">*</div>
-          </div>
-        </div>
+        <div class="princess" data-char="princess"></div>
       </div>
 
       <div class="study-monkey" id="studyMonkey">
         <div class="study-monkey-love" id="studyMonkeyLove">te amo</div>
-        <div class="monkey-body">
-          <div class="m-head">
-            <div class="m-ear l"></div>
-            <div class="m-ear r"></div>
-            <div class="m-face">
-              <div class="m-eye l"></div>
-              <div class="m-eye r"></div>
-              <div class="m-mouth"></div>
-            </div>
-          </div>
-          <div class="m-torso"><div class="m-belly"></div></div>
-          <div class="m-arm l"><div class="m-hand"></div></div>
-          <div class="m-arm r"><div class="m-hand"></div></div>
-          <div class="m-leg l"><div class="m-foot"></div></div>
-          <div class="m-leg r"><div class="m-foot"></div></div>
-          <div class="m-tail"></div>
-        </div>
+        <div class="monkey-body" data-char="monkey"></div>
       </div>
     </div>
 
@@ -2999,6 +187,257 @@
       <p>Estoy orgulloso de ti, de tu esfuerzo, de tu disciplina y de esa mente hermosa que sigue creciendo.</p>
       <div class="study-pride">Sigue brillando, mi pispachita estudiosa.</div>
       <p>Tu monito cree en ti con todo el coraz&oacute;n.</p>
+    </div>
+  </section>
+
+  <!-- ===== LAWYER CHAPTER SCENE (MI ABOGADA FAVORITA) ===== -->
+  <section class="scene-lawyer" id="sceneLawyer">
+    <div class="lawyer-bg-effects">
+      <div class="lawyer-columns"></div>
+      <div class="lawyer-curtain l"></div>
+      <div class="lawyer-curtain r"></div>
+    </div>
+    
+    <div class="lawyer-header" id="lawyerHeader">
+      <span class="lawyer-badge-tag">🎓 Grado y Título Profesional ⚖️</span>
+      <h2 class="lawyer-title">¡Mi Abogada Favorita!</h2>
+      <p class="lawyer-subtitle">La sustentación más brillante, el orgullo más grande</p>
+    </div>
+
+    <!-- Courtroom Stage with animated characters -->
+    <div class="lawyer-court-stage" id="lawyerStage">
+      <!-- Confetti burst container -->
+      <div class="lawyer-confetti-wrap" id="lawyerConfetti"></div>
+
+      <!-- Seal of Justice / Scale -->
+      <div class="lawyer-seal">
+        <span class="seal-icon">⚖️</span>
+      </div>
+
+      <!-- Podium / Tribune where the Lawyer Princess stands -->
+      <div class="lawyer-podium-wrap">
+        <div class="lawyer-princess-wrap" id="lawyerPrincess">
+          <div class="lawyer-speech" id="lawyerPrincessSpeech">¡Defendí mi tesis con éxito! 🎓⚖️</div>
+          <div class="lawyer-diploma" id="lawyerDiploma">📜 ¡Título de Abogada! 🎓</div>
+          <div class="princess" data-char="princess">
+            <!-- Birrete / Graduation Cap -->
+            <div class="lawyer-birrete">
+            <div class="birrete-top"></div>
+            <div class="birrete-tassel"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lawyer-podium">
+          <div class="podium-mic">🎙️</div>
+          <div class="podium-files">📁📜</div>
+        </div>
+      </div>
+
+      <!-- Monito enamorado y fan número 1 -->
+      <div class="lawyer-monkey" id="lawyerMonkey">
+        <div class="lawyer-monkey-speech" id="lawyerMonkeySpeech">¡Esa es mi abogada! ⚖️❤️👏</div>
+        <!-- Flores de felicitación en sus manos -->
+        <div class="monkey-bouquet" id="monkeyBouquet">💐</div>
+        <div class="monkey-body" data-char="monkey"></div>
+        <div class="lawyer-camera-flash" id="lawyerFlash">📸✨</div>
+      </div>
+    </div>
+
+    <!-- Pride & Congratulations Panel -->
+    <div class="lawyer-message-card" id="lawyerMessageCard">
+      <div class="verdict-banner">✨ APROBADA CON FELICITACIÓN ✨</div>
+      <h3>Dra. Pispachita, Abogada de mi corazón</h3>
+      <p>Sé cuántas noches de desvelo, cuánto estudio, cuántos libros y expedientes le dedicaste con tanta valentía y pasión a tu carrera.</p>
+      <div class="lawyer-highlight-quote">"Tu inteligencia, tu elegancia y tu determinación te hacen imparable."</div>
+      <p>Siempre estaré en primera fila aplaudiendo cada uno de tus triunfos. ¡Felicidades, mi abogada hermosa!</p>
+    </div>
+
+    <!-- Photo Gallery for Sustentación / Titulación (Waiting for photos) -->
+    <div class="lawyer-photos" id="lawyerPhotos">
+      <div class="photos-header">
+        <button class="photos-back-btn" id="lawyerPhotosBackBtn" aria-label="Volver al menú">← Volver al menú</button>
+        <span class="photos-counter" id="lawyerPhotosCounter">1 / 4</span>
+      </div>
+      <div class="photos-slider" id="lawyerPhotosSlider">
+        <div class="photo-slide active" id="lawyerPhotoSlide1">
+          <div class="photo-card-placeholder">
+            <span class="placeholder-icon">⚖️👩‍⚖️</span>
+            <h4>Sustentación de Tesis</h4>
+            <p>Ese día brillaste con total seguridad y elocuencia ante el jurado.</p>
+            <span class="placeholder-note">📷 Listo para tus fotos</span>
+          </div>
+        </div>
+        <div class="photo-slide" id="lawyerPhotoSlide2">
+          <div class="photo-card-placeholder">
+            <span class="placeholder-icon">📜✨</span>
+            <h4>La Entrega del Título</h4>
+            <p>La recompensa a años de disciplina, perseverancia y dedicación.</p>
+            <span class="placeholder-note">📷 Listo para tus fotos</span>
+          </div>
+        </div>
+        <div class="photo-slide" id="lawyerPhotoSlide3">
+          <div class="photo-card-placeholder">
+            <span class="placeholder-icon">💐🥂</span>
+            <h4>Celebrando Tu Éxito</h4>
+            <p>El brindis por la nueva abogada más hermosa e inteligente del mundo.</p>
+            <span class="placeholder-note">📷 Listo para tus fotos</span>
+          </div>
+        </div>
+        <div class="photo-slide" id="lawyerPhotoSlide4">
+          <div class="photo-card-placeholder">
+            <span class="placeholder-icon">🏛️⭐</span>
+            <h4>El Inicio de una Gran Trayectoria</h4>
+            <p>El orgullo inmenso de verte cumplir tus sueños con la frente en alto.</p>
+            <span class="placeholder-note">📷 Listo para tus fotos</span>
+          </div>
+        </div>
+      </div>
+      <div class="photos-nav">
+        <button class="photos-arrow prev" id="lawyerPhotosPrev" aria-label="Foto anterior">❮</button>
+        <button class="photos-arrow next" id="lawyerPhotosNext" aria-label="Foto siguiente">❯</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PAPA CHAPTER SCENE (VISITA DE MI PAPA EN PIMENTEL) ===== -->
+  <section class="scene-papa" id="scenePapa">
+    <!-- Radiant Papal sun & holy light rays -->
+    <div class="papa-radiance"></div>
+    <div class="papa-sun-rays"></div>
+
+    <!-- Sky with floating peace doves -->
+    <div class="papa-doves-sky">
+      <span class="papa-dove d1">🕊️</span>
+      <span class="papa-dove d2">🕊️</span>
+      <span class="papa-dove d3">🕊️</span>
+    </div>
+
+    <!-- Pimentel Beach Coastal Breeze Background elements -->
+    <div class="papa-coastal-bg">
+      <div class="pimentel-dunes"></div>
+      <div class="pimentel-ocean-shimmer"></div>
+      <div class="pimentel-cross-large">✝️</div>
+      <div class="pimentel-crowd-silhouette">👥👥👥👥👥👥👥👥👥👥</div>
+    </div>
+
+    <div class="papa-header" id="papaHeader">
+      <span class="papa-badge-tag">🕊️ Gran Misa y Bendición Papal • Chiclayo ✨</span>
+      <h2 class="papa-title">La Visita del Papa</h2>
+      <p class="papa-subtitle">El día histórico que el Papa León XIV bendijo las Pampas de Pimentel</p>
+    </div>
+
+    <!-- Papal Stage & Popemobile Altar Presentation -->
+    <div class="papa-stage" id="papaStage">
+      <!-- Holy Golden Papal Cross Backdrop -->
+      <div class="papa-altar-cross">
+        <span class="holy-cross-icon">✝️</span>
+      </div>
+
+      <!-- Popemobile (Papamóvil) carrying Pope León XIV -->
+      <div class="papa-popemobile-wrap" id="papaPopemobile">
+        <div class="popemobile-glass-cabin">
+          <!-- Pope León XIV -->
+          <div class="pope-character" id="popeLeon">
+            <div class="pope-mitra">
+              <div class="mitra-top"></div>
+              <div class="mitra-cross">✝</div>
+            </div>
+            <div class="pope-head">
+              <div class="pope-glasses"></div>
+              <div class="pope-smile"></div>
+            </div>
+            <div class="pope-cassock">
+              <div class="pope-pectoral-cross">✚</div>
+              <div class="pope-sash"></div>
+            </div>
+            <div class="pope-blessing-arm" id="popeBlessingArm">✋</div>
+          </div>
+        </div>
+        <div class="popemobile-body">
+          <div class="popemobile-badge"><span class="flag-va"></span></div>
+          <div class="popemobile-wheel w-left"></div>
+          <div class="popemobile-wheel w-right"></div>
+        </div>
+        <div class="papa-speech" id="papaSpeechBubble">¡La paz y el amor con ustedes! 🕊️✨</div>
+      </div>
+
+      <!-- Princess and Monkey holding hands in faith and joy -->
+      <div class="papa-pilgrims-wrap" id="papaPilgrims">
+        <!-- Princess -->
+        <div class="papa-princess-pilgrim" id="papaPrincessPilgrim">
+          <div class="pilgrim-speech" id="papaPrincessSpeech">¡Qué bendición tan hermosa! 🙏💕</div>
+          <div class="princess" data-char="princess"></div>
+        </div>
+
+        <!-- Monito Pilgrim holding the Vatican / Yellow-White Flag -->
+        <div class="papa-monkey-pilgrim" id="papaMonkeyPilgrim">
+          <div class="pilgrim-speech" id="papaMonkeySpeech">¡Viva el Papa! 🐒💛🤍</div>
+          <div class="vatican-flag" id="vaticanFlag">
+            <span class="flag-pole"></span>
+            <span class="flag-cloth flag-va"></span>
+          </div>
+          <div class="monkey-body" data-char="monkey"></div>
+        </div>
+      </div>
+
+      <!-- Golden blessing sparks & holy halos -->
+      <div class="papa-holy-sparks" id="papaHolySparks"></div>
+    </div>
+
+    <!-- Faith & Historical Memory Card -->
+    <div class="papa-message-card" id="papaMessageCard">
+      <div class="family-badge">🕊️ FE, ESPERANZA Y BENDICIÓN 🕊️</div>
+      <h3>Un día inolvidable en las Pampas de Pimentel</h3>
+      <p>Bajo la brisa norteña y el cielo inmenso de Pimentel, miles de corazones se unieron para recibir la bendición del Papa León XIV.</p>
+      <div class="papa-highlight-quote">"Un recuerdo lleno de paz, luz y alegría que llevas grabado para siempre en el corazón."</div>
+      <p>Qué momento tan especial e histórico viviste en tu tierra querida, con la emoción, la fe y la dicha de presenciar esa gran misa papal.</p>
+    </div>
+
+    <!-- Photo Gallery for Pope Visit (Waiting for user photos) -->
+    <div class="papa-photos" id="papaPhotos">
+      <div class="photos-header">
+        <button class="photos-back-btn" id="papaPhotosBackBtn" aria-label="Volver al menú">← Volver al menú</button>
+        <span class="photos-counter" id="papaPhotosCounter">1 / 4</span>
+      </div>
+      <div class="photos-slider" id="papaPhotosSlider">
+        <div class="photo-slide active" id="papaPhotoSlide1">
+          <div class="photo-card-placeholder">
+            <span class="placeholder-icon">🕊️⛪</span>
+            <h4>Llegada a las Pampas de Pimentel</h4>
+            <p>La multitud llena de emoción y banderas esperando el inicio de la gran misa papal.</p>
+            <span class="placeholder-note">📷 Listo para tus fotos</span>
+          </div>
+        </div>
+        <div class="photo-slide" id="papaPhotoSlide2">
+          <div class="photo-card-placeholder">
+            <span class="placeholder-icon">🚗✨</span>
+            <h4>El Paso del Papamóvil</h4>
+            <p>El momento cumbre al ver de cerca al Santo Padre saludando y bendiciendo a todos.</p>
+            <span class="placeholder-note">📷 Listo para tus fotos</span>
+          </div>
+        </div>
+        <div class="photo-slide" id="papaPhotoSlide3">
+          <div class="photo-card-placeholder">
+            <span class="placeholder-icon">🙏⛪</span>
+            <h4>La Santa Misa al Aire Libre</h4>
+            <p>Oraciones, cantos y un sentimiento de paz inmensa compartido con miles de fieles.</p>
+            <span class="placeholder-note">📷 Listo para tus fotos</span>
+          </div>
+        </div>
+        <div class="photo-slide" id="papaPhotoSlide4">
+          <div class="photo-card-placeholder">
+            <span class="placeholder-icon">📸💖</span>
+            <h4>Recuerdo de Fe y Familia</h4>
+            <p>Ese día único e histórico que guardas con tanto amor y emoción en tu corazón.</p>
+            <span class="placeholder-note">📷 Listo para tus fotos</span>
+          </div>
+        </div>
+      </div>
+      <div class="photos-nav">
+        <button class="photos-arrow prev" id="papaPhotosPrev" aria-label="Foto anterior">❮</button>
+        <button class="photos-arrow next" id="papaPhotosNext" aria-label="Foto siguiente">❯</button>
+      </div>
     </div>
   </section>
 
@@ -3127,72 +566,13 @@
     <div class="monkey-container" id="monkeyContainer">
       <div class="monkey-heart" id="monkeyHeart">❤️</div>
       <div class="monkey-speech" id="monkeySpeech">Te amo mi pispachita 💕</div>
-      <div class="monkey-body">
-        <!-- Head -->
-        <div class="m-head">
-          <div class="m-ear l"></div>
-          <div class="m-ear r"></div>
-          <div class="m-face">
-            <div class="m-eye l"></div>
-            <div class="m-eye r"></div>
-            <div class="m-mouth"></div>
-          </div>
-        </div>
-        <!-- Body -->
-        <div class="m-torso"><div class="m-belly"></div></div>
-        <!-- Arms -->
-        <div class="m-arm l"><div class="m-hand"></div></div>
-        <div class="m-arm r"><div class="m-hand"></div></div>
-        <!-- Legs -->
-        <div class="m-leg l"><div class="m-foot"></div></div>
-        <div class="m-leg r"><div class="m-foot"></div></div>
-        <!-- Tail -->
-        <div class="m-tail"></div>
-      </div>
+      <div class="monkey-body" data-char="monkey"></div>
     </div>
 
     <!-- PRINCESS -->
     <div class="princess-container" id="princessContainer">
       <div class="princess-received-heart" id="princessHeart">💖</div>
-      <div class="princess">
-        <div class="princess-crown">
-          <div class="princess-crown-base"></div>
-          <div class="princess-crown-point"></div>
-          <div class="princess-crown-point"></div>
-          <div class="princess-crown-point"></div>
-          <div class="princess-crown-gem"></div>
-        </div>
-        <div class="princess-hair-top"></div>
-        <div class="princess-hair-side-l"></div>
-        <div class="princess-hair-side-r"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-head">
-          <div class="princess-eyelash left"></div>
-          <div class="princess-eyelash right"></div>
-          <div class="princess-eye left"></div>
-          <div class="princess-eye right"></div>
-          <div class="princess-blush left"></div>
-          <div class="princess-blush right"></div>
-          <div class="princess-mouth"></div>
-          <div class="princess-smile"></div>
-        </div>
-        <div class="princess-arm left"></div>
-        <div class="princess-arm right"></div>
-        <div class="princess-dress-top"></div>
-        <div class="princess-dress-bottom">
-          <div class="princess-dress-detail"></div>
-          <div class="princess-dress-sparkle">✦</div>
-          <div class="princess-dress-sparkle">✦</div>
-          <div class="princess-dress-sparkle">✦</div>
-        </div>
-      </div>
+      <div class="princess" data-char="princess"></div>
     </div>
 
     <!-- Flying heart for delivery -->
@@ -3261,10 +641,6 @@
         <path fill="url(#mtGradMid)" d="M0,260 L0,192 Q85,158 188,172 Q288,185 398,140 Q488,100 595,122 Q698,142 800,98 Q888,60 998,80 Q1098,98 1198,58 Q1305,20 1440,50 L1440,260 Z"/>
         <!-- Front mountains: bold peaks, rich greens -->
         <path fill="url(#mtGradFront)" d="M0,260 L0,208 Q52,190 115,198 Q162,204 222,170 Q270,142 332,158 Q380,170 442,130 Q490,96 560,114 Q610,130 672,90 Q720,52 792,72 Q842,90 904,60 Q952,32 1022,50 Q1082,66 1152,32 Q1212,2 1292,26 Q1362,48 1440,28 L1440,260 Z"/>
-        <!-- Snow caps on highest peaks -->
-        <path fill="rgba(242,250,255,0.85)" d="M704,90 Q721,42 740,46 Q758,50 748,84 Z"/>
-        <path fill="rgba(242,250,255,0.80)" d="M936,60 Q952,24 974,28 Q988,32 978,56 Z"/>
-        <path fill="rgba(242,250,255,0.78)" d="M1138,32 Q1156,2 1180,6 Q1196,10 1184,32 Z"/>
         <!-- Forest silhouette at base of front mountains -->
         <path fill="url(#mtForest)" d="M0,260 L0,248 Q18,236 36,248 Q54,236 72,248 Q92,236 114,248 Q138,236 162,248 Q190,236 220,248 Q254,236 290,248 Q330,236 372,248 Q416,236 462,248 Q510,236 558,248 Q608,236 658,248 Q710,236 760,248 Q812,236 862,248 Q914,236 966,248 Q1018,236 1072,248 Q1128,236 1184,248 Q1244,236 1302,248 Q1360,236 1410,248 Q1428,238 1440,244 L1440,260 Z"/>
       </svg>
@@ -3457,131 +833,23 @@
       </div>
       <!-- Monkey driver (z-index:20, on top of body) -->
       <div class="moto-rider driver" id="motoMonkey">
-        <div class="monkey-body">
-          <div class="m-head">
-            <div class="m-ear l"></div>
-            <div class="m-ear r"></div>
-            <div class="m-face">
-              <div class="m-eye l"></div>
-              <div class="m-eye r"></div>
-              <div class="m-mouth"></div>
-            </div>
-          </div>
-          <div class="m-torso"><div class="m-belly"></div></div>
-          <div class="m-arm l"><div class="m-hand"></div></div>
-          <div class="m-arm r"><div class="m-hand"></div></div>
-          <div class="m-leg l"><div class="m-foot"></div></div>
-          <div class="m-leg r"><div class="m-foot"></div></div>
-          <div class="m-tail"></div>
-        </div>
+        <div class="monkey-body" data-char="monkey"></div>
       </div>
       <!-- Princess passenger (z-index:20, on top of body) -->
       <div class="moto-rider passenger" id="motoPrincess">
-        <div class="princess" style="position:relative;">
-          <div class="princess-crown">
-            <div class="princess-crown-base"></div>
-            <div class="princess-crown-point"></div>
-            <div class="princess-crown-point"></div>
-            <div class="princess-crown-point"></div>
-            <div class="princess-crown-gem"></div>
-          </div>
-          <div class="princess-hair-top"></div>
-          <div class="princess-hair-side-l"></div>
-          <div class="princess-hair-side-r"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-curl"></div>
-          <div class="princess-head">
-            <div class="princess-eyelash left"></div>
-            <div class="princess-eyelash right"></div>
-            <div class="princess-eye left"></div>
-            <div class="princess-eye right"></div>
-            <div class="princess-blush left"></div>
-            <div class="princess-blush right"></div>
-            <div class="princess-mouth"></div>
-            <div class="princess-smile"></div>
-          </div>
-          <div class="princess-arm left"></div>
-          <div class="princess-arm right"></div>
-          <div class="princess-dress-top"></div>
-          <div class="princess-dress-bottom">
-            <div class="princess-dress-detail"></div>
-            <div class="princess-dress-sparkle">✨</div>
-            <div class="princess-dress-sparkle">✨</div>
-            <div class="princess-dress-sparkle">✨</div>
-          </div>
-        </div>
+        <div class="princess" data-char="princess"></div>
       </div>
     </div>
 
     <!-- Monkey character (for walking scenes, same structure as scene2) -->
     <div class="tarapoto-monkey-wrap" id="tarapotoMonkey">
       <div class="monkey-speech" id="tarapotoMonkeySpeech">Mi pispachita nos vamos a Tarapoto 🌴💚</div>
-      <div class="monkey-body">
-        <div class="m-head">
-          <div class="m-ear l"></div>
-          <div class="m-ear r"></div>
-          <div class="m-face">
-            <div class="m-eye l"></div>
-            <div class="m-eye r"></div>
-            <div class="m-mouth"></div>
-          </div>
-        </div>
-        <div class="m-torso"><div class="m-belly"></div></div>
-        <div class="m-arm l"><div class="m-hand"></div></div>
-        <div class="m-arm r"><div class="m-hand"></div></div>
-        <div class="m-leg l"><div class="m-foot"></div></div>
-        <div class="m-leg r"><div class="m-foot"></div></div>
-        <div class="m-tail"></div>
-      </div>
+      <div class="monkey-body" data-char="monkey"></div>
     </div>
 
     <!-- Princess character -->
     <div class="tarapoto-princess-wrap" id="tarapotoPrincess">
-      <div class="princess" style="position:relative;">
-        <div class="princess-crown">
-          <div class="princess-crown-base"></div>
-          <div class="princess-crown-point"></div>
-          <div class="princess-crown-point"></div>
-          <div class="princess-crown-point"></div>
-          <div class="princess-crown-gem"></div>
-        </div>
-        <div class="princess-hair-top"></div>
-        <div class="princess-hair-side-l"></div>
-        <div class="princess-hair-side-r"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-curl"></div>
-        <div class="princess-head">
-          <div class="princess-eyelash left"></div>
-          <div class="princess-eyelash right"></div>
-          <div class="princess-eye left"></div>
-          <div class="princess-eye right"></div>
-          <div class="princess-blush left"></div>
-          <div class="princess-blush right"></div>
-          <div class="princess-mouth"></div>
-          <div class="princess-smile"></div>
-        </div>
-        <div class="princess-arm left"></div>
-        <div class="princess-arm right"></div>
-        <div class="princess-dress-top"></div>
-        <div class="princess-dress-bottom">
-          <div class="princess-dress-detail"></div>
-          <div class="princess-dress-sparkle">✨</div>
-          <div class="princess-dress-sparkle">✨</div>
-          <div class="princess-dress-sparkle">✨</div>
-        </div>
-      </div>
+      <div class="princess" data-char="princess"></div>
     </div>
 
     <!-- Photo Carousel / Slider (unused, kept for reference) -->
@@ -3762,989 +1030,63 @@
         <p>Te amo así no te bañes</p>
         <span class="date" id="currentDate"></span>
         <div class="mini-hearts">♥ ♥ ♥ ♥ ♥</div>
+        <div class="content-back-wrap">
+          <button class="content-back-btn" id="contentBackBtn">← Volver al menú principal</button>
+        </div>
       </footer>
     </div>
   </section>
 
-  <script>
-    /* ===== STARS CANVAS ===== */
-    (function initStars() {
-      const canvas = document.getElementById('starsCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      let stars = [];
-      const COUNT = 180;
-      function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
-      function create() {
-        stars = [];
-        for (let i = 0; i < COUNT; i++)
-          stars.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height,
-            r:Math.random()*1.6+.3, a:Math.random(),
-            da:(Math.random()*.015+.003)*(Math.random()<.5?1:-1) });
-      }
-      function draw() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        stars.forEach(s => {
-          s.a += s.da; if(s.a<=.1||s.a>=1) s.da*=-1;
-          ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-          ctx.fillStyle=`rgba(255,220,240,${s.a})`; ctx.fill();
-        });
-        requestAnimationFrame(draw);
-      }
-      resize(); create(); draw();
-      addEventListener('resize',()=>{resize();create();});
-    })();
-
-    /* ===== DAYS COUNTER (shared) ===== */
-    const START_DATE = new Date(2024, 10, 23); // Nov 23, 2024
-    function calcDays() {
-      return Math.floor(Math.abs(new Date() - START_DATE) / 86400000);
-    }
-    // Update selector badge
-    const selectorDaysEl = document.getElementById('selectorDays');
-    if (selectorDaysEl) selectorDaysEl.textContent = calcDays();
-
-    /* ===== DATE CONDITION ===== */
-    const _today = new Date();
-    const isValentinesDay = _today.getMonth() === 1 && _today.getDate() === 14;
-    const isWomensDay     = _today.getMonth() === 2 && _today.getDate() === 8;
-    if (isValentinesDay) document.body.classList.add('is-valentines-day');
-
-    /* ===== SELECTOR SCREEN LOGIC ===== */
-    const selectorScreen  = document.getElementById('selectorScreen');
-    const sceneWomens     = document.getElementById('sceneWomens');
-    const sceneStudy      = document.getElementById('sceneStudy');
-    const cover           = document.getElementById('cover');
-
-    // Highlight today's occasion on the selector
-    (function highlightTodayCard() {
-      // Dynamic subtitle
-      const subtitle = document.querySelector('.selector-subtitle');
-      if (isValentinesDay) {
-        subtitle.textContent = '🌹 ¡Hoy es Día de San Valentín! 🌹';
-        subtitle.style.color = 'rgba(255,140,180,.85)';
-      } else if (isWomensDay) {
-        subtitle.textContent = '💜 ¡Hoy es Día Internacional de la Mujer! 💜';
-        subtitle.style.color = 'rgba(200,140,255,.85)';
-      }
-
-      if (isValentinesDay) {
-        const btn = document.getElementById('btnValentine');
-        btn.classList.add('today-highlight');
-        const badge = document.createElement('div');
-        badge.className = 'selector-card-today-badge';
-        badge.textContent = '¡Hoy! 🎉';
-        btn.appendChild(badge);
-      } else if (isWomensDay) {
-        const btn = document.getElementById('btnWomens');
-        btn.classList.add('today-highlight');
-        const badge = document.createElement('div');
-        badge.className = 'selector-card-today-badge';
-        badge.textContent = '¡Hoy! 🎉';
-        btn.appendChild(badge);
-      }
-    })();
-
-    function hideSelector() {
-      selectorScreen.classList.add('hidden');
-    }
-
-    // Button: Valentine's Day
-    document.getElementById('btnValentine').addEventListener('click', () => {
-      hideSelector();
-      setTimeout(() => {
-        cover.classList.remove('hidden');
-        initValentinesDay(); // always show messages
-      }, 600);
-    });
-
-    // Button: Women's Day
-    document.getElementById('btnWomens').addEventListener('click', () => {
-      hideSelector();
-      setTimeout(() => {
-        resetWomensScene(); // ensure clean state before starting
-        sceneWomens.classList.add('visible');
-        startWomensScene();
-      }, 600);
-    });
-
-    // Button: Tarapoto Trip
-    document.getElementById('btnTarapoto').addEventListener('click', () => {
-      hideSelector();
-      setTimeout(() => {
-        resetTarapotoScene();
-        sceneTarapoto.classList.add('visible');
-        startTarapotoScene();
-      }, 600);
-    });
-
-    document.getElementById('btnStudy').addEventListener('click', () => {
-      hideSelector();
-      setTimeout(() => {
-        resetStudyScene();
-        sceneStudy.classList.add('visible');
-        startStudyScene();
-      }, 600);
-    });
-
-    /* ===== VALENTINE'S DAY MESSAGE — always shown on cover ===== */
-    function initValentinesDay() {
-      const messages = [
-        '¡Feliz Día de San Valentín!',
-        'Mi pispachita',
-        'Mi alérgica al agua',
-        'Mi pacuchita',
-        'La razón de mis canas',
-        'Te amo y adoro',
-        'Hoy y siempre',
-        'Ya van ' + calcDays() + ' días de conocernos'
-      ];
-
-      const container = document.getElementById('valentineMessageContainer');
-      container.innerHTML = '';
-
-      messages.forEach((msg, idx) => {
-        const el = document.createElement('div');
-        el.className = `valentine-element line${idx + 1}`;
-        el.textContent = msg;
-        container.appendChild(el);
-      });
-
-      // Heart rain while cover is visible
-      const heartRainInterval = setInterval(() => {
-        if (cover.classList.contains('hidden')) {
-          clearInterval(heartRainInterval);
-          return;
-        }
-        const heart = document.createElement('span');
-        heart.className = 'valentine-heart-rain';
-        heart.textContent = ['💖','💕','💗','💝'][Math.floor(Math.random()*4)];
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.top = '-50px';
-        heart.style.animationDuration = (4 + Math.random() * 2) + 's';
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 6000);
-      }, 1000);
-    }
-
-    /* ===== WOMENS DAY SCENE ===== */
-    function startWomensScene() {
-      const heroineContainer  = document.getElementById('heroineContainer');
-      const womensPhraseTitle = document.getElementById('womensPhraseTitle');
-      const p1 = document.getElementById('womensP1');
-      const p2 = document.getElementById('womensP2');
-      const p3 = document.getElementById('womensP3');
-      const p4 = document.getElementById('womensP4');
-      const p5 = document.getElementById('womensP5');
-      const tapHint    = document.getElementById('womensTapHint');
-      const wMonkey    = document.getElementById('womensMonkey');
-      const wSpeech    = document.getElementById('womensMonkeySpeech');
-
-      // Spawn power sparks periodically
-      const sparkInterval = setInterval(() => {
-        if (!sceneWomens.classList.contains('visible')) { clearInterval(sparkInterval); return; }
-        spawnPowerSparks();
-      }, 900);
-
-      // Reveal sequence
-      setTimeout(() => { heroineContainer.classList.add('show'); flyPrincess(); }, 400);
-      setTimeout(() => { womensPhraseTitle.classList.add('show'); }, 1000);
-
-      // Phrases appear staggered
-      [[p1,1800],[p2,2900],[p3,4000],[p4,5100],[p5,6200]].forEach(([el,delay]) => {
-        setTimeout(() => {
-          el.style.animation = 'phraseReveal 1s ease forwards';
-          el.style.opacity   = '1';
-        }, delay);
-      });
-
-      // Monkey appears after phrases start
-      setTimeout(() => {
-        wMonkey.classList.add('show');
-        // Show speech bubble after a beat
-        setTimeout(() => {
-          wSpeech.classList.add('show');
-          // Cycle speech bubbles
-          const speeches = [
-            '¡Vuela, mi amor! 💜',
-            '¡Mi superheroína! 👑',
-            '¡Eres increíble! ✨',
-            'Te amo 🐒💕'
-          ];
-          let si = 0;
-          setInterval(() => {
-            if (!sceneWomens.classList.contains('visible')) return;
-            si = (si + 1) % speeches.length;
-            wSpeech.style.opacity = '0';
-            setTimeout(() => {
-              wSpeech.textContent = speeches[si];
-              wSpeech.style.opacity = '1';
-            }, 400);
-          }, 3000);
-        }, 600);
-      }, 2500);
-
-      setTimeout(() => { tapHint.classList.add('show'); }, 7200);
-    }
-
-    // Princess flies across the screen repeatedly
-    function flyPrincess() {
-      const hero = document.getElementById('heroineContainer');
-      const screenW = window.innerWidth;
-      const duration = 5500; // ms per pass
-
-      function onePass() {
-        if (!sceneWomens.classList.contains('visible')) return;
-        // random vertical lane (20–65% from top)
-        const topPct = 20 + Math.random() * 45;
-        hero.style.transition = 'none';
-        hero.style.top  = topPct + '%';
-        hero.style.left = '-200px';
-        // flip to face right (default)
-        hero.style.transform = 'scaleX(1)';
-
-        requestAnimationFrame(() => {
-          hero.style.transition = `left ${duration}ms linear`;
-          hero.style.left = (screenW + 60) + 'px';
-          setTimeout(() => {
-            if (!sceneWomens.classList.contains('visible')) return;
-            // come back from right to left (flipped)
-            const topPct2 = 20 + Math.random() * 45;
-            hero.style.transition = 'none';
-            hero.style.top  = topPct2 + '%';
-            hero.style.left = (screenW + 60) + 'px';
-            hero.style.transform = 'scaleX(-1)';
-            requestAnimationFrame(() => {
-              hero.style.transition = `left ${duration}ms linear`;
-              hero.style.left = '-200px';
-              setTimeout(onePass, duration + 300);
-            });
-          }, duration + 300);
-        });
-      }
-      onePass();
-    }
-
-    function spawnPowerSparks() {
-      const emojis = ['✨','💜','⭐','🌸','💪','🦋','💫','👑'];
-      const spark = document.createElement('span');
-      spark.className = 'power-spark';
-      spark.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-      const tx = (Math.random() * 180 - 90) + 'px';
-      const ty = (Math.random() * -160 - 30) + 'px';
-      spark.style.setProperty('--tx', tx);
-      spark.style.setProperty('--ty', ty);
-      spark.style.left = (10 + Math.random() * 80) + '%';
-      spark.style.top  = (20 + Math.random() * 60) + '%';
-      sceneWomens.appendChild(spark);
-      setTimeout(() => spark.remove(), 1600);
-    }
-
-    // Tap anywhere on womens scene → back to selector
-    sceneWomens.addEventListener('click', () => {
-      if (!sceneWomens.classList.contains('visible')) return;
-      sceneWomens.classList.remove('visible');
-      setTimeout(() => {
-        resetWomensScene();
-        selectorScreen.classList.remove('hidden');
-      }, 900);
-    });
-
-    function resetWomensScene() {
-      const heroineEl = document.getElementById('heroineContainer');
-      const phraseTitle = document.getElementById('womensPhraseTitle');
-      const tapHint   = document.getElementById('womensTapHint');
-      const wMonkey   = document.getElementById('womensMonkey');
-      const wSpeech   = document.getElementById('womensMonkeySpeech');
-
-      // Reset heroine position
-      if (heroineEl) {
-        heroineEl.classList.remove('show');
-        heroineEl.style.transition = 'none';
-        heroineEl.style.left = '-200px';
-        heroineEl.style.transform = 'scaleX(1)';
-      }
-
-      // Reset title
-      if (phraseTitle) {
-        phraseTitle.classList.remove('show');
-        phraseTitle.style.animation = 'none';
-        phraseTitle.style.opacity = '0';
-        void phraseTitle.offsetWidth; // reflow
-        phraseTitle.style.animation = '';
-      }
-
-      // Reset phrases
-      ['womensP1','womensP2','womensP3','womensP4','womensP5'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) { el.style.animation = 'none'; el.style.opacity = '0'; void el.offsetWidth; el.style.animation = ''; }
-      });
-
-      // Reset monkey & bubble
-      if (wMonkey) wMonkey.classList.remove('show');
-      if (wSpeech) {
-        wSpeech.classList.remove('show');
-        wSpeech.style.opacity = '';
-        wSpeech.textContent = '¡Vuela, mi amor! 💜';
-      }
-
-      // Reset hint
-      if (tapHint) tapHint.classList.remove('show');
-    }
-
-    /* ===== ELEMENTS ===== */
-    const heartWrapper = document.getElementById('heartWrapper');
-    const scene2 = document.getElementById('scene2');
-    const content = document.getElementById('content');
-    const monkeyContainer = document.getElementById('monkeyContainer');
-    const princessContainer = document.getElementById('princessContainer');
-    const scene2Narrative = document.getElementById('scene2Narrative');
-    const scene2NarrativeEnd = document.getElementById('scene2NarrativeEnd');
-    const deliveryExplosion = document.getElementById('deliveryExplosion');
-    const scene2Continue = document.getElementById('scene2Continue');
-    const monkeyHeart = document.getElementById('monkeyHeart');
-    const monkeySpeech = document.getElementById('monkeySpeech');
-    const flyingHeart = document.getElementById('flyingHeart');
-    const princessHeart = document.getElementById('princessHeart');
-
-    /* ===== COVER → SCENE 2 ===== */
-    function createCoverParticles() {
-      const rect = heartWrapper.getBoundingClientRect();
-      const cx = rect.left+rect.width/2, cy = rect.top+rect.height/2;
-      const colors = ['#ff4f8b','#e91e63','#ff80ab','#f48fb1','#ff1744','#ff6090','#ffcdd2'];
-      for (let i = 0; i < 30; i++) {
-        const p = document.createElement('div'); p.classList.add('particle');
-        const angle=(Math.PI*2*i)/30, dist=80+Math.random()*120, sz=4+Math.random()*10;
-        const col=colors[~~(Math.random()*colors.length)];
-        p.style.cssText=`left:${cx}px;top:${cy}px;width:${sz}px;height:${sz}px;background:${col};box-shadow:0 0 6px ${col};position:fixed;`;
-        document.body.appendChild(p);
-        p.animate([
-          {transform:'translate(0,0) scale(1)',opacity:1},
-          {transform:`translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px) scale(0)`,opacity:0}
-        ],{duration:800+Math.random()*400,easing:'cubic-bezier(.25,.46,.45,.94)',fill:'forwards'}).onfinish=()=>p.remove();
-      }
-    }
-
-    let coverClicked = false;
-    heartWrapper.addEventListener('click', () => {
-      if (coverClicked) return;
-      coverClicked = true;
-      heartWrapper.classList.add('exploding');
-      createCoverParticles();
-      setTimeout(() => {
-        cover.classList.add('hidden');
-        scene2.classList.add('visible');
-        startScene2();
-      }, 900);
-    });
-
-    /* ===== SCENE 2 — ANIMATION ===== */
-    function startScene2() {
-      // 1) Narrative
-      setTimeout(() => scene2Narrative.classList.add('show'), 500);
-      // 2) Princess appears
-      setTimeout(() => princessContainer.classList.add('show'), 2000);
-      // 3) Monkey walks
-      setTimeout(() => {
-        monkeyContainer.classList.add('show', 'walking');
-        monkeyContainer.querySelectorAll('.m-arm').forEach(a => a.classList.add('carrying'));
-      }, 3200);
-      // 4) Monkey arrives → deliver
-      setTimeout(() => deliverHeart(), 8700);
-    }
-
-    function deliverHeart() {
-      // Stop walking animation but keep monkey visible
-      monkeyContainer.classList.remove('walking');
-      
-      // Explicitly set final position to keep monkey visible
-      monkeyContainer.style.left = 'calc(70% - 150px)';
-      monkeyContainer.style.opacity = '1';
-      monkeyContainer.style.visibility = 'visible';
-      
-      monkeyContainer.querySelectorAll('.m-leg').forEach(l => l.style.animation='none');
-      const mb = monkeyContainer.querySelector('.monkey-body');
-      if(mb) mb.style.animation='none';
-
-      // Get positions for flying heart
-      const monkeyRect = monkeyContainer.getBoundingClientRect();
-      const princessRect = princessContainer.getBoundingClientRect();
-
-      const startX = monkeyRect.left + monkeyRect.width/2;
-      const startY = monkeyRect.top;
-      const endX = princessRect.left + princessRect.width/2;
-      const endY = princessRect.top;
-
-      // Monkey says phrase while delivering the heart
-      monkeySpeech.classList.add('show');
-      setTimeout(() => monkeySpeech.classList.remove('show'), 2100);
-
-      // Hide monkey's heart
-      monkeyHeart.style.transition = 'opacity .3s';
-      monkeyHeart.style.opacity = '0';
-
-      // Show flying heart at monkey position
-      flyingHeart.style.left = startX + 'px';
-      flyingHeart.style.top = startY + 'px';
-      flyingHeart.style.opacity = '1';
-
-      // Animate heart flying in an arc to the princess
-      const midY = Math.min(startY, endY) - 80;
-      flyingHeart.animate([
-        { left: startX+'px', top: startY+'px', transform:'scale(1)', offset:0 },
-        { left: ((startX+endX)/2)+'px', top: midY+'px', transform:'scale(1.4)', offset:0.5 },
-        { left: endX+'px', top: endY+'px', transform:'scale(1)', offset:1 }
-      ], {
-        duration: 1500,
-        easing: 'ease-in-out',
-        fill: 'forwards'
-      }).onfinish = () => {
-        // Heart arrived! Hide flying heart
-        flyingHeart.style.opacity = '0';
-
-        // Show heart above princess
-        princessHeart.classList.add('show');
-
-        // Princess happy!
-        princessContainer.classList.add('happy');
-
-        // Monkey celebrates!
-        monkeyContainer.classList.add('celebrating');
-
-        // EXPLOSION after a beat
-        setTimeout(() => {
-          deliveryExplosion.classList.add('boom');
-          document.querySelector('.sparkle-ring').classList.add('burst');
-          spawnExplosionEmojis();
-          spawnExplosionParticles();
-          spawnConfetti();
-
-          setTimeout(() => scene2NarrativeEnd.classList.add('show'), 1500);
-          setTimeout(() => scene2Continue.classList.add('show'), 3500);
-        }, 600);
-      };
-    }
-
-    function spawnExplosionEmojis() {
-      const emojis = ['💖','💕','✨','💗','🌸','💝','🦋','⭐','💘','🌹','💫','🎀','🌺','💞','🥰'];
-      for (let i = 0; i < 30; i++) {
-        setTimeout(() => {
-          const el = document.createElement('span');
-          el.className='scene2-emoji';
-          el.textContent=emojis[~~(Math.random()*emojis.length)];
-          el.style.left=(15+Math.random()*70)+'vw';
-          el.style.top=(25+Math.random()*35)+'vh';
-          el.style.animationDuration=(2.5+Math.random()*2)+'s';
-          el.style.animationDelay=(Math.random()*.4)+'s';
-          document.body.appendChild(el);
-          setTimeout(()=>el.remove(),6000);
-        }, i*100);
-      }
-    }
-
-    function spawnExplosionParticles() {
-      const cx=innerWidth/2, cy=innerHeight*.38;
-      const colors=['#ff4f8b','#ffd700','#ff80ab','#e91e63','#ff1744','#ffeb3b','#ff6090','#f48fb1','#ff69b4','#ff85c0'];
-      for (let i=0;i<50;i++) {
-        const p=document.createElement('div');
-        p.classList.add('particle');
-        const angle=(Math.PI*2*i)/50,dist=50+Math.random()*220,sz=3+Math.random()*9;
-        const col=colors[~~(Math.random()*colors.length)];
-        const rad=Math.random()>.4?'50%':'2px';
-        p.style.cssText=`left:${cx}px;top:${cy}px;width:${sz}px;height:${sz}px;background:${col};box-shadow:0 0 10px ${col};position:fixed;border-radius:${rad};z-index:22;`;
-        document.body.appendChild(p);
-        p.animate([
-          {transform:'translate(0,0) scale(1) rotate(0)',opacity:1},
-          {transform:`translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px) scale(0) rotate(${Math.random()*720}deg)`,opacity:0}
-        ],{duration:1200+Math.random()*800,easing:'cubic-bezier(.25,.46,.45,.94)',fill:'forwards'}).onfinish=()=>p.remove();
-      }
-    }
-
-    function spawnConfetti() {
-      const colors=['#ff4f8b','#ffd700','#ff80ab','#e91e63','#f48fb1','#ffcdd2','#ff69b4','#ffb6c1'];
-      for (let i=0;i<40;i++) {
-        setTimeout(()=>{
-          const c=document.createElement('div');
-          c.className='confetti';
-          const col=colors[~~(Math.random()*colors.length)];
-          const w=4+Math.random()*8,h=4+Math.random()*8;
-          const shape=Math.random()>.5?'50%':'1px';
-          c.style.cssText=`left:${Math.random()*100}vw;top:${-10+Math.random()*20}px;width:${w}px;height:${h}px;background:${col};border-radius:${shape};animation-duration:${2.5+Math.random()*2}s;animation-delay:${Math.random()*.8}s;`;
-          document.body.appendChild(c);
-          setTimeout(()=>c.remove(),6000);
-        },i*80);
-      }
-    }
-
-    /* ===== SCENE 2 → CONTENT ===== */
-    scene2Continue.addEventListener('click', () => {
-      scene2.classList.add('hidden');
-      setTimeout(() => {
-        scene2.style.display='none';
-        document.body.style.overflow='auto';
-        content.classList.add('visible');
-        setTimeout(() => {
-          document.getElementById('contentHeader').classList.add('animate');
-          document.getElementById('photoSection').classList.add('animate');
-          document.getElementById('loveLetter').classList.add('animate');
-          document.getElementById('reasons').classList.add('animate');
-          document.getElementById('contentFooter').classList.add('animate');
-          document.getElementById('daysCounter').classList.add('show');
-          spawnFloatingHearts();
-        }, 250);
-      }, 1000);
-    });
-
-    /* ===== STUDY CHAPTER SCENE ===== */
-    let studyPhotosIndex = 0;
-    const totalStudyPhotos = 4;
-    let studyTimers = [];
-
-    function scheduleStudy(fn, delay) {
-      const timer = setTimeout(fn, delay);
-      studyTimers.push(timer);
-      return timer;
-    }
-
-    function startStudyScene() {
-      const title = document.getElementById('studyTitle');
-      const princess = document.getElementById('studyPrincess');
-      const monkey = document.getElementById('studyMonkey');
-      const love = document.getElementById('studyMonkeyLove');
-      const kiss = document.getElementById('studyKiss');
-      const panel = document.getElementById('studyMessagePanel');
-      const photos = document.getElementById('studyPhotos');
-
-      scheduleStudy(() => title.classList.add('show'), 350);
-      scheduleStudy(() => princess.classList.add('show'), 900);
-      scheduleStudy(() => {
-        monkey.classList.add('show', 'walking');
-      }, 2600);
-      scheduleStudy(() => {
-        monkey.classList.remove('walking');
-        monkey.classList.add('kissing');
-        kiss.classList.add('show');
-        love.classList.add('show');
-      }, 7000);
-      scheduleStudy(() => {
-        love.classList.remove('show');
-      }, 8500);
-      scheduleStudy(() => {
-        panel.classList.add('show');
-      }, 8800);
-      scheduleStudy(() => {
-        photos.classList.add('visible');
-        studyPhotosIndex = 0;
-        showStudyPhotoSlide(0);
-      }, 15000);
-    }
-
-    function resetStudyScene() {
-      studyTimers.forEach(clearTimeout);
-      studyTimers = [];
-
-      const title = document.getElementById('studyTitle');
-      const princess = document.getElementById('studyPrincess');
-      const monkey = document.getElementById('studyMonkey');
-      const love = document.getElementById('studyMonkeyLove');
-      const kiss = document.getElementById('studyKiss');
-      const panel = document.getElementById('studyMessagePanel');
-      const photos = document.getElementById('studyPhotos');
-
-      if (title) { title.classList.remove('show'); title.style.animation = 'none'; void title.offsetWidth; title.style.animation = ''; }
-      if (princess) princess.classList.remove('show');
-      if (monkey) monkey.classList.remove('show', 'walking', 'kissing');
-      if (love) love.classList.remove('show');
-      if (kiss) { kiss.classList.remove('show'); kiss.style.animation = 'none'; void kiss.offsetWidth; kiss.style.animation = ''; }
-      if (panel) panel.classList.remove('show');
-      if (photos) photos.classList.remove('visible');
-      showStudyPhotoSlide(0);
-    }
-
-    function showStudyPhotoSlide(idx) {
-      for (let i = 1; i <= totalStudyPhotos; i++) {
-        const slide = document.getElementById('studyPhotoSlide' + i);
-        if (slide) {
-          slide.classList.toggle('active', i === idx + 1);
-          if (i === idx + 1) {
-            slide.style.animation = 'none';
-            void slide.offsetWidth;
-            slide.style.animation = '';
-          }
-        }
-      }
-      const counter = document.getElementById('studyPhotosCounter');
-      if (counter) counter.textContent = `${idx + 1} / ${totalStudyPhotos}`;
-    }
-
-    document.getElementById('studyPhotosNext').addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (studyPhotosIndex < totalStudyPhotos - 1) {
-        studyPhotosIndex++;
-        showStudyPhotoSlide(studyPhotosIndex);
-      }
-    });
-
-    document.getElementById('studyPhotosPrev').addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (studyPhotosIndex > 0) {
-        studyPhotosIndex--;
-        showStudyPhotoSlide(studyPhotosIndex);
-      }
-    });
-
-    document.getElementById('studyPhotosBackBtn').addEventListener('click', (e) => {
-      e.stopPropagation();
-      resetStudyScene();
-      sceneStudy.classList.remove('visible');
-      selectorScreen.classList.remove('hidden');
-    });
-
-    /* ===== TARAPOTO SCENE ===== */
-    const sceneTarapoto = document.getElementById('sceneTarapoto');
-
-    // Generate rain drops
-    function spawnRainDrops() {
-      const rainContainer = document.getElementById('tarapotoRain');
-      if (!rainContainer || rainContainer.children.length > 1) return; // already spawned
-      for (let i = 0; i < 120; i++) {
-        const drop = document.createElement('div');
-        drop.className = 'rain-drop';
-        const left = Math.random() * 100;
-        const height = 15 + Math.random() * 25;
-        const duration = 0.4 + Math.random() * 0.5;
-        const delay = Math.random() * 2;
-        drop.style.cssText = `
-          left: ${left}%;
-          height: ${height}px;
-          animation-duration: ${duration}s;
-          animation-delay: ${delay}s;
-        `;
-        rainContainer.appendChild(drop);
-      }
-    }
-
-    function startTarapotoScene() {
-      const title = document.getElementById('tarapotoTitle');
-      const narrative = document.getElementById('tarapotoNarrative');
-      const monkey = document.getElementById('tarapotoMonkey');
-      const princess = document.getElementById('tarapotoPrincess');
-      const monkeySpeech = document.getElementById('tarapotoMonkeySpeech');
-      const river = document.getElementById('tarapotoRiver');
-      const lagoon = document.getElementById('tarapotoLagoon');
-      const moto = document.getElementById('tarapotoMoto');
-      const finalMsg = document.getElementById('tarapotoFinalMsg');
-
-      // Show title
-      setTimeout(() => title.classList.add('show'), 400);
-
-      // ── PHASE 1: Walking through the forest (sunny) ──
-      setTimeout(() => {
-        // Monkey says something at the start
-        monkeySpeech.textContent = 'Mi pispachita nos vamos a Tarapoto 🌴💚';
-        monkeySpeech.style.opacity = '1';
-        monkeySpeech.classList.add('show');
-
-        narrative.textContent = '🌿 El mono y la princesa caminan juntos por Tarapoto...';
-        narrative.style.top = '12%';
-        narrative.classList.add('show');
-
-        monkey.classList.add('show');
-        princess.classList.add('show');
-        monkey.classList.add('walking');
-        princess.classList.add('walking');
-
-        // Hide speech bubble after a few seconds - no more cycling
-        setTimeout(() => {
-          monkeySpeech.classList.remove('show');
-          monkeySpeech.style.opacity = '0';
-        }, 4000);
-
-        walkAcross(monkey, princess, 6500, () => {
-          narrative.classList.remove('show');
-          narrative.style.opacity = '0';
-        });
-      }, 1200);
-
-      // ── PHASE 2: Crossing the river ──
-      setTimeout(() => {
-        sceneTarapoto.classList.add('phase-river');
-        river.classList.add('show');
-        narrative.textContent = '🌊 Cruzando el río  Magallanes juntos, de la mano...';
-        narrative.style.animation = 'none'; void narrative.offsetWidth; narrative.style.animation = '';
-        narrative.style.top = '12%';
-        narrative.classList.add('show');
-
-        monkey.classList.remove('walking');
-        princess.classList.remove('walking');
-        monkey.style.opacity = '1'; princess.style.opacity = '1';
-        resetToCenter(monkey, princess);
-
-        setTimeout(() => {
-          monkey.classList.add('walking');
-          princess.classList.add('walking');
-          walkAcross(monkey, princess, 5000, () => {
-            narrative.classList.remove('show');
-            narrative.style.opacity = '0';
-          });
-        }, 3000);
-
-        setTimeout(() => { river.classList.remove('show'); sceneTarapoto.classList.remove('phase-river'); }, 9500);
-      }, 9000);
-
-      // ── PHASE 3: Lagoon ──
-      setTimeout(() => {
-        sceneTarapoto.classList.add('phase-lagoon');
-        lagoon.classList.add('show');
-        narrative.textContent = '💧 Llegan a una laguna escondida entre la selva...';
-        narrative.style.animation = 'none'; void narrative.offsetWidth; narrative.style.animation = '';
-        narrative.style.top = '12%';
-        narrative.classList.add('show');
-
-        monkey.classList.remove('walking');
-        princess.classList.remove('walking');
-        monkey.style.opacity = '1'; princess.style.opacity = '1';
-        resetToCenter(monkey, princess);
-
-        setTimeout(() => {
-          narrative.classList.remove('show');
-          narrative.style.opacity = '0';
-        }, 4500);
-
-        setTimeout(() => { lagoon.classList.remove('show'); sceneTarapoto.classList.remove('phase-lagoon'); }, 8500);
-      }, 19500);
-
-      // ── PHASE 4+5: Rain + Motorcycle combined! ──
-      setTimeout(() => {
-        sceneTarapoto.classList.add('phase-rain');
-        spawnRainDrops();
-        narrative.textContent = '🌧️🏍️ ¡Comienza la tormenta... y el mono y la princesa salen a explorar en moto bajo la lluvia!';
-        narrative.style.animation = 'none'; void narrative.offsetWidth; narrative.style.animation = '';
-        narrative.style.top = '12%';
-        narrative.classList.add('show');
-
-        // Hide walking characters immediately (with explicit opacity)
-        monkey.classList.remove('show', 'walking');
-        princess.classList.remove('show', 'walking');
-        monkey.style.opacity = '0';
-        princess.style.opacity = '0';
-
-        setTimeout(() => {
-          narrative.classList.remove('show');
-          narrative.style.opacity = '0';
-        }, 5000);
-
-        // Moto appears while rain is active
-        setTimeout(() => {
-          moto.classList.add('show');
-          setTimeout(() => moto.classList.add('riding'), 300);
-        }, 1500);
-
-        // Rain clears just as moto exits
-        setTimeout(() => {
-          sceneTarapoto.classList.remove('phase-rain');
-        }, 7500);
-
-        // Moto finishes ride
-        setTimeout(() => {
-          moto.classList.remove('show', 'riding');
-          moto.style.left = '-400px';
-        }, 9000);
-      }, 29000);
-
-      // ── PHASE 6: Photo slideshow (final phase — stays open) ──
-      setTimeout(() => {
-        const photosEl = document.getElementById('tarapotoPhotos');
-        photosEl.classList.add('visible');
-        photosIndex = 0;
-        showPhotoSlide(0);
-      }, 40000);
-    }
-
-    // Walk monkey and princess across the screen together
-    function walkAcross(monkey, princess, duration, onComplete) {
-      const screenW = window.innerWidth;
-      const startPos = -150;
-      const endPos = screenW + 50;
-
-      monkey.style.transition = 'none';
-      princess.style.transition = 'none';
-      monkey.style.left = startPos + 'px';
-      princess.style.left = (startPos + 140) + 'px';
-      monkey.style.bottom = '20%';
-      princess.style.bottom = '20%';
-      monkey.style.top = '';
-      princess.style.top = '';
-      monkey.style.position = '';
-      princess.style.position = '';
-      monkey.style.transform = '';
-      princess.style.transform = '';
-
-      void monkey.offsetWidth;
-
-      monkey.style.transition = `left ${duration}ms linear`;
-      princess.style.transition = `left ${duration}ms linear`;
-
-      requestAnimationFrame(() => {
-        monkey.style.left = endPos + 'px';
-        princess.style.left = (endPos - 140) + 'px';
-      });
-
-      setTimeout(() => {
-        if (onComplete) onComplete();
-      }, duration + 300);
-    }
-
-    // Reset characters to center, standing
-    function resetToCenter(monkey, princess) {
-      const screenW = window.innerWidth;
-      const cx = screenW / 2;
-
-      monkey.style.transition = 'left 1s ease, bottom 1s ease';
-      princess.style.transition = 'left 1s ease, bottom 1s ease';
-      monkey.style.position = '';
-      princess.style.position = '';
-      monkey.style.top = '';
-      princess.style.top = '';
-      monkey.style.transform = '';
-      princess.style.transform = '';
-      monkey.style.left = (cx - 180) + 'px';
-      princess.style.left = (cx + 50) + 'px';
-      monkey.style.bottom = '20%';
-      princess.style.bottom = '20%';
-    }
-
-    function resetTarapotoScene() {
-      const title = document.getElementById('tarapotoTitle');
-      const narrative = document.getElementById('tarapotoNarrative');
-      const monkey = document.getElementById('tarapotoMonkey');
-      const princess = document.getElementById('tarapotoPrincess');
-      const monkeySpeech = document.getElementById('tarapotoMonkeySpeech');
-      const river = document.getElementById('tarapotoRiver');
-      const lagoon = document.getElementById('tarapotoLagoon');
-      const moto = document.getElementById('tarapotoMoto');
-      const photos = document.getElementById('tarapotoPhotos');
-      const finalMsg = document.getElementById('tarapotoFinalMsg');
-      const rainContainer = document.getElementById('tarapotoRain');
-
-      sceneTarapoto.classList.remove('phase-river', 'phase-lagoon', 'phase-rain');
-
-      if (title) { title.classList.remove('show'); title.style.opacity = '0'; void title.offsetWidth; title.style.animation = ''; }
-
-      if (narrative) {
-        narrative.classList.remove('show');
-        narrative.style.opacity = '0';
-        narrative.style.animation = 'none';
-        narrative.textContent = '';
-        void narrative.offsetWidth;
-        narrative.style.animation = '';
-      }
-
-      if (monkey) {
-        monkey.classList.remove('show', 'walking');
-        monkey.style.cssText = '';
-        monkey.style.position = '';
-        monkey.style.transition = 'none';
-        monkey.style.left = '-150px';
-        monkey.style.bottom = '20%';
-      }
-      if (monkeySpeech) {
-        monkeySpeech.classList.remove('show');
-        monkeySpeech.style.opacity = '';
-        monkeySpeech.textContent = 'Mi pispachita nos vamos a Tarapoto 🌴💚';
-      }
-
-      if (princess) {
-        princess.classList.remove('show', 'walking');
-        princess.style.cssText = '';
-        princess.style.position = '';
-        princess.style.transition = 'none';
-        princess.style.left = '-280px';
-        princess.style.bottom = '20%';
-      }
-
-      if (river) river.classList.remove('show');
-      if (lagoon) lagoon.classList.remove('show');
-      if (moto) { moto.classList.remove('show', 'riding'); moto.style.left = '-350px'; }
-
-      // Clean rain drops
-      if (rainContainer) {
-        const drops = rainContainer.querySelectorAll('.rain-drop');
-        drops.forEach(d => d.remove());
-      }
-
-      if (photos) { photos.classList.remove('visible'); }
-      if (finalMsg) { finalMsg.classList.remove('show'); finalMsg.style.opacity = '0'; void finalMsg.offsetWidth; finalMsg.style.animation = ''; }
-    }
-
-    // No tap-to-return for Tarapoto scene (disabled)
-
-    /* ===== TARAPOTO PHOTO SLIDESHOW ===== */
-    let photosIndex = 0;
-    const totalPhotos = 8;
-
-    function showPhotoSlide(idx) {
-      for (let i = 1; i <= totalPhotos; i++) {
-        const slide = document.getElementById('photoSlide' + i);
-        if (slide) {
-          slide.classList.toggle('active', i === idx + 1);
-          if (i === idx + 1) {
-            slide.style.animation = 'none';
-            void slide.offsetWidth;
-            slide.style.animation = '';
-          }
-        }
-      }
-      const counter = document.getElementById('photosCounter');
-      counter.textContent = `${idx + 1} / ${totalPhotos}`;
-    }
-
-    document.getElementById('photosNext').addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (photosIndex < totalPhotos - 1) {
-        photosIndex++;
-        showPhotoSlide(photosIndex);
-      }
-    });
-
-    document.getElementById('photosPrev').addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (photosIndex > 0) {
-        photosIndex--;
-        showPhotoSlide(photosIndex);
-      }
-    });
-
-    document.getElementById('photosBackBtn').addEventListener('click', (e) => {
-      e.stopPropagation();
-      const photosEl = document.getElementById('tarapotoPhotos');
-      photosEl.classList.remove('visible');
-      resetTarapotoScene();
-      sceneTarapoto.classList.remove('visible');
-      selectorScreen.classList.remove('hidden');
-    });
-
-    /* ===== FLOATING HEARTS ===== */
-    function spawnFloatingHearts() {
-      const h=['♥','♡','💕','💗'];
-      setInterval(()=>{
-        const el=document.createElement('span');
-        el.classList.add('floating-heart');
-        el.textContent=h[~~(Math.random()*h.length)];
-        el.style.left=Math.random()*100+'vw';
-        el.style.fontSize=(1+Math.random()*1.5)+'rem';
-        el.style.animationDuration=(8+Math.random()*8)+'s';
-        document.body.appendChild(el);
-        setTimeout(()=>el.remove(),16000);
-      },2500);
-    }
-
-    /* ===== DAYS COUNTER (content page) ===== */
-    document.getElementById('daysNumber').textContent = calcDays();
-
-    /* ===== DATE ===== */
-    document.getElementById('currentDate').textContent =
-      new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'});
-  </script>
+  <!-- ===== CHARACTER MODELS (single source, cloned by js into every [data-char]) ===== -->
+  <template id="tpl-princess">
+    <div class="princess-crown">
+      <div class="princess-crown-base"></div>
+      <div class="princess-crown-point"></div>
+      <div class="princess-crown-point"></div>
+      <div class="princess-crown-point"></div>
+      <div class="princess-crown-gem"></div>
+    </div>
+    <div class="princess-hair-top"></div>
+    <div class="princess-hair-side-l"></div>
+    <div class="princess-hair-side-r"></div>
+    <div class="princess-head">
+      <div class="princess-eyelash left"></div>
+      <div class="princess-eyelash right"></div>
+      <div class="princess-eye left"></div>
+      <div class="princess-eye right"></div>
+      <div class="princess-blush left"></div>
+      <div class="princess-blush right"></div>
+      <div class="princess-mouth"></div>
+      <div class="princess-smile"></div>
+    </div>
+    <div class="princess-arm left"></div>
+    <div class="princess-arm right"></div>
+    <div class="princess-dress-top"></div>
+    <div class="princess-dress-bottom">
+      <div class="princess-dress-detail"></div>
+      <div class="princess-dress-sparkle">✦</div>
+      <div class="princess-dress-sparkle">✦</div>
+      <div class="princess-dress-sparkle">✦</div>
+    </div>
+  </template>
+  <template id="tpl-monkey">
+    <div class="m-head">
+      <div class="m-ear l"></div>
+      <div class="m-ear r"></div>
+      <div class="m-face">
+        <div class="m-eye l"></div>
+        <div class="m-eye r"></div>
+        <div class="m-mouth"></div>
+      </div>
+    </div>
+    <div class="m-torso"><div class="m-belly"></div></div>
+    <div class="m-arm l"><div class="m-hand"></div></div>
+    <div class="m-arm r"><div class="m-hand"></div></div>
+    <div class="m-leg l"><div class="m-foot"></div></div>
+    <div class="m-leg r"><div class="m-foot"></div></div>
+    <div class="m-tail"></div>
+  </template>
+
+  <script src="js/main.js"></script>
 </body>
 </html>
