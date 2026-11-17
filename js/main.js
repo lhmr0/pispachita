@@ -89,6 +89,8 @@
     let womensSparksInterval = null;
     let womensSpeechInterval = null;
     let womensCanTapToExit = false;
+    let sceneTransitionTimer = null;
+    let sceneMenuTrigger = null;
 
     function scheduleValentine(fn, delay) {
       const timer = setTimeout(fn, delay);
@@ -104,17 +106,25 @@
 
     function hideSelector() {
       selectorScreen.classList.add('hidden');
+      selectorScreen.inert = true;
     }
 
     function openScene(starter) {
+      if (selectorScreen.classList.contains('hidden')) return;
+      sceneMenuTrigger = document.activeElement;
       hideSelector();
-      setTimeout(() => {
+      clearTimeout(sceneTransitionTimer);
+      sceneTransitionTimer = setTimeout(() => {
+        sceneTransitionTimer = null;
         if (globalBackBtn) globalBackBtn.classList.add('show');
         starter();
+        if (globalBackBtn) globalBackBtn.focus({ preventScroll: true });
       }, 500);
     }
 
     function returnToSelectorMenu() {
+      clearTimeout(sceneTransitionTimer);
+      sceneTransitionTimer = null;
       // 1. Reset all scenes and cancel active timers
       resetValentineScene();
       resetWomensScene();
@@ -144,8 +154,18 @@
       if (globalBackBtn) globalBackBtn.classList.remove('show');
 
       // 4. Reveal selector screen
-      if (selectorScreen) selectorScreen.classList.remove('hidden');
+      if (selectorScreen) {
+        selectorScreen.inert = false;
+        selectorScreen.classList.remove('hidden');
+      }
+      if (sceneMenuTrigger) sceneMenuTrigger.focus({ preventScroll: true });
     }
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && selectorScreen.classList.contains('hidden')) {
+        returnToSelectorMenu();
+      }
+    });
 
     function resetValentineScene() {
       valentineTimers.forEach(clearTimeout);
@@ -1197,6 +1217,8 @@
       }
       const counter = document.getElementById('lawyerPhotosCounter');
       if (counter) counter.textContent = `${idx + 1} / ${totalLawyerPhotos}`;
+      document.getElementById('lawyerPhotosPrev').disabled = idx === 0;
+      document.getElementById('lawyerPhotosNext').disabled = idx === totalLawyerPhotos - 1;
     }
 
     function resetLawyerScene() {
@@ -1225,6 +1247,7 @@
 
     function startLawyerScene() {
       resetLawyerScene();
+      sceneLawyer.scrollTop = 0;
       const diploma = document.getElementById('lawyerDiploma');
       const monkeySpeech = document.getElementById('lawyerMonkeySpeech');
       const camFlash = document.getElementById('lawyerFlash');
@@ -1374,6 +1397,8 @@
       }
       const counter = document.getElementById('papaPhotosCounter');
       if (counter) counter.textContent = `${idx + 1} / ${totalPapaPhotos}`;
+      document.getElementById('papaPhotosPrev').disabled = idx === 0;
+      document.getElementById('papaPhotosNext').disabled = idx === totalPapaPhotos - 1;
     }
 
     function resetPapaScene() {
@@ -1397,6 +1422,7 @@
 
     function startPapaScene() {
       resetPapaScene();
+      scenePapa.scrollTop = 0;
       const papaSpeech = document.getElementById('papaSpeechBubble');
       const princessSpeech = document.getElementById('papaPrincessSpeech');
       const monkeySpeech = document.getElementById('papaMonkeySpeech');

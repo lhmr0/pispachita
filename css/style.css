@@ -3001,7 +3001,7 @@
     }
     @keyframes lawyerMonkeyWalk {
       0% { transform: scale(0.9) translateX(0); }
-      100% { transform: scale(0.9) translateX(-110px); }
+      100% { transform: scale(0.9) translateX(var(--lawyer-walk, -110px)); }
     }
     @keyframes camFlash {
       0% { opacity: 0; transform: scale(0.6) rotate(-10deg); filter: drop-shadow(0 0 0px #fff); }

@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#4b1426" />
+  <meta name="description" content="Nuestro pequeño universo de recuerdos, aventuras y mucho amor. Para mi pispachita." />
   <title>💕 Para mi pispachita</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Press+Start+2P&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=20261116">
+  <link rel="stylesheet" href="css/redesign.css?v=20261116">
 </head>
 <body>
 
@@ -22,6 +25,7 @@
 
   <!-- ===== SELECTOR SCREEN ===== -->
   <section class="selector-screen" id="selectorScreen">
+    <div class="selector-topline"><span>♡ Un lugar para nosotros</span><span>Desde el 23 · 11 · 2024</span></div>
     <div class="sel-shooting-star ss1"></div>
     <div class="sel-shooting-star ss2"></div>
     <!-- Floating decorative icons -->
@@ -35,21 +39,17 @@
     <span class="sel-float f8">🍿</span>
     <span class="sel-float f9">✨</span>
 
-    <h1 class="selector-title">✨ Para mi pispachita ✨</h1>
-    <p class="selector-subtitle">Elige qué celebrar hoy</p>
+    <div class="selector-layout">
+    <div class="selector-main">
+    <p class="selector-eyebrow">Nuestra historia, en pequeños capítulos</p>
+    <h1 class="selector-title">Para mi<br><em>pispachita.</em></h1>
+    <p class="selector-subtitle">Hay momentos que merecen quedarse para siempre.<br>Elige uno y volvamos a vivirlo.</p>
 
     <div class="selector-days-badge">
       <span class="badge-icon">💕</span>
       <span class="badge-text">Ya llevamos</span>
       <span class="badge-num" id="selectorDays">---</span>
       <span class="badge-text">días juntos</span>
-    </div>
-
-    <div class="selector-photo">
-      <div class="selector-photo-frame">
-        <img src="lis6.jpg" alt="Mi pispachita" />
-      </div>
-      <p class="selector-photo-caption">✨ Mi persona favorita ✨</p>
     </div>
 
     <div class="selector-cards">
@@ -77,8 +77,8 @@
       <button class="selector-card card-study" id="btnStudy">
         <div class="selector-card-inner">
           <div class="selector-card-emoji">📚</div>
-          <div class="selector-card-title">pispachita<br>estudiosa</div>
-          <div class="selector-card-date">maestría en san marcos</div>
+          <div class="selector-card-title">Pispachita<br>estudiosa</div>
+          <div class="selector-card-date">Maestría en San Marcos</div>
         </div>
       </button>
       <button class="selector-card card-lawyer" id="btnLawyer">
@@ -95,6 +95,17 @@
           <div class="selector-card-date">Misa en Pampas de Pimentel</div>
         </div>
       </button>
+    </div>
+    <p class="selector-footnote">Hecho con todo el amor de tu monito ♡</p>
+    </div>
+    <figure class="selector-photo">
+      <div class="selector-photo-frame">
+        <img src="lis6.jpg" alt="Mi pispachita, mi persona favorita" fetchpriority="high" />
+        <span class="photo-corner-note" aria-hidden="true">tú, siempre tú.</span>
+      </div>
+      <figcaption class="selector-photo-caption">Mi persona favorita</figcaption>
+      <span class="selector-photo-dedication">De todos los lugares, contigo.</span>
+    </figure>
     </div>
   </section>
 
@@ -192,6 +203,7 @@
 
   <!-- ===== LAWYER CHAPTER SCENE (MI ABOGADA FAVORITA) ===== -->
   <section class="scene-lawyer" id="sceneLawyer">
+    <div class="chapter-hero">
     <div class="lawyer-bg-effects">
       <div class="lawyer-columns"></div>
       <div class="lawyer-curtain l"></div>
@@ -244,6 +256,9 @@
       </div>
     </div>
 
+    <a class="chapter-scroll-hint" href="#lawyerDetails">Un logro para recordar <span aria-hidden="true">↓</span></a>
+    </div>
+    <div class="chapter-details" id="lawyerDetails">
     <!-- Pride & Congratulations Panel -->
     <div class="lawyer-message-card" id="lawyerMessageCard">
       <div class="verdict-banner">✨ APROBADA CON FELICITACIÓN ✨</div>
@@ -257,7 +272,7 @@
     <div class="lawyer-photos" id="lawyerPhotos">
       <div class="photos-header">
         <button class="photos-back-btn" id="lawyerPhotosBackBtn" aria-label="Volver al menú">← Volver al menú</button>
-        <span class="photos-counter" id="lawyerPhotosCounter">1 / 4</span>
+        <span class="photos-counter" id="lawyerPhotosCounter" aria-live="polite" aria-atomic="true">1 / 4</span>
       </div>
       <div class="photos-slider" id="lawyerPhotosSlider">
         <div class="photo-slide active" id="lawyerPhotoSlide1">
@@ -294,14 +309,16 @@
         </div>
       </div>
       <div class="photos-nav">
-        <button class="photos-arrow prev" id="lawyerPhotosPrev" aria-label="Foto anterior">❮</button>
+        <button class="photos-arrow prev" id="lawyerPhotosPrev" aria-label="Foto anterior" disabled>❮</button>
         <button class="photos-arrow next" id="lawyerPhotosNext" aria-label="Foto siguiente">❯</button>
       </div>
+    </div>
     </div>
   </section>
 
   <!-- ===== PAPA CHAPTER SCENE (VISITA DE MI PAPA EN PIMENTEL) ===== -->
   <section class="scene-papa" id="scenePapa">
+    <div class="chapter-hero">
     <!-- Radiant Papal sun & holy light rays -->
     <div class="papa-radiance"></div>
     <div class="papa-sun-rays"></div>
@@ -385,6 +402,9 @@
       <div class="papa-holy-sparks" id="papaHolySparks"></div>
     </div>
 
+    <a class="chapter-scroll-hint" href="#papaDetails">Un momento para guardar <span aria-hidden="true">↓</span></a>
+    </div>
+    <div class="chapter-details" id="papaDetails">
     <!-- Faith & Historical Memory Card -->
     <div class="papa-message-card" id="papaMessageCard">
       <div class="family-badge">🕊️ FE, ESPERANZA Y BENDICIÓN 🕊️</div>
@@ -398,7 +418,7 @@
     <div class="papa-photos" id="papaPhotos">
       <div class="photos-header">
         <button class="photos-back-btn" id="papaPhotosBackBtn" aria-label="Volver al menú">← Volver al menú</button>
-        <span class="photos-counter" id="papaPhotosCounter">1 / 4</span>
+        <span class="photos-counter" id="papaPhotosCounter" aria-live="polite" aria-atomic="true">1 / 4</span>
       </div>
       <div class="photos-slider" id="papaPhotosSlider">
         <div class="photo-slide active" id="papaPhotoSlide1">
@@ -435,9 +455,10 @@
         </div>
       </div>
       <div class="photos-nav">
-        <button class="photos-arrow prev" id="papaPhotosPrev" aria-label="Foto anterior">❮</button>
+        <button class="photos-arrow prev" id="papaPhotosPrev" aria-label="Foto anterior" disabled>❮</button>
         <button class="photos-arrow next" id="papaPhotosNext" aria-label="Foto siguiente">❯</button>
       </div>
+    </div>
     </div>
   </section>
 
@@ -457,7 +478,7 @@
       <span class="cover-float-heart h5">💗</span>
       <span class="cover-float-heart h6">🫶</span>
     </div>
-    <div class="heart-wrapper" id="heartWrapper" role="button" aria-label="Haz clic para continuar">
+    <button class="heart-wrapper" id="heartWrapper" type="button" aria-label="Haz clic para continuar">
       <svg class="heart" id="heart" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -476,7 +497,7 @@
         <path d="M50,90 C25,75 10,60 10,45 C10,30 20,20 30,20 C38,20 45,25 50,35 C55,25 62,20 70,20 C80,20 90,30 90,45 C90,60 75,75 50,90 Z" 
               fill="url(#heartGradient)" filter="url(#heartGlow)" />
       </svg>
-    </div>
+    </button>
     <p class="cover-text">Haz clic en el corazón, mi pispachita 💗</p>
   </section>
 
@@ -1058,10 +1079,14 @@
       <div class="princess-blush right"></div>
       <div class="princess-mouth"></div>
       <div class="princess-smile"></div>
+      <div class="princess-earring left"></div>
+      <div class="princess-earring right"></div>
     </div>
     <div class="princess-arm left"></div>
     <div class="princess-arm right"></div>
     <div class="princess-dress-top"></div>
+    <div class="princess-shoe left"></div>
+    <div class="princess-shoe right"></div>
     <div class="princess-dress-bottom">
       <div class="princess-dress-detail"></div>
       <div class="princess-dress-sparkle">✦</div>
@@ -1076,9 +1101,13 @@
       <div class="m-face">
         <div class="m-eye l"></div>
         <div class="m-eye r"></div>
+        <div class="m-nose"></div>
+        <div class="m-blush l"></div>
+        <div class="m-blush r"></div>
         <div class="m-mouth"></div>
       </div>
     </div>
+    <div class="m-hair-tuft"></div>
     <div class="m-torso"><div class="m-belly"></div></div>
     <div class="m-arm l"><div class="m-hand"></div></div>
     <div class="m-arm r"><div class="m-hand"></div></div>
@@ -1087,6 +1116,6 @@
     <div class="m-tail"></div>
   </template>
 
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=20261116"></script>
 </body>
 </html>
