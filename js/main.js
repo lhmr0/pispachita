@@ -1231,6 +1231,8 @@
       const monkey = document.getElementById('lawyerMonkey');
       const bouquet = document.getElementById('monkeyBouquet');
 
+      const carriedPrincess = document.querySelector('#lawyerCarriedPrincess > .princess');
+      if (carriedPrincess) princess.appendChild(carriedPrincess);
       if (diploma) diploma.classList.remove('show');
       if (monkeySpeech) monkeySpeech.classList.remove('show');
       if (camFlash) camFlash.classList.remove('flash');
@@ -1238,7 +1240,7 @@
       if (princessSpeech) princessSpeech.classList.remove('show');
       if (bouquet) bouquet.classList.remove('show');
       if (monkey) {
-        monkey.classList.remove('walking', 'cheering');
+        monkey.classList.remove('walking', 'cheering', 'carrying-princess');
         monkey.style.transform = '';
       }
       lawyerPhotoIndex = 0;
@@ -1308,6 +1310,20 @@
           princessSpeech.classList.add('show');
         }
       }, 7500);
+
+      // Step 6: He lifts her into his arms to celebrate together.
+      scheduleLawyer(() => {
+        const model = princess.querySelector('.princess');
+        princess.classList.remove('triumph');
+        princessSpeech.classList.remove('show');
+        bouquet.classList.remove('show');
+        monkey.style.transform = getComputedStyle(monkey).transform;
+        monkey.classList.remove('walking');
+        document.getElementById('lawyerCarriedPrincess').appendChild(model);
+        monkey.classList.add('carrying-princess');
+        monkeySpeech.textContent = '¡Hoy te llevo en brazos, mi abogada! ❤️';
+        monkeySpeech.classList.add('show');
+      }, 9800);
     }
 
     if (btnLawyer) {
