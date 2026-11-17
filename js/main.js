@@ -145,7 +145,7 @@
       if (content) content.classList.remove('visible');
       if (sceneWomens) sceneWomens.classList.remove('visible');
       if (sceneTarapoto) {
-        sceneTarapoto.classList.remove('phase-river', 'phase-lagoon', 'phase-rain', 'visible');
+        sceneTarapoto.classList.remove('phase-river', 'phase-lagoon', 'phase-rain', 'together', 'visible');
       }
       if (sceneStudy) sceneStudy.classList.remove('visible');
       document.getElementById('sceneHuayhuash').classList.remove('visible');
@@ -410,7 +410,7 @@
       function onePass() {
         if (!sceneWomens.classList.contains('visible') || sceneWomens.classList.contains('story-complete')) return;
         // random vertical lane (20–65% from top)
-        const topPct = 20 + Math.random() * 45;
+        const topPct = 22 + Math.random() * 30; // keep clear of title and phrase box
         hero.style.transition = 'none';
         hero.style.top  = topPct + '%';
         hero.style.left = '-200px';
@@ -423,7 +423,7 @@
           scheduleWomens(() => {
             if (!sceneWomens.classList.contains('visible')) return;
             // come back from right to left (flipped)
-            const topPct2 = 20 + Math.random() * 45;
+            const topPct2 = 22 + Math.random() * 30;
             hero.style.transition = 'none';
             hero.style.top  = topPct2 + '%';
             hero.style.left = (screenW + 60) + 'px';
@@ -954,6 +954,13 @@
           narrative.style.opacity = '0';
         }, 4500);
 
+        scheduleTarapoto(() => {
+          monkeySpeech.textContent = 'Qué linda laguna… pero tú más 💙';
+          monkeySpeech.style.opacity = '1';
+          monkeySpeech.classList.add('show');
+        }, 5000);
+        scheduleTarapoto(() => { monkeySpeech.classList.remove('show'); monkeySpeech.style.opacity = '0'; }, 8200);
+
         scheduleTarapoto(() => { lagoon.classList.remove('show'); sceneTarapoto.classList.remove('phase-lagoon'); }, 8500);
       }, 19500);
 
@@ -995,7 +1002,18 @@
       }, 29000);
 
       // ── PHASE 6: Photo slideshow (final phase — stays open) ──
-      scheduleTarapoto(showTarapotoMemories, 40000);
+      // ── Ending: back together before the photos ──
+      scheduleTarapoto(() => {
+        monkey.style.opacity = '1'; princess.style.opacity = '1';
+        monkey.classList.add('show'); princess.classList.add('show');
+        resetToCenter(monkey, princess);
+        sceneTarapoto.classList.add('together');
+        monkeySpeech.textContent = 'Gracias por este viaje, mi pispachita 💚';
+        monkeySpeech.style.opacity = '1';
+        monkeySpeech.classList.add('show');
+      }, 38500);
+
+      scheduleTarapoto(showTarapotoMemories, 43000);
     }
 
     function showTarapotoMemories() {
@@ -1020,8 +1038,9 @@
 
       monkey.style.transition = 'none';
       princess.style.transition = 'none';
+      const gap = pairGap();
       monkey.style.left = startPos + 'px';
-      princess.style.left = (startPos + 140) + 'px';
+      princess.style.left = (startPos + gap) + 'px';
       monkey.style.bottom = '20%';
       princess.style.bottom = '20%';
       monkey.style.top = '';
@@ -1038,13 +1057,16 @@
 
       requestAnimationFrame(() => {
         monkey.style.left = endPos + 'px';
-        princess.style.left = (endPos - 140) + 'px';
+        princess.style.left = (endPos + gap) + 'px';
       });
 
       scheduleTarapoto(() => {
         if (onComplete) onComplete();
       }, duration + 300);
     }
+
+    // ponytail: matches the 1.4 desktop scale in redesign.css
+    function pairGap() { return window.innerWidth >= 900 ? 110 : 78; }
 
     // Reset characters to center, standing
     function resetToCenter(monkey, princess) {
@@ -1059,8 +1081,9 @@
       princess.style.top = '';
       monkey.style.transform = '';
       princess.style.transform = '';
-      monkey.style.left = (cx - 180) + 'px';
-      princess.style.left = (cx + 50) + 'px';
+      const gap = pairGap();
+      monkey.style.left = (cx - gap) + 'px';
+      princess.style.left = cx + 'px';
       monkey.style.bottom = '20%';
       princess.style.bottom = '20%';
     }
@@ -1082,7 +1105,7 @@
       const finalMsg = document.getElementById('tarapotoFinalMsg');
       const rainContainer = document.getElementById('tarapotoRain');
 
-      sceneTarapoto.classList.remove('phase-river', 'phase-lagoon', 'phase-rain');
+      sceneTarapoto.classList.remove('phase-river', 'phase-lagoon', 'phase-rain', 'together');
 
       if (title) { title.classList.remove('show'); title.style.opacity = '0'; void title.offsetWidth; title.style.animation = ''; }
 

@@ -737,3 +737,44 @@ button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
 .finale-next { margin: 0; padding: 12px 18px; border: 1px solid #d7b78255; border-radius: 12px; font: italic 16px/1.5 'Lora', serif; color: var(--gold); }
 .finale-line { margin: 0; font: 17px/1.6 'Lora', serif; }
 .finale-sign { margin: 0; font: 700 22px 'Dancing Script', cursive; color: var(--rose); }
+
+/* ===== Scene polish: bubbles, overlaps, characters ===== */
+/* One speech-bubble look for every character line. */
+.monkey-speech, .womens-monkey-speech, .lawyer-monkey-speech, .lawyer-speech, .pilgrim-speech, .papa-speech, .study-monkey-love {
+  font-family: 'Lora', serif; font-weight: 600; font-size: 13px; line-height: 1.5;
+  background: #fff5e7; color: #58263a; border: 1px solid #d7b782; border-radius: 14px;
+  box-shadow: 0 6px 18px #10202c30; text-shadow: none;
+}
+.womens-monkey-speech::after, .study-monkey-love::after { border-top-color: #fff5e7; }
+.lawyer-monkey-speech, .pilgrim-speech { font-size: 11px; } /* inside zoomed casts: ~13px on screen */
+.lawyer-monkey-speech { max-width: 150px; padding: 6px 10px; }
+
+/* Papa: doves fly below the header, not over the title. */
+.papa-dove.d1 { top: 36%; } .papa-dove.d2 { top: 44%; } .papa-dove.d3 { top: 31%; }
+
+/* Study: the princess peeks over her book so her face shows. */
+.study-princess-wrap { bottom: 196px; }
+.letter-cast { display: flex; align-items: flex-end; justify-content: center; gap: 4px; zoom: .6; margin-bottom: -6px; }
+.letter-cast .princess, .letter-cast .monkey-body { position: relative; }
+.letter-cast-heart { font-size: 34px; align-self: center; animation: lilyFloat 2.4s ease-in-out infinite; }
+
+/* Tarapoto: hidden lagoon sits behind the pair, framed by a sandy shore. */
+.tarapoto-lagoon { bottom: 19%; width: 112%; height: 24%; border-radius: 50%; border: 7px solid #d3bb83; box-shadow: inset 0 10px 18px #0d3b4a66, 0 6px 0 #2f6b2f; }
+.tarapoto-lagoon::before {
+  border-radius: 50%;
+  background:
+    linear-gradient(180deg, #1f5a3299 0 16%, transparent 38%),
+    radial-gradient(ellipse at 50% 35%, #8fe6e0 0%, #3ec1c9 30%, #1990a8 62%, #0e6680 100%);
+}
+.tarapoto-lagoon::after { display: none; }
+.scene-tarapoto.together .tarapoto-monkey-wrap .monkey-body, .scene-tarapoto.together .tarapoto-princess-wrap .princess { animation: lilyFloat 1.6s ease-in-out infinite; }
+@media (min-width: 900px) {
+  .tarapoto-monkey-wrap, .tarapoto-princess-wrap { scale: 1.4; transform-origin: 50% 100%; }
+}
+
+@media (max-width: 600px) {
+  .tarapoto-title { padding: 0 56px; font-size: 1.5rem; }
+  /* Women's day: phrase sits above the monkey and his bubble. */
+  .scene-womens .womens-phrase { bottom: 215px; }
+  .study-princess-wrap { bottom: 182px; }
+}
