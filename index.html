@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Press+Start+2P&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css?v=20261116-4">
-  <link rel="stylesheet" href="css/redesign.css?v=20261116-5">
+  <link rel="stylesheet" href="css/redesign.css?v=20261116-9">
 </head>
 <body>
 
@@ -79,6 +79,13 @@
           <div class="selector-card-emoji">📚</div>
           <div class="selector-card-title">Pispachita<br>estudiosa</div>
           <div class="selector-card-date">Maestría en San Marcos</div>
+        </div>
+      </button>
+      <button class="selector-card card-huayhuash" id="btnHuayhuash">
+        <div class="selector-card-inner">
+          <div class="selector-card-emoji">🏔️</div>
+          <div class="selector-card-title">Paseo en<br>Huayhuash</div>
+          <div class="selector-card-date">La laguna y el nevado</div>
         </div>
       </button>
       <button class="selector-card card-lawyer" id="btnLawyer">
@@ -169,7 +176,10 @@
       <div class="womens-monkey-speech" id="womensMonkeySpeech">¡Vuela, mi amor! 💜</div>
       <div class="monkey-body" data-char="monkey"></div>
     </div>
-    <div class="womens-tap-hint" id="womensTapHint">Toca la pantalla para continuar ✨</div>
+    <div class="scene-end-actions" id="womensTapHint">
+      <button class="memory-action" data-replay="womens">↻ Repetir animación</button>
+      <button class="memory-action" id="womensMenuBtn">Volver a nuestros capítulos →</button>
+    </div>
   </section>
 
   <!-- ===== STUDY CHAPTER SCENE ===== -->
@@ -199,11 +209,81 @@
       </div>
     </div>
 
-    <div class="study-message-panel" id="studyMessagePanel">
+    <div class="study-message-panel" id="studyMessagePanel" role="region" aria-label="Una carta para mi pispachita estudiosa" tabindex="-1" inert>
       <h3>Mi moticienta</h3>
       <p>Estoy orgulloso de ti, de tu esfuerzo, de tu disciplina y de esa mente hermosa que sigue creciendo.</p>
       <div class="study-pride">Sigue brillando, mi pispachita estudiosa.</div>
       <p>Tu monito cree en ti con todo el coraz&oacute;n.</p>
+      <button class="memory-action" id="studyLetterNext">Ver nuestros recuerdos →</button>
+    </div>
+    <button class="memory-action scene-memories-shortcut" id="studyMemoriesBtn">Ver nuestros recuerdos →</button>
+  </section>
+
+  <!-- ===== HUAYHUASH: LAGOON, SNOWY PEAKS AND OUR PHOTOS ===== -->
+  <section class="scene-huayhuash" id="sceneHuayhuash">
+    <div class="chapter-hero">
+      <svg class="huay-landscape" viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="huaySky" x2="0" y2="1"><stop stop-color="#89bbcd"/><stop offset="1" stop-color="#eef1df"/></linearGradient>
+          <linearGradient id="huayWater" x2="0" y2="1"><stop stop-color="#529b9e"/><stop offset=".55" stop-color="#70b7b1"/><stop offset="1" stop-color="#acd0b3"/></linearGradient>
+          <linearGradient id="huayRock" x2="1" y2="1"><stop stop-color="#66737a"/><stop offset="1" stop-color="#a1a99c"/></linearGradient>
+        </defs>
+        <rect width="1440" height="1000" fill="url(#huaySky)"/>
+        <g class="huay-clouds" fill="#fff" opacity=".47"><path d="M-50 230 Q100 170 220 225 Q320 185 450 235 Q260 268 -50 255Z"/><path d="M920 155 Q1020 95 1110 160 Q1240 100 1510 180 L1510 202 Q1170 225 920 187Z"/></g>
+        <path d="M0 558 135 405 220 450 350 328 440 414 555 294 690 420 806 290 955 425 1070 334 1190 450 1340 345 1440 470V720H0Z" fill="#869b9b"/>
+        <g class="huay-peaks">
+          <path d="M230 625 422 384 492 450 660 202 744 377 836 275 1008 539 1095 414 1290 641Z" fill="url(#huayRock)"/>
+          <path d="m492 450 168-248 84 175-38-28-28 41-20-94-33 81-27-21-48 107-24-25Z" fill="#f6f4e9"/>
+          <path d="m744 377 92-102 85 131-43-18-19-49-23 42-20-14-26 44Z" fill="#eef0e9"/>
+          <path d="m366 455 56-71 70 66-36-11-22 10-17-29-23 34Z" fill="#e9eee7"/>
+          <path d="m660 202 12 131-45 137 38 113-92-50 23-95-24 28Z" fill="#d8e2dc" opacity=".7"/>
+          <path d="m836 275-10 177 42 91-84-51 19-106Z" fill="#526571" opacity=".6"/>
+          <path d="m422 384-38 174 61 49-119 18Z" fill="#526571" opacity=".55"/>
+          <path d="m690 468 59-38 62 121 80 57-245 12Z" fill="#b8c3b8"/>
+        </g>
+        <path d="M0 487 130 452 247 535 355 568 430 663 0 733Z" fill="#8b8d65"/>
+        <path d="m0 528 156 42 144 95L0 739Z" fill="#b3a66d"/>
+        <path d="m1440 487-132 62-106 5-124 110 362 72Z" fill="#8d966f"/>
+        <path d="M0 697Q280 634 493 653T978 642Q1240 659 1440 692V930H0Z" fill="url(#huayWater)"/>
+        <path d="m526 662 134 169 84-143 92 109 100-137Z" fill="#d7e5d7" opacity=".22"/>
+        <g stroke="#e2eee0" stroke-width="3" opacity=".48"><path d="M420 698h230m105 15h210m-505 40h180m130 33h250m-450 42h170m-290 38h260m110-108h150"/></g>
+        <path d="M0 713Q180 699 293 715T660 690Q1020 710 1440 762V1000H0Z" fill="#a5a16c"/>
+        <path d="M0 826Q190 793 328 854T680 936Q1110 966 1440 860V1000H0Z" fill="#c7ba83"/>
+        <path d="M-50 934Q180 821 373 868T741 958" fill="none" stroke="#e2d0a2" stroke-width="42"/>
+        <g fill="none" stroke="#7e8355" stroke-width="4" opacity=".8"><path d="m62 872-8-40m8 40 12-33m61 46 5-47m-5 47-14-27m340 43-12-41m12 41 8-33m622 35-13-49m13 49 12-37m143-28-5-42m5 42 16-30"/></g>
+        <g fill="#727d62"><ellipse cx="300" cy="912" rx="27" ry="9"/><ellipse cx="1000" cy="893" rx="40" ry="13"/><ellipse cx="1295" cy="952" rx="55" ry="14"/></g>
+      </svg>
+      <header class="huay-header">
+        <p>OTRO LUGAR CONTIGO</p>
+        <h2>Paseo en Huayhuash</h2>
+        <span>Mi pispachita, la laguna y el nevado.</span>
+      </header>
+      <div class="huay-couple" aria-label="El monito y la princesa paseando juntos">
+        <div class="huay-monkey"><div class="huay-backpack"></div><div class="monkey-body" data-char="monkey"></div></div>
+        <div class="huay-princess"><div class="princess" data-char="princess"></div><div class="huay-scarf"></div></div>
+      </div>
+      <p class="huay-caption" id="huayCaption" role="status" aria-atomic="true">Vamos despacito, mi pispachita.</p>
+      <button class="chapter-next-btn" id="huayMemoriesBtn">Ver nuestros recuerdos <span aria-hidden="true">→</span></button>
+    </div>
+    <div class="chapter-details" id="huayDetails" role="region" aria-label="Nuestros recuerdos en Huayhuash" aria-hidden="true" tabindex="-1" inert>
+      <div class="huay-message-card">
+        <p class="huay-memory-label">NUESTRO PASEO</p>
+        <h3>Contigo, hasta aquí.</h3>
+        <p>La laguna, los cerros y nosotros dos. Me gusta tener estas fotos contigo, mi pispachita.</p>
+        <p>Quiero que sigamos saliendo juntos y guardando más recuerdos así.</p>
+        <button class="memory-action" data-replay="huayhuash">↻ Repetir animación</button>
+        <button class="memory-action" id="huayMenuBtn">← Volver al menú</button>
+      </div>
+      <div class="huay-photos">
+        <div class="photos-header"><span class="photos-counter" id="huayPhotosCounter" aria-live="polite" aria-atomic="true">1 / 4</span></div>
+        <div class="photos-slider" id="huayPhotosSlider">
+          <div class="photo-slide active"><figure class="chapter-photo"><img src="assets/photos/huayhuash-laguna.jpg" alt="Mi pispachita junto a la laguna, entre las laderas de Huayhuash." width="1542" height="2048" loading="lazy" decoding="async"><figcaption>Mi pispachita y la laguna ♡</figcaption></figure></div>
+          <div class="photo-slide"><figure class="chapter-photo"><img src="assets/photos/huayhuash-juntos.jpg" alt="Nosotros dos compartiendo un beso junto a la laguna." width="1536" height="2048" loading="lazy" decoding="async"><figcaption>Un beso, allá arriba ♡</figcaption></figure></div>
+          <div class="photo-slide"><figure class="chapter-photo"><img src="assets/photos/huayhuash-nevado.jpg" alt="Mi pispachita sentada frente a las cumbres nevadas de Huayhuash." width="1542" height="2048" loading="lazy" decoding="async"><figcaption>Frente al nevado, contigo ♡</figcaption></figure></div>
+          <div class="photo-slide"><figure class="chapter-photo"><img src="assets/photos/huayhuash-abrazo.jpg" alt="Los dos abrazados junto a un árbol durante nuestro paseo." width="1536" height="2048" loading="lazy" decoding="async"><figcaption>Y nosotros, siempre juntitos ♡</figcaption></figure></div>
+        </div>
+        <div class="photos-nav"><button class="photos-arrow" id="huayPhotosPrev" aria-label="Foto anterior" disabled>←</button><button class="photos-arrow" id="huayPhotosNext" aria-label="Foto siguiente">→</button></div>
+      </div>
     </div>
   </section>
 
@@ -262,9 +342,9 @@
       </div>
     </div>
 
-    <a class="chapter-scroll-hint" href="#lawyerDetails">Un logro para recordar <span aria-hidden="true">↓</span></a>
+    <button class="chapter-next-btn" id="lawyerMemoriesBtn" type="button">Ver nuestros recuerdos <span aria-hidden="true">→</span></button>
     </div>
-    <div class="chapter-details" id="lawyerDetails">
+    <div class="chapter-details" id="lawyerDetails" role="region" aria-label="Nuestros recuerdos de Abogada" aria-hidden="true" tabindex="-1" inert>
     <!-- Pride & Congratulations Panel -->
     <div class="lawyer-message-card" id="lawyerMessageCard">
       <div class="verdict-banner">✨ APROBADA CON FELICITACIÓN ✨</div>
@@ -278,6 +358,7 @@
     <div class="lawyer-photos" id="lawyerPhotos">
       <div class="photos-header">
         <button class="photos-back-btn" id="lawyerPhotosBackBtn" aria-label="Volver al menú">← Volver al menú</button>
+        <button class="memory-action" data-replay="lawyer">↻ Repetir animación</button>
         <span class="photos-counter" id="lawyerPhotosCounter" aria-live="polite" aria-atomic="true">1 / 3</span>
       </div>
       <div class="photos-slider" id="lawyerPhotosSlider">
@@ -369,12 +450,10 @@
           <div class="popemobile-wheel w-left"></div>
           <div class="popemobile-wheel w-right"></div>
         </div>
-        <div class="papa-speech" id="papaSpeechBubble">¡La paz y el amor con ustedes! 🕊️✨</div>
       </div>
 
       <!-- Monito lifts the princess onto his shoulders so she can see the Pope. -->
       <div class="papa-pilgrims-wrap" id="papaPilgrims">
-        <div class="pilgrim-speech" id="papaPrincessSpeech">¡Qué bendición tan hermosa! 🙏💕</div>
         <!-- Princess -->
         <div class="papa-princess-pilgrim" id="papaPrincessPilgrim">
           <div class="princess" data-char="princess"></div>
@@ -382,7 +461,6 @@
 
         <!-- Monito Pilgrim holding the Vatican / Yellow-White Flag -->
         <div class="papa-monkey-pilgrim" id="papaMonkeyPilgrim">
-          <div class="pilgrim-speech" id="papaMonkeySpeech">¡Viva el Papa! 🐒💛🤍</div>
           <div class="vatican-flag" id="vaticanFlag">
             <span class="flag-pole"></span>
             <span class="flag-cloth flag-va"></span>
@@ -393,11 +471,14 @@
 
       <!-- Golden blessing sparks & holy halos -->
       <div class="papa-holy-sparks" id="papaHolySparks"></div>
+      <div class="papa-speech" id="papaSpeechBubble" role="status" aria-atomic="true">¡La paz y el amor con ustedes! 🕊️✨</div>
+      <div class="pilgrim-speech" id="papaPrincessSpeech" role="status" aria-atomic="true">¡Qué bendición tan hermosa! 🙏💕</div>
+      <div class="pilgrim-speech" id="papaMonkeySpeech" role="status" aria-atomic="true">¡Viva el Papa! 🐒💛🤍</div>
     </div>
 
-    <a class="chapter-scroll-hint" href="#papaDetails">Un momento para guardar <span aria-hidden="true">↓</span></a>
+    <button class="chapter-next-btn" id="papaMemoriesBtn" type="button">Ver nuestros recuerdos <span aria-hidden="true">→</span></button>
     </div>
-    <div class="chapter-details" id="papaDetails">
+    <div class="chapter-details" id="papaDetails" role="region" aria-label="Nuestros recuerdos de la visita del Papa" aria-hidden="true" tabindex="-1" inert>
     <!-- A blessing for our life together -->
     <div class="papa-message-card" id="papaMessageCard">
       <div class="family-badge">🕊️ UNA BENDICIÓN PARA LOS DOS 🕊️</div>
@@ -411,6 +492,7 @@
     <div class="papa-photos" id="papaPhotos">
       <div class="photos-header">
         <button class="photos-back-btn" id="papaPhotosBackBtn" aria-label="Volver al menú">← Volver al menú</button>
+        <button class="memory-action" data-replay="papa">↻ Repetir animación</button>
         <span class="photos-counter" id="papaPhotosCounter" aria-live="polite" aria-atomic="true">1 / 2</span>
       </div>
       <div class="photos-slider" id="papaPhotosSlider">
@@ -585,7 +667,8 @@
       la magia más hermosa comienza. 💕
     </div>
 
-    <button class="scene2-continue" id="scene2Continue">✨ Continuar al mensaje especial →</button>
+    <button class="scene2-continue" id="scene2Continue">Ver nuestro mensaje →</button>
+    <button class="memory-action scene-memories-shortcut" id="valentineMemoriesBtn">Ver nuestro mensaje →</button>
   </section>
 
   <!-- ===== TARAPOTO TRIP SCENE ===== -->
@@ -666,7 +749,8 @@
     </div>
 
     <!-- Phase narratives -->
-    <div class="tarapoto-narrative" id="tarapotoNarrative"></div>
+    <div class="tarapoto-narrative-position"><div class="tarapoto-narrative" id="tarapotoNarrative" role="status" aria-atomic="true"></div></div>
+    <button class="memory-action scene-memories-shortcut" id="tarapotoMemoriesBtn">Ver nuestros recuerdos →</button>
 
     <!-- River element -->
     <div class="tarapoto-river" id="tarapotoRiver">
@@ -836,8 +920,8 @@
     </div>
 
     <!-- Monkey character (for walking scenes, same structure as scene2) -->
+    <div class="tarapoto-dialogue" id="tarapotoMonkeySpeech" role="status">Mi pispachita nos vamos a Tarapoto 🌴💚</div>
     <div class="tarapoto-monkey-wrap" id="tarapotoMonkey">
-      <div class="monkey-speech" id="tarapotoMonkeySpeech">Mi pispachita nos vamos a Tarapoto 🌴💚</div>
       <div class="monkey-body" data-char="monkey"></div>
     </div>
 
@@ -878,7 +962,7 @@
   </section>
 
   <!-- Photo slideshow: outside scene for correct fixed rendering -->
-  <div class="tarapoto-photos" id="tarapotoPhotos">
+  <div class="tarapoto-photos" id="tarapotoPhotos" role="region" aria-label="Nuestros recuerdos en Tarapoto" tabindex="-1" inert>
     <div class="photos-title">📸 Nuestros recuerdos en Tarapoto 🌴</div>
     <div class="photos-slides">
       <div class="photo-slide active" id="photoSlide1">
@@ -936,9 +1020,10 @@
     </div>
     <div class="photos-counter" id="photosCounter">1 / 8</div>
     <button class="photos-back-btn" id="photosBackBtn">🏠 Volver al menú</button>
+    <button class="memory-action" data-replay="tarapoto">↻ Repetir animación</button>
   </div>
 
-  <div class="tarapoto-photos study-photos" id="studyPhotos">
+  <div class="tarapoto-photos study-photos" id="studyPhotos" role="region" aria-label="Nuestros recuerdos de estudio" tabindex="-1" inert>
     <div class="photos-title">Fotos de mi pispachita</div>
     <div class="photos-slides">
       <div class="photo-slide active" id="studyPhotoSlide1">
@@ -971,7 +1056,8 @@
       <button class="photos-btn" id="studyPhotosNext">&gt;</button>
     </div>
     <div class="photos-counter" id="studyPhotosCounter">1 / 4</div>
-    <button class="photos-back-btn" id="studyPhotosBackBtn">Volver al menu</button>
+    <button class="photos-back-btn" id="studyPhotosBackBtn">Volver al menú</button>
+    <button class="memory-action" data-replay="study">↻ Repetir animación</button>
   </div>
 
   <!-- ===== SCREEN 3: CONTENT ===== -->
@@ -1026,6 +1112,7 @@
         <div class="mini-hearts">♥ ♥ ♥ ♥ ♥</div>
         <div class="content-back-wrap">
           <button class="content-back-btn" id="contentBackBtn">← Volver al menú principal</button>
+          <button class="memory-action" data-replay="valentine">↻ Repetir animación</button>
         </div>
       </footer>
     </div>
@@ -1089,6 +1176,6 @@
     <div class="m-tail"></div>
   </template>
 
-  <script src="js/main.js?v=20261116-4"></script>
+  <script src="js/main.js?v=20261116-9"></script>
 </body>
 </html>

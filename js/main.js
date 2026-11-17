@@ -3,6 +3,8 @@
       el.prepend(document.getElementById('tpl-' + el.dataset.char).content.cloneNode(true));
     });
 
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
 /* ===== STARS CANVAS ===== */
     (function initStars() {
       const canvas = document.getElementById('starsCanvas');
@@ -25,10 +27,10 @@
           ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
           ctx.fillStyle=`rgba(255,220,240,${s.a})`; ctx.fill();
         });
-        requestAnimationFrame(draw);
+        if (!reducedMotion.matches) requestAnimationFrame(draw);
       }
       resize(); create(); draw();
-      addEventListener('resize',()=>{resize();create();});
+      addEventListener('resize',()=>{resize();create();if (reducedMotion.matches) draw();});
     })();
 
     /* ===== DAYS COUNTER (shared) ===== */
@@ -88,7 +90,6 @@
     let womensTimers = [];
     let womensSparksInterval = null;
     let womensSpeechInterval = null;
-    let womensCanTapToExit = false;
     let sceneTransitionTimer = null;
     let sceneMenuTrigger = null;
 
@@ -130,6 +131,7 @@
       resetWomensScene();
       resetTarapotoScene();
       resetStudyScene();
+      resetHuayhuashScene();
       if (typeof resetLawyerScene === 'function') resetLawyerScene();
       if (typeof resetPapaScene === 'function') resetPapaScene();
 
@@ -146,6 +148,7 @@
         sceneTarapoto.classList.remove('phase-river', 'phase-lagoon', 'phase-rain', 'visible');
       }
       if (sceneStudy) sceneStudy.classList.remove('visible');
+      document.getElementById('sceneHuayhuash').classList.remove('visible');
       const sLawyer = document.getElementById('sceneLawyer'); if (sLawyer) sLawyer.classList.remove('visible');
       const sPapa = document.getElementById('scenePapa'); if (sPapa) sPapa.classList.remove('visible');
 
@@ -188,6 +191,7 @@
 
       // Reset Scene 2
       if (scene2) {
+        scene2.inert = false;
         scene2.classList.remove('visible', 'hidden');
         scene2.style.display = '';
       }
@@ -213,6 +217,7 @@
       if (monkeyHeart) monkeyHeart.style.opacity = '';
       if (monkeySpeech) monkeySpeech.classList.remove('show');
       if (flyingHeart) {
+        flyingHeart.getAnimations().forEach(animation => animation.cancel());
         flyingHeart.style.opacity = '0';
         flyingHeart.style.left = '';
         flyingHeart.style.top = '';
@@ -299,6 +304,7 @@
 
       // Heart rain while cover is visible
       if (heartRainInterval) clearInterval(heartRainInterval);
+      if (reducedMotion.matches) return;
       heartRainInterval = setInterval(() => {
         if (cover.classList.contains('hidden')) {
           clearInterval(heartRainInterval);
@@ -329,11 +335,9 @@
       const wMonkey    = document.getElementById('womensMonkey');
       const wSpeech    = document.getElementById('womensMonkeySpeech');
 
-      womensCanTapToExit = false;
-
       // Spawn power sparks periodically
       if (womensSparksInterval) clearInterval(womensSparksInterval);
-      womensSparksInterval = setInterval(() => {
+      if (!reducedMotion.matches) womensSparksInterval = setInterval(() => {
         if (!sceneWomens.classList.contains('visible')) {
           clearInterval(womensSparksInterval);
           womensSparksInterval = null;
@@ -346,14 +350,12 @@
       scheduleWomens(() => { heroineContainer.classList.add('show'); flyPrincess(); }, 400);
       scheduleWomens(() => { womensPhraseTitle.classList.add('show'); }, 1000);
 
-      // Phrases appear staggered
-      [[p1,1800],[p2,2900],[p3,4000],[p4,5100],[p5,6200]].forEach(([el,delay]) => {
+      // One personal phrase at a time, in the same reading area.
+      [p1, p2, p3, p4, p5].forEach((el, index) => {
         scheduleWomens(() => {
-          if (el) {
-            el.style.animation = 'phraseReveal 1s ease forwards';
-            el.style.opacity   = '1';
-          }
-        }, delay);
+          [p1, p2, p3, p4, p5].forEach(phrase => phrase.classList.remove('show'));
+          el.classList.add('show');
+        }, 1800 + index * 4300);
       });
 
       // Monkey appears after phrases start
@@ -385,8 +387,11 @@
 
       scheduleWomens(() => {
         if (tapHint) tapHint.classList.add('show');
-        womensCanTapToExit = true;
-      }, 7200);
+        clearInterval(womensSparksInterval);
+        clearInterval(womensSpeechInterval);
+        wSpeech.classList.remove('show');
+        sceneWomens.classList.add('story-complete');
+      }, 23000);
     }
 
     // Princess flies across the screen repeatedly
@@ -395,8 +400,14 @@
       const screenW = window.innerWidth;
       const duration = 5500; // ms per pass
 
+      if (reducedMotion.matches) {
+        hero.style.left = 'calc(50% - 50px)';
+        hero.style.top = '35%';
+        return;
+      }
+
       function onePass() {
-        if (!sceneWomens.classList.contains('visible')) return;
+        if (!sceneWomens.classList.contains('visible') || sceneWomens.classList.contains('story-complete')) return;
         // random vertical lane (20–65% from top)
         const topPct = 20 + Math.random() * 45;
         hero.style.transition = 'none';
@@ -442,18 +453,14 @@
       setTimeout(() => spark.remove(), 1600);
     }
 
-    // Tap on womens scene → back to selector once hint is active
-    sceneWomens.addEventListener('click', () => {
-      if (!sceneWomens.classList.contains('visible') || !womensCanTapToExit) return;
-      returnToSelectorMenu();
-    });
+    document.getElementById('womensMenuBtn').addEventListener('click', returnToSelectorMenu);
 
     function resetWomensScene() {
       womensTimers.forEach(clearTimeout);
       womensTimers = [];
       if (womensSparksInterval) { clearInterval(womensSparksInterval); womensSparksInterval = null; }
       if (womensSpeechInterval) { clearInterval(womensSpeechInterval); womensSpeechInterval = null; }
-      womensCanTapToExit = false;
+      sceneWomens.classList.remove('story-complete');
       document.querySelectorAll('.power-spark').forEach(el => el.remove());
 
       const heroineEl = document.getElementById('heroineContainer');
@@ -482,7 +489,7 @@
       // Reset phrases
       ['womensP1','womensP2','womensP3','womensP4','womensP5'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) { el.style.animation = 'none'; el.style.opacity = '0'; void el.offsetWidth; el.style.animation = ''; }
+        if (el) el.classList.remove('show');
       });
 
       // Reset monkey & bubble
@@ -514,6 +521,7 @@
 
     /* ===== COVER → SCENE 2 ===== */
     function createCoverParticles() {
+      if (reducedMotion.matches) return;
       const rect = heartWrapper.getBoundingClientRect();
       const cx = rect.left+rect.width/2, cy = rect.top+rect.height/2;
       const colors = ['#ff4f8b','#e91e63','#ff80ab','#f48fb1','#ff1744','#ff6090','#ffcdd2'];
@@ -632,6 +640,7 @@
     }
 
     function spawnExplosionEmojis() {
+      if (reducedMotion.matches) return;
       const emojis = ['💖','💕','✨','💗','🌸','💝','🦋','⭐','💘','🌹','💫','🎀','🌺','💞','🥰'];
       for (let i = 0; i < 30; i++) {
         setTimeout(() => {
@@ -649,6 +658,7 @@
     }
 
     function spawnExplosionParticles() {
+      if (reducedMotion.matches) return;
       const cx=innerWidth/2, cy=innerHeight*.38;
       const colors=['#ff4f8b','#ffd700','#ff80ab','#e91e63','#ff1744','#ffeb3b','#ff6090','#f48fb1','#ff69b4','#ff85c0'];
       for (let i=0;i<50;i++) {
@@ -667,6 +677,7 @@
     }
 
     function spawnConfetti() {
+      if (reducedMotion.matches) return;
       const colors=['#ff4f8b','#ffd700','#ff80ab','#e91e63','#f48fb1','#ffcdd2','#ff69b4','#ffb6c1'];
       for (let i=0;i<40;i++) {
         setTimeout(()=>{
@@ -683,23 +694,28 @@
     }
 
     /* ===== SCENE 2 → CONTENT ===== */
-    scene2Continue.addEventListener('click', () => {
+    function showValentineMemories() {
+      valentineTimers.forEach(clearTimeout);
+      valentineTimers = [];
+      flyingHeart.getAnimations().forEach(animation => animation.cancel());
+      scene2.inert = true;
       scene2.classList.add('hidden');
-      setTimeout(() => {
+      scheduleValentine(() => {
         scene2.style.display='none';
         document.body.style.overflow='auto';
         content.classList.add('visible');
-        setTimeout(() => {
+        scheduleValentine(() => {
           document.getElementById('contentHeader').classList.add('animate');
           document.getElementById('photoSection').classList.add('animate');
           document.getElementById('loveLetter').classList.add('animate');
           document.getElementById('reasons').classList.add('animate');
           document.getElementById('contentFooter').classList.add('animate');
           document.getElementById('daysCounter').classList.add('show');
-          spawnFloatingHearts();
         }, 250);
-      }, 1000);
-    });
+      }, 500);
+    }
+    scene2Continue.addEventListener('click', showValentineMemories);
+    document.getElementById('valentineMemoriesBtn').addEventListener('click', showValentineMemories);
 
     /* ===== STUDY CHAPTER SCENE ===== */
     let studyPhotosIndex = 0;
@@ -719,7 +735,6 @@
       const love = document.getElementById('studyMonkeyLove');
       const kiss = document.getElementById('studyKiss');
       const panel = document.getElementById('studyMessagePanel');
-      const photos = document.getElementById('studyPhotos');
 
       scheduleStudy(() => title.classList.add('show'), 350);
       scheduleStudy(() => princess.classList.add('show'), 900);
@@ -737,15 +752,31 @@
       }, 8500);
       scheduleStudy(() => {
         panel.classList.add('show');
+        panel.inert = false;
+        document.getElementById('studyMemoriesBtn').hidden = true;
+        panel.focus({ preventScroll: true });
       }, 8800);
-      scheduleStudy(() => {
-        photos.classList.add('visible');
-        studyPhotosIndex = 0;
-        showStudyPhotoSlide(0);
-      }, 15000);
     }
 
+    function showStudyMemories() {
+      studyTimers.forEach(clearTimeout);
+      studyTimers = [];
+      sceneStudy.inert = true;
+      const photos = document.getElementById('studyPhotos');
+      photos.inert = false;
+      photos.classList.add('visible');
+      photos.scrollTop = 0;
+      studyPhotosIndex = 0;
+      showStudyPhotoSlide(0);
+      photos.focus({ preventScroll: true });
+    }
+    document.getElementById('studyMemoriesBtn').addEventListener('click', showStudyMemories);
+    document.getElementById('studyLetterNext').addEventListener('click', showStudyMemories);
+
     function resetStudyScene() {
+      sceneStudy.inert = false;
+      document.getElementById('studyMessagePanel').inert = true;
+      document.getElementById('studyMemoriesBtn').hidden = false;
       studyTimers.forEach(clearTimeout);
       studyTimers = [];
 
@@ -763,7 +794,8 @@
       if (love) love.classList.remove('show');
       if (kiss) { kiss.classList.remove('show'); kiss.style.animation = 'none'; void kiss.offsetWidth; kiss.style.animation = ''; }
       if (panel) panel.classList.remove('show');
-      if (photos) photos.classList.remove('visible');
+      if (photos) { photos.classList.remove('visible'); photos.inert = true; }
+      studyPhotosIndex = 0;
       showStudyPhotoSlide(0);
     }
 
@@ -781,6 +813,8 @@
       }
       const counter = document.getElementById('studyPhotosCounter');
       if (counter) counter.textContent = `${idx + 1} / ${totalStudyPhotos}`;
+      document.getElementById('studyPhotosPrev').disabled = idx === 0;
+      document.getElementById('studyPhotosNext').disabled = idx === totalStudyPhotos - 1;
     }
 
     document.getElementById('studyPhotosNext').addEventListener('click', (e) => {
@@ -801,9 +835,7 @@
 
     document.getElementById('studyPhotosBackBtn').addEventListener('click', (e) => {
       e.stopPropagation();
-      resetStudyScene();
-      sceneStudy.classList.remove('visible');
-      selectorScreen.classList.remove('hidden');
+      returnToSelectorMenu();
     });
 
     /* ===== TARAPOTO SCENE ===== */
@@ -859,7 +891,6 @@
         monkeySpeech.classList.add('show');
 
         narrative.textContent = '🌿 El mono y la princesa caminan juntos por Tarapoto...';
-        narrative.style.top = '12%';
         narrative.classList.add('show');
 
         monkey.classList.add('show');
@@ -885,7 +916,6 @@
         river.classList.add('show');
         narrative.textContent = '🌊 Cruzando el río  Magallanes juntos, de la mano...';
         narrative.style.animation = 'none'; void narrative.offsetWidth; narrative.style.animation = '';
-        narrative.style.top = '12%';
         narrative.classList.add('show');
 
         monkey.classList.remove('walking');
@@ -911,7 +941,6 @@
         lagoon.classList.add('show');
         narrative.textContent = '💧 Llegan a una laguna escondida entre la selva...';
         narrative.style.animation = 'none'; void narrative.offsetWidth; narrative.style.animation = '';
-        narrative.style.top = '12%';
         narrative.classList.add('show');
 
         monkey.classList.remove('walking');
@@ -933,7 +962,6 @@
         spawnRainDrops();
         narrative.textContent = '🌧️🏍️ ¡Comienza la tormenta... y el mono y la princesa salen a explorar en moto bajo la lluvia!';
         narrative.style.animation = 'none'; void narrative.offsetWidth; narrative.style.animation = '';
-        narrative.style.top = '12%';
         narrative.classList.add('show');
 
         // Hide walking characters immediately (with explicit opacity)
@@ -966,13 +994,22 @@
       }, 29000);
 
       // ── PHASE 6: Photo slideshow (final phase — stays open) ──
-      scheduleTarapoto(() => {
-        const photosEl = document.getElementById('tarapotoPhotos');
-        photosEl.classList.add('visible');
-        photosIndex = 0;
-        showPhotoSlide(0);
-      }, 40000);
+      scheduleTarapoto(showTarapotoMemories, 40000);
     }
+
+    function showTarapotoMemories() {
+      tarapotoTimers.forEach(clearTimeout);
+      tarapotoTimers = [];
+      sceneTarapoto.inert = true;
+      const photos = document.getElementById('tarapotoPhotos');
+      photos.inert = false;
+      photos.classList.add('visible');
+      photos.scrollTop = 0;
+      photosIndex = 0;
+      showPhotoSlide(0);
+      photos.focus({ preventScroll: true });
+    }
+    document.getElementById('tarapotoMemoriesBtn').addEventListener('click', showTarapotoMemories);
 
     // Walk monkey and princess across the screen together
     function walkAcross(monkey, princess, duration, onComplete) {
@@ -1003,7 +1040,7 @@
         princess.style.left = (endPos - 140) + 'px';
       });
 
-      setTimeout(() => {
+      scheduleTarapoto(() => {
         if (onComplete) onComplete();
       }, duration + 300);
     }
@@ -1028,6 +1065,7 @@
     }
 
     function resetTarapotoScene() {
+      sceneTarapoto.inert = false;
       tarapotoTimers.forEach(clearTimeout);
       tarapotoTimers = [];
 
@@ -1089,7 +1127,9 @@
         drops.forEach(d => d.remove());
       }
 
-      if (photos) { photos.classList.remove('visible'); }
+      if (photos) { photos.classList.remove('visible'); photos.inert = true; }
+      photosIndex = 0;
+      showPhotoSlide(0);
       if (finalMsg) { finalMsg.classList.remove('show'); finalMsg.style.opacity = '0'; void finalMsg.offsetWidth; finalMsg.style.animation = ''; }
     }
 
@@ -1113,6 +1153,8 @@
       }
       const counter = document.getElementById('photosCounter');
       counter.textContent = `${idx + 1} / ${totalPhotos}`;
+      document.getElementById('photosPrev').disabled = idx === 0;
+      document.getElementById('photosNext').disabled = idx === totalPhotos - 1;
     }
 
     document.getElementById('photosNext').addEventListener('click', (e) => {
@@ -1133,27 +1175,8 @@
 
     document.getElementById('photosBackBtn').addEventListener('click', (e) => {
       e.stopPropagation();
-      const photosEl = document.getElementById('tarapotoPhotos');
-      photosEl.classList.remove('visible');
-      resetTarapotoScene();
-      sceneTarapoto.classList.remove('visible');
-      selectorScreen.classList.remove('hidden');
+      returnToSelectorMenu();
     });
-
-    /* ===== FLOATING HEARTS ===== */
-    function spawnFloatingHearts() {
-      const h=['♥','♡','💕','💗'];
-      setInterval(()=>{
-        const el=document.createElement('span');
-        el.classList.add('floating-heart');
-        el.textContent=h[~~(Math.random()*h.length)];
-        el.style.left=Math.random()*100+'vw';
-        el.style.fontSize=(1+Math.random()*1.5)+'rem';
-        el.style.animationDuration=(8+Math.random()*8)+'s';
-        document.body.appendChild(el);
-        setTimeout(()=>el.remove(),16000);
-      },2500);
-    }
 
     /* ===== DAYS COUNTER (content page) ===== */
     document.getElementById('daysNumber').textContent = calcDays();
@@ -1162,6 +1185,19 @@
     document.getElementById('currentDate').textContent =
       new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'});
 
+
+    /* Both new chapters advance from animation to a separate memory screen. */
+    function setChapterMemories(scene, visible) {
+      const hero = scene.querySelector('.chapter-hero');
+      const details = scene.querySelector('.chapter-details');
+      scene.classList.toggle('showing-memories', visible);
+      hero.inert = visible;
+      hero.setAttribute('aria-hidden', String(visible));
+      details.inert = !visible;
+      details.setAttribute('aria-hidden', String(!visible));
+      details.scrollTop = 0;
+      if (visible) details.focus({ preventScroll: true });
+    }
 
         /* ==========================================================
        ===== LAWYER SCENE LOGIC (MI ABOGADA FAVORITA) =====
@@ -1187,6 +1223,7 @@
     }
 
     function spawnLawyerConfetti() {
+      if (reducedMotion.matches) return;
       const wrap = document.getElementById('lawyerConfetti');
       if (!wrap) return;
       wrap.innerHTML = '';
@@ -1223,6 +1260,7 @@
 
     function resetLawyerScene() {
       clearLawyerTimers();
+      setChapterMemories(sceneLawyer, false);
       const diploma = document.getElementById('lawyerDiploma');
       const monkeySpeech = document.getElementById('lawyerMonkeySpeech');
       const camFlash = document.getElementById('lawyerFlash');
@@ -1308,7 +1346,16 @@
           princessSpeech.classList.add('show');
         }
       }, 7500);
+
+      scheduleLawyer(showLawyerMemories, 11500);
     }
+
+    function showLawyerMemories() {
+      clearLawyerTimers();
+      setChapterMemories(sceneLawyer, true);
+    }
+
+    document.getElementById('lawyerMemoriesBtn').addEventListener('click', showLawyerMemories);
 
     if (btnLawyer) {
       btnLawyer.addEventListener('click', () => {
@@ -1371,6 +1418,7 @@
     }
 
     function spawnHolySparks() {
+      if (reducedMotion.matches) return;
       const wrap = document.getElementById('papaHolySparks');
       if (!wrap) return;
       wrap.innerHTML = '';
@@ -1403,6 +1451,7 @@
 
     function resetPapaScene() {
       clearPapaTimers();
+      setChapterMemories(scenePapa, false);
       document.getElementById('papaPilgrims').classList.remove('carrying-princess');
       const papaSpeech = document.getElementById('papaSpeechBubble');
       const princessSpeech = document.getElementById('papaPrincessSpeech');
@@ -1465,7 +1514,7 @@
           papaSpeech.classList.add('show');
         }
         spawnHolySparks();
-      }, 6500);
+      }, 8000);
 
       // Step 5: From his shoulders she can finally see the Pope.
       schedulePapa(() => {
@@ -1474,7 +1523,7 @@
           princessSpeech.textContent = '¡Ahora sí lo veo! Gracias, mi monito. 🕊️❤️';
           princessSpeech.classList.add('show');
         }
-      }, 8500);
+      }, 10000);
 
       // Step 6: They keep sharing the moment together.
       schedulePapa(() => {
@@ -1483,8 +1532,88 @@
           princessSpeech.textContent = 'Un momento que nunca olvidaré... ✨🕊️';
           princessSpeech.classList.add('show');
         }
-      }, 11000);
+      }, 12500);
+
+      schedulePapa(showPapaMemories, 16000);
     }
+
+    function showPapaMemories() {
+      clearPapaTimers();
+      setChapterMemories(scenePapa, true);
+    }
+
+    document.getElementById('papaMemoriesBtn').addEventListener('click', showPapaMemories);
+
+    /* ===== HUAYHUASH ===== */
+    const sceneHuayhuash = document.getElementById('sceneHuayhuash');
+    const huaySlides = [...document.querySelectorAll('#huayPhotosSlider .photo-slide')];
+    let huayTimers = [];
+    let huayPhotoIndex = 0;
+
+    function setHuayPhoto(index) {
+      huayPhotoIndex = index;
+      huaySlides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+      document.getElementById('huayPhotosCounter').textContent = `${index + 1} / ${huaySlides.length}`;
+      document.getElementById('huayPhotosPrev').disabled = index === 0;
+      document.getElementById('huayPhotosNext').disabled = index === huaySlides.length - 1;
+    }
+
+    function resetHuayhuashScene() {
+      huayTimers.forEach(clearTimeout);
+      huayTimers = [];
+      sceneHuayhuash.classList.remove('at-snow', 'walking');
+      setChapterMemories(sceneHuayhuash, false);
+      setHuayPhoto(0);
+      document.getElementById('huayCaption').textContent = 'Vamos despacito, mi pispachita.';
+    }
+
+    function showHuayMemories() {
+      huayTimers.forEach(clearTimeout);
+      huayTimers = [];
+      sceneHuayhuash.classList.remove('walking');
+      setChapterMemories(sceneHuayhuash, true);
+    }
+
+    function startHuayhuashScene() {
+      resetHuayhuashScene();
+      sceneHuayhuash.classList.add('visible', 'walking');
+      const schedule = (fn, delay) => huayTimers.push(setTimeout(fn, delay));
+      schedule(() => {
+        document.getElementById('huayCaption').textContent = 'Un ratito junto a la laguna, tú y yo. ♡';
+      }, 3500);
+      schedule(() => {
+        sceneHuayhuash.classList.remove('walking');
+        sceneHuayhuash.classList.add('at-snow');
+        document.getElementById('huayCaption').textContent = 'Mira ese nevado, mi amor. ¡Hasta aquí llegamos juntos!';
+      }, 8500);
+      schedule(showHuayMemories, 15000);
+    }
+
+    document.getElementById('btnHuayhuash').addEventListener('click', () => openScene(startHuayhuashScene));
+    document.getElementById('huayMemoriesBtn').addEventListener('click', showHuayMemories);
+    document.getElementById('huayMenuBtn').addEventListener('click', returnToSelectorMenu);
+    document.getElementById('huayPhotosPrev').addEventListener('click', () => {
+      if (huayPhotoIndex > 0) setHuayPhoto(huayPhotoIndex - 1);
+    });
+    document.getElementById('huayPhotosNext').addEventListener('click', () => {
+      if (huayPhotoIndex < huaySlides.length - 1) setHuayPhoto(huayPhotoIndex + 1);
+    });
+
+    /* Replays use each chapter's reset, so no previous timers or photos survive. */
+    document.querySelectorAll('[data-replay]').forEach(button => {
+      button.addEventListener('click', () => {
+        switch (button.dataset.replay) {
+          case 'valentine': resetValentineScene(); initValentinesDay(); break;
+          case 'womens': resetWomensScene(); startWomensScene(); break;
+          case 'study': resetStudyScene(); startStudyScene(); break;
+          case 'tarapoto': resetTarapotoScene(); startTarapotoScene(); break;
+          case 'huayhuash': startHuayhuashScene(); break;
+          case 'lawyer': startLawyerScene(); break;
+          case 'papa': startPapaScene(); break;
+        }
+        globalBackBtn.focus({ preventScroll: true });
+      });
+    });
 
     if (btnPapa) {
       btnPapa.addEventListener('click', () => {
