@@ -151,6 +151,7 @@
       document.getElementById('sceneHuayhuash').classList.remove('visible');
       const sLawyer = document.getElementById('sceneLawyer'); if (sLawyer) sLawyer.classList.remove('visible');
       const sPapa = document.getElementById('scenePapa'); if (sPapa) sPapa.classList.remove('visible');
+      sceneFinale.classList.remove('visible');
 
       // 3. Reset document scroll & navigation button
       document.body.style.overflow = 'hidden';
@@ -1650,3 +1651,94 @@
         }
       });
     }
+
+/* ===== FINALE: days together + next special date ===== */
+    const sceneFinale = document.getElementById('sceneFinale');
+    function nextSpecialDate(now) {
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const dates = [];
+      for (const yr of [today.getFullYear(), today.getFullYear() + 1]) {
+        dates.push({ d: new Date(yr, 10, 23), name: `nuestro ${yr - 2024}.º aniversario` });
+        dates.push({ d: new Date(yr, 1, 14), name: 'San Valentín' });
+        dates.push({ d: new Date(yr, 2, 8), name: 'el Día de la Mujer' });
+      }
+      const next = dates.filter(x => x.d >= today).sort((a, b) => a.d - b.d)[0];
+      next.days = Math.round((next.d - today) / 86400000);
+      return next;
+    }
+    function showFinale() {
+      document.getElementById('finaleDays').textContent = calcDays();
+      const next = nextSpecialDate(new Date());
+      const when = next.d.toLocaleDateString('es-PE', { day: 'numeric', month: 'long' });
+      document.getElementById('finaleNext').textContent = next.days === 0
+        ? `¡Hoy es ${next.name}! 🎉`
+        : `Próximo capítulo: ${next.name}, el ${when}. Faltan ${next.days} ${next.days === 1 ? 'día' : 'días'}.`;
+      sceneFinale.classList.add('visible');
+      document.getElementById('finaleBackBtn').focus({ preventScroll: true });
+    }
+    document.getElementById('btnFinale').addEventListener('click', () => openScene(showFinale));
+    document.getElementById('finaleBackBtn').addEventListener('click', returnToSelectorMenu);
+    document.getElementById('papaFinaleBtn').addEventListener('click', () => {
+      resetPapaScene();
+      scenePapa.classList.remove('visible');
+      showFinale();
+    });
+
+/* ===== VISITED CHAPTERS: ✓ on cards already opened (per browser) ===== */
+    (function initVisited() {
+      const KEY = 'pispachita-visited';
+      let seen = [];
+      try { seen = JSON.parse(localStorage.getItem(KEY)) || []; } catch {}
+      const mark = id => document.getElementById(id)?.classList.add('visited');
+      seen.forEach(mark);
+      document.querySelectorAll('.selector-card').forEach(card => {
+        card.addEventListener('click', () => {
+          mark(card.id);
+          if (!seen.includes(card.id)) seen.push(card.id);
+          try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch {}
+        });
+      });
+    })();
+
+/* ===== BACKGROUND MUSIC: starts on the intro tap, softer while reading ===== */
+    (function initMusic() {
+      const audio = document.getElementById('bgMusic');
+      const btn = document.getElementById('musicBtn');
+      const gate = document.getElementById('introGate');
+      const LOUD = 0.6, SOFT = 0.22;
+      let target = LOUD, fade = null;
+      audio.volume = LOUD;
+      const sync = () => {
+        const on = !audio.paused;
+        btn.classList.toggle('off', !on);
+        btn.setAttribute('aria-pressed', on);
+        btn.setAttribute('aria-label', on ? 'Pausar música' : 'Reproducir música');
+      };
+      audio.addEventListener('play', sync);
+      audio.addEventListener('pause', sync);
+      sync();
+      btn.addEventListener('click', () => audio.paused ? audio.play().catch(() => {}) : audio.pause());
+
+      document.getElementById('introEnter').addEventListener('click', () => {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+        gate.classList.add('leaving');
+        selectorScreen.inert = false;
+        setTimeout(() => gate.remove(), 700);
+        document.getElementById('btnValentine').focus({ preventScroll: true });
+      });
+
+      // Duck while a letter or photo screen is open. ponytail: iOS ignores volume, so no ducking there.
+      const READING = '.content.visible, .showing-memories, #studyPhotos.visible, #tarapotoPhotos.visible, #studyMessagePanel:not([inert]), .scene-finale.visible';
+      const setTarget = v => {
+        if (v === target) return;
+        target = v;
+        clearInterval(fade);
+        fade = setInterval(() => {
+          if (Math.abs(target - audio.volume) <= 0.02) { audio.volume = target; clearInterval(fade); }
+          else audio.volume += Math.sign(target - audio.volume) * 0.02;
+        }, 40);
+      };
+      new MutationObserver(() => setTarget(document.querySelector(READING) ? SOFT : LOUD))
+        .observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class', 'inert'] });
+    })();

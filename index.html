@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Press+Start+2P&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css?v=20261116-4">
-  <link rel="stylesheet" href="css/redesign.css?v=20261116-9">
+  <link rel="stylesheet" href="css/redesign.css?v=20261117-3">
 </head>
 <body>
 
@@ -23,8 +23,20 @@
     <span class="back-label">Menú</span>
   </button>
 
+  <!-- ===== BACKGROUND MUSIC ===== -->
+  <audio id="bgMusic" src="assets/audio/alergica-al-agua.m4a" loop preload="auto"></audio>
+  <button class="music-btn" id="musicBtn" aria-label="Pausar música" aria-pressed="true" title="Música">♪</button>
+
+  <!-- ===== INTRO GATE: first tap opens the gift and starts the song ===== -->
+  <section class="intro-gate" id="introGate" aria-label="Bienvenida">
+    <p class="intro-eyebrow">Un regalo hecho a mano</p>
+    <p class="intro-title">Para mi<br><em>pispachita.</em></p>
+    <button class="intro-enter" id="introEnter">Toca para entrar 💕</button>
+    <p class="intro-hint">Sube el volumen ♪</p>
+  </section>
+
   <!-- ===== SELECTOR SCREEN ===== -->
-  <section class="selector-screen" id="selectorScreen">
+  <section class="selector-screen" id="selectorScreen" inert>
     <div class="selector-topline"><span>♡ Un lugar para nosotros</span><span>Desde el 23 · 11 · 2024</span></div>
     <div class="sel-shooting-star ss1"></div>
     <div class="sel-shooting-star ss2"></div>
@@ -102,17 +114,24 @@
           <div class="selector-card-date">Misa en Pampas de Pimentel</div>
         </div>
       </button>
+      <button class="selector-card card-finale" id="btnFinale">
+        <div class="selector-card-inner">
+          <div class="selector-card-emoji">✨</div>
+          <div class="selector-card-title">Y lo que<br>viene…</div>
+          <div class="selector-card-date">Nuestro siguiente capítulo</div>
+        </div>
+      </button>
     </div>
     <p class="selector-footnote">Hecho con todo el amor de tu monito ♡</p>
     </div>
     <figure class="selector-photo">
       <div class="selector-photo-pair">
       <div class="selector-photo-frame">
-        <img src="lis6.jpg" alt="Mi pispachita, mi persona favorita" fetchpriority="high" />
+        <img src="assets/photos/lis6.webp" alt="Mi pispachita, mi persona favorita" fetchpriority="high" />
         <span class="photo-corner-note" aria-hidden="true">tú, siempre tú.</span>
       </div>
       <div class="selector-photo-frame">
-        <img src="assets/photos/menu-juntos.jpg" alt="Nosotros dos compartiendo un beso, sentados juntos en un sofá." width="960" height="1280" decoding="async" />
+        <img src="assets/photos/menu-juntos.webp" alt="Nosotros dos compartiendo un beso, sentados juntos en un sofá." width="960" height="1280" decoding="async" />
         <span class="photo-corner-note" aria-hidden="true">y siempre nosotros.</span>
       </div>
       </div>
@@ -277,10 +296,10 @@
       <div class="huay-photos">
         <div class="photos-header"><span class="photos-counter" id="huayPhotosCounter" aria-live="polite" aria-atomic="true">1 / 4</span></div>
         <div class="photos-slider" id="huayPhotosSlider">
-          <div class="photo-slide active"><figure class="chapter-photo"><img src="assets/photos/huayhuash-laguna.jpg" alt="Mi pispachita junto a la laguna, entre las laderas de Huayhuash." width="1542" height="2048" loading="lazy" decoding="async"><figcaption>Mi pispachita y la laguna ♡</figcaption></figure></div>
-          <div class="photo-slide"><figure class="chapter-photo"><img src="assets/photos/huayhuash-juntos.jpg" alt="Nosotros dos compartiendo un beso junto a la laguna." width="1536" height="2048" loading="lazy" decoding="async"><figcaption>Un beso, allá arriba ♡</figcaption></figure></div>
-          <div class="photo-slide"><figure class="chapter-photo"><img src="assets/photos/huayhuash-nevado.jpg" alt="Mi pispachita sentada frente a las cumbres nevadas de Huayhuash." width="1542" height="2048" loading="lazy" decoding="async"><figcaption>Frente al nevado, contigo ♡</figcaption></figure></div>
-          <div class="photo-slide"><figure class="chapter-photo"><img src="assets/photos/huayhuash-abrazo.jpg" alt="Los dos abrazados junto a un árbol durante nuestro paseo." width="1536" height="2048" loading="lazy" decoding="async"><figcaption>Y nosotros, siempre juntitos ♡</figcaption></figure></div>
+          <div class="photo-slide active"><figure class="chapter-photo"><img src="assets/photos/huayhuash-laguna.webp" alt="Mi pispachita junto a la laguna, entre las laderas de Huayhuash." width="1542" height="2048" loading="lazy" decoding="async"><figcaption>Mi pispachita y la laguna ♡</figcaption></figure></div>
+          <div class="photo-slide"><figure class="chapter-photo"><img src="assets/photos/huayhuash-juntos.webp" alt="Nosotros dos compartiendo un beso junto a la laguna." width="1536" height="2048" loading="lazy" decoding="async"><figcaption>Un beso, allá arriba ♡</figcaption></figure></div>
+          <div class="photo-slide"><figure class="chapter-photo"><img src="assets/photos/huayhuash-nevado.webp" alt="Mi pispachita sentada frente a las cumbres nevadas de Huayhuash." width="1542" height="2048" loading="lazy" decoding="async"><figcaption>Frente al nevado, contigo ♡</figcaption></figure></div>
+          <div class="photo-slide"><figure class="chapter-photo"><img src="assets/photos/huayhuash-abrazo.webp" alt="Los dos abrazados junto a un árbol durante nuestro paseo." width="1536" height="2048" loading="lazy" decoding="async"><figcaption>Y nosotros, siempre juntitos ♡</figcaption></figure></div>
         </div>
         <div class="photos-nav"><button class="photos-arrow" id="huayPhotosPrev" aria-label="Foto anterior" disabled>←</button><button class="photos-arrow" id="huayPhotosNext" aria-label="Foto siguiente">→</button></div>
       </div>
@@ -364,19 +383,19 @@
       <div class="photos-slider" id="lawyerPhotosSlider">
         <div class="photo-slide active" id="lawyerPhotoSlide1">
           <figure class="chapter-photo">
-            <img src="assets/photos/abogada-sustentacion.jpg" alt="Durante tu sustentación, frente al jurado." width="1542" height="2048" loading="lazy" decoding="async">
+            <img src="assets/photos/abogada-sustentacion.webp" alt="Durante tu sustentación, frente al jurado." width="1542" height="2048" loading="lazy" decoding="async">
             <figcaption>Juntos en tu sustentación ♡</figcaption>
           </figure>
         </div>
         <div class="photo-slide" id="lawyerPhotoSlide2">
           <figure class="chapter-photo">
-            <img src="assets/photos/abogada-firma.jpg" alt="Firmando documentos en una oficina, un recuerdo más de tu camino como abogada." width="1542" height="2048" loading="lazy" decoding="async">
+            <img src="assets/photos/abogada-firma.webp" alt="Firmando documentos en una oficina, un recuerdo más de tu camino como abogada." width="1542" height="2048" loading="lazy" decoding="async">
             <figcaption>A tu lado, en cada paso ♡</figcaption>
           </figure>
         </div>
         <div class="photo-slide" id="lawyerPhotoSlide3">
           <figure class="chapter-photo">
-            <img src="assets/photos/abogada-titulo.jpg" alt="Celebrando juntos, con tu título de abogada y un ramo de flores." width="960" height="1280" loading="lazy" decoding="async">
+            <img src="assets/photos/abogada-titulo.webp" alt="Celebrando juntos, con tu título de abogada y un ramo de flores." width="960" height="1280" loading="lazy" decoding="async">
             <figcaption>Juntos en la entrega de tu título ♡</figcaption>
           </figure>
         </div>
@@ -493,18 +512,19 @@
       <div class="photos-header">
         <button class="photos-back-btn" id="papaPhotosBackBtn" aria-label="Volver al menú">← Volver al menú</button>
         <button class="memory-action" data-replay="papa">↻ Repetir animación</button>
+        <button class="memory-action" id="papaFinaleBtn">Ver el final ✨</button>
         <span class="photos-counter" id="papaPhotosCounter" aria-live="polite" aria-atomic="true">1 / 2</span>
       </div>
       <div class="photos-slider" id="papaPhotosSlider">
         <div class="photo-slide active" id="papaPhotoSlide1">
           <figure class="chapter-photo">
-            <img src="assets/photos/papa-encuentro.jpg" alt="Juntos entre la multitud durante la visita del Papa." width="1536" height="2048" loading="lazy" decoding="async">
+            <img src="assets/photos/papa-encuentro.webp" alt="Juntos entre la multitud durante la visita del Papa." width="1536" height="2048" loading="lazy" decoding="async">
             <figcaption>Una bendición compartida ♡</figcaption>
           </figure>
         </div>
         <div class="photo-slide" id="papaPhotoSlide2">
           <figure class="chapter-photo">
-            <img src="assets/photos/papa-manos.jpg" alt="Nuestras manos entrelazadas sobre la mesa." width="1542" height="2048" loading="lazy" decoding="async">
+            <img src="assets/photos/papa-manos.webp" alt="Nuestras manos entrelazadas sobre la mesa." width="1542" height="2048" loading="lazy" decoding="async">
             <figcaption>Siempre de tu mano ♡</figcaption>
           </figure>
         </div>
@@ -514,6 +534,19 @@
         <button class="photos-arrow next" id="papaPhotosNext" aria-label="Foto siguiente">❯</button>
       </div>
     </div>
+    </div>
+  </section>
+
+  <!-- ===== FINALE: closing chapter after Papa ===== -->
+  <section class="scene-finale" id="sceneFinale" aria-labelledby="finaleTitle">
+    <div class="finale-inner">
+      <p class="intro-eyebrow">Continuará…</p>
+      <h2 class="finale-title" id="finaleTitle">Esto apenas empieza.</h2>
+      <p class="finale-days"><strong id="finaleDays">---</strong> días juntos, y todos los que faltan.</p>
+      <p class="finale-next" id="finaleNext"></p>
+      <p class="finale-line">Gracias por cada capítulo, mi pispachita. Los mejores todavía no los escribimos.</p>
+      <p class="finale-sign">— Tu monito 🐒</p>
+      <button class="memory-action" id="finaleBackBtn">← Volver al menú</button>
     </div>
   </section>
 
@@ -947,7 +980,7 @@
     <div class="tarapoto-final-message" id="tarapotoFinalMsg">
       <div class="tarapoto-final-message-inner">
       <div class="final-photo">
-        <img src="tpp/IMG-20260403-WA0462.jpg" alt="Nuestra aventura en Tarapoto" />
+        <img loading="lazy" decoding="async" src="assets/photos/tarapoto/IMG-20260403-WA0462.webp" alt="Nuestra aventura en Tarapoto" />
       </div>
       Mi princesa hermosa,<br><br>
       Este viaje a Tarapoto contigo es uno de mis recuerdos favoritos 💚<br>
@@ -967,49 +1000,49 @@
     <div class="photos-slides">
       <div class="photo-slide active" id="photoSlide1">
         <div class="selector-photo-frame">
-          <img src="tpp/IMG-20260403-WA0462.jpg" alt="Nuestra aventura" />
+          <img loading="lazy" decoding="async" src="assets/photos/tarapoto/IMG-20260403-WA0462.webp" alt="Nuestra aventura" />
         </div>
         <p class="selector-photo-caption">Nuestra aventura comienza 🌴</p>
       </div>
       <div class="photo-slide" id="photoSlide2">
         <div class="selector-photo-frame">
-          <img src="tpp/PXL_20260402_114306795.jpg" alt="Explorando" />
+          <img loading="lazy" decoding="async" src="assets/photos/tarapoto/PXL_20260402_114306795.webp" alt="Explorando" />
         </div>
         <p class="selector-photo-caption">Explorando juntos 💚</p>
       </div>
       <div class="photo-slide" id="photoSlide3">
         <div class="selector-photo-frame">
-          <img src="tpp/PXL_20260403_190824066.jpg" alt="Momentos" />
+          <img loading="lazy" decoding="async" src="assets/photos/tarapoto/PXL_20260403_190824066.webp" alt="Momentos" />
         </div>
         <p class="selector-photo-caption">Momentos mágicos ✨</p>
       </div>
       <div class="photo-slide" id="photoSlide4">
         <div class="selector-photo-frame">
-          <img src="tpp/PXL_20260403_191014187.jpg" alt="Recuerdos" />
+          <img loading="lazy" decoding="async" src="assets/photos/tarapoto/PXL_20260403_191014187.webp" alt="Recuerdos" />
         </div>
         <p class="selector-photo-caption">Recuerdos eternos 🦜</p>
       </div>
       <div class="photo-slide" id="photoSlide5">
         <div class="selector-photo-frame">
-          <img src="tpp/PXL_20260403_191016407.jpg" alt="Selva" />
+          <img loading="lazy" decoding="async" src="assets/photos/tarapoto/PXL_20260403_191016407.webp" alt="Selva" />
         </div>
         <p class="selector-photo-caption">La selva nos envuelve 🌿</p>
       </div>
       <div class="photo-slide" id="photoSlide6">
         <div class="selector-photo-frame">
-          <img src="tpp/PXL_20260403_191628044.jpg" alt="Sonrisa" />
+          <img loading="lazy" decoding="async" src="assets/photos/tarapoto/PXL_20260403_191628044.webp" alt="Sonrisa" />
         </div>
         <p class="selector-photo-caption">Tu sonrisa en Tarapoto 💕</p>
       </div>
       <div class="photo-slide" id="photoSlide7">
         <div class="selector-photo-frame">
-          <img src="tpp/PXL_20260403_220942265.jpg" alt="Aventureros" />
+          <img loading="lazy" decoding="async" src="assets/photos/tarapoto/PXL_20260403_220942265.webp" alt="Aventureros" />
         </div>
         <p class="selector-photo-caption">Aventureros del amor 🌺</p>
       </div>
       <div class="photo-slide" id="photoSlide8">
         <div class="selector-photo-frame">
-          <img src="tpp/PXL_20260404_184901807.jpg" alt="Siempre" />
+          <img loading="lazy" decoding="async" src="assets/photos/tarapoto/PXL_20260404_184901807.webp" alt="Siempre" />
         </div>
         <p class="selector-photo-caption">Siempre contigo 💚</p>
       </div>
@@ -1028,25 +1061,25 @@
     <div class="photos-slides">
       <div class="photo-slide active" id="studyPhotoSlide1">
         <div class="selector-photo-frame">
-          <img src="lo/PXL_20260404_181343915.jpg" alt="Recuerdo de mi pispachita" />
+          <img loading="lazy" decoding="async" src="assets/photos/estudio/PXL_20260404_181343915.webp" alt="Recuerdo de mi pispachita" />
         </div>
         <p class="selector-photo-caption">Siempre orgulloso de ti</p>
       </div>
       <div class="photo-slide" id="studyPhotoSlide2">
         <div class="selector-photo-frame">
-          <img src="lo/IMG-20260427-WA0098.jpg" alt="Recuerdo bonito" />
+          <img loading="lazy" decoding="async" src="assets/photos/estudio/IMG-20260427-WA0098.webp" alt="Recuerdo bonito" />
         </div>
         <p class="selector-photo-caption">Tu esfuerzo me inspira</p>
       </div>
       <div class="photo-slide" id="studyPhotoSlide3">
         <div class="selector-photo-frame">
-          <img src="lo/PXL_20260503_133845208.jpg" alt="Momento especial" />
+          <img loading="lazy" decoding="async" src="assets/photos/estudio/PXL_20260503_133845208.webp" alt="Momento especial" />
         </div>
         <p class="selector-photo-caption">Mi moticienta brillante</p>
       </div>
       <div class="photo-slide" id="studyPhotoSlide4">
         <div class="selector-photo-frame">
-          <img src="lo/PXL_20260516_214530313.jpg" alt="Foto favorita" />
+          <img loading="lazy" decoding="async" src="assets/photos/estudio/PXL_20260516_214530313.webp" alt="Foto favorita" />
         </div>
         <p class="selector-photo-caption">Te admiro muchisimo</p>
       </div>
@@ -1093,7 +1126,7 @@
       </header>
       <div class="photo-section" id="photoSection">
         <div class="photo-frame">
-          <img src="lis6.jpg" alt="Nuestra foto" />
+          <img src="assets/photos/lis6.webp" alt="Nuestra foto" loading="lazy" decoding="async" />
         </div>
         <p class="photo-caption">Mi momento favorito ✨</p>
       </div>
@@ -1176,6 +1209,6 @@
     <div class="m-tail"></div>
   </template>
 
-  <script src="js/main.js?v=20261116-9"></script>
+  <script src="js/main.js?v=20261117-2"></script>
 </body>
 </html>
