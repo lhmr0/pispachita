@@ -1171,7 +1171,7 @@
     const lawyerPhotosBackBtn = document.getElementById('lawyerPhotosBackBtn');
     let lawyerTimers = [];
     let lawyerPhotoIndex = 0;
-    const totalLawyerPhotos = 4;
+    const totalLawyerPhotos = document.querySelectorAll('#lawyerPhotosSlider .photo-slide').length;
 
     function scheduleLawyer(fn, delay) {
       const id = setTimeout(fn, delay);
@@ -1231,8 +1231,6 @@
       const monkey = document.getElementById('lawyerMonkey');
       const bouquet = document.getElementById('monkeyBouquet');
 
-      const carriedPrincess = document.querySelector('#lawyerCarriedPrincess > .princess');
-      if (carriedPrincess) princess.appendChild(carriedPrincess);
       if (diploma) diploma.classList.remove('show');
       if (monkeySpeech) monkeySpeech.classList.remove('show');
       if (camFlash) camFlash.classList.remove('flash');
@@ -1240,7 +1238,7 @@
       if (princessSpeech) princessSpeech.classList.remove('show');
       if (bouquet) bouquet.classList.remove('show');
       if (monkey) {
-        monkey.classList.remove('walking', 'cheering', 'carrying-princess');
+        monkey.classList.remove('walking', 'cheering');
         monkey.style.transform = '';
       }
       lawyerPhotoIndex = 0;
@@ -1287,7 +1285,7 @@
           void camFlash.offsetWidth;
           camFlash.classList.add('flash');
         }
-      }, 3800);
+      }, 4800);
 
       // Step 4: Monito approaches with flowers to congratulate her
       scheduleLawyer(() => {
@@ -1310,20 +1308,6 @@
           princessSpeech.classList.add('show');
         }
       }, 7500);
-
-      // Step 6: He lifts her into his arms to celebrate together.
-      scheduleLawyer(() => {
-        const model = princess.querySelector('.princess');
-        princess.classList.remove('triumph');
-        princessSpeech.classList.remove('show');
-        bouquet.classList.remove('show');
-        monkey.style.transform = getComputedStyle(monkey).transform;
-        monkey.classList.remove('walking');
-        document.getElementById('lawyerCarriedPrincess').appendChild(model);
-        monkey.classList.add('carrying-princess');
-        monkeySpeech.textContent = '¡Hoy te llevo en brazos, mi abogada! ❤️';
-        monkeySpeech.classList.add('show');
-      }, 9800);
     }
 
     if (btnLawyer) {
@@ -1371,7 +1355,7 @@
     const papaPhotosBackBtn = document.getElementById('papaPhotosBackBtn');
     let papaTimers = [];
     let papaPhotoIndex = 0;
-    const totalPapaPhotos = 4;
+    const totalPapaPhotos = document.querySelectorAll('#papaPhotosSlider .photo-slide').length;
 
     function schedulePapa(fn, delay) {
       const id = setTimeout(fn, delay);
@@ -1419,6 +1403,7 @@
 
     function resetPapaScene() {
       clearPapaTimers();
+      document.getElementById('papaPilgrims').classList.remove('carrying-princess');
       const papaSpeech = document.getElementById('papaSpeechBubble');
       const princessSpeech = document.getElementById('papaPrincessSpeech');
       const monkeySpeech = document.getElementById('papaMonkeySpeech');
@@ -1455,42 +1440,50 @@
         }
       }, 1200);
 
-      // Step 2: Princess receives the moment with deep faith and happiness
+      // Step 2: She cannot see over the crowd yet.
       schedulePapa(() => {
         if (monkeySpeech) monkeySpeech.classList.remove('show');
         if (princessSpeech) {
-          princessSpeech.textContent = '¡Qué emoción tan grande estar aquí! 🙏❤️';
+          princessSpeech.textContent = '¡Monito, no alcanzo a ver al Papa! 🥺';
           princessSpeech.classList.add('show');
         }
       }, 2800);
 
-      // Step 3: Pope León XIV gives his apostolic blessing with golden light
+      // Step 3: He lifts her onto his shoulders before the blessing.
       schedulePapa(() => {
         if (princessSpeech) princessSpeech.classList.remove('show');
+        document.getElementById('papaPilgrims').classList.add('carrying-princess');
+        monkeySpeech.textContent = '¡A mis hombros, princesa, para que lo veas! ❤️';
+        monkeySpeech.classList.add('show');
+      }, 4500);
+
+      // Step 4: Pope León XIV gives his apostolic blessing with golden light.
+      schedulePapa(() => {
+        monkeySpeech.classList.remove('show');
         if (papaSpeech) {
           papaSpeech.textContent = '¡La paz esté con ustedes! 🕊️✨';
           papaSpeech.classList.add('show');
         }
         spawnHolySparks();
-      }, 4500);
-
-      // Step 4: Monito waves the Vatican flag cheering with the crowd
-      schedulePapa(() => {
-        if (papaSpeech) papaSpeech.classList.remove('show');
-        if (monkeySpeech) {
-          monkeySpeech.textContent = '¡Bendición para ti y tu familia! 🙌💛';
-          monkeySpeech.classList.add('show');
-        }
       }, 6500);
 
-      // Step 5: Princess smiles peacefully under the blessing
+      // Step 5: From his shoulders she can finally see the Pope.
+      schedulePapa(() => {
+        if (papaSpeech) papaSpeech.classList.remove('show');
+        if (princessSpeech) {
+          princessSpeech.textContent = '¡Ahora sí lo veo! Gracias, mi monito. 🕊️❤️';
+          princessSpeech.classList.add('show');
+        }
+      }, 8500);
+
+      // Step 6: They keep sharing the moment together.
       schedulePapa(() => {
         if (monkeySpeech) monkeySpeech.classList.remove('show');
         if (princessSpeech) {
           princessSpeech.textContent = 'Un momento que nunca olvidaré... ✨🕊️';
           princessSpeech.classList.add('show');
         }
-      }, 8500);
+      }, 11000);
     }
 
     if (btnPapa) {

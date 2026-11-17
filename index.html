@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Press+Start+2P&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261116-2">
-  <link rel="stylesheet" href="css/redesign.css?v=20261116-2">
+  <link rel="stylesheet" href="css/style.css?v=20261116-4">
+  <link rel="stylesheet" href="css/redesign.css?v=20261116-4">
 </head>
 <body>
 
@@ -218,6 +218,7 @@
 
     <!-- Courtroom Stage with animated characters -->
     <div class="lawyer-court-stage" id="lawyerStage">
+      <div class="lawyer-speech" id="lawyerPrincessSpeech">¡Defendí mi tesis con éxito! 🎓⚖️</div>
       <!-- Confetti burst container -->
       <div class="lawyer-confetti-wrap" id="lawyerConfetti"></div>
 
@@ -229,7 +230,6 @@
       <!-- Podium / Tribune where the Lawyer Princess stands -->
       <div class="lawyer-podium-wrap">
         <div class="lawyer-princess-wrap" id="lawyerPrincess">
-          <div class="lawyer-speech" id="lawyerPrincessSpeech">¡Defendí mi tesis con éxito! 🎓⚖️</div>
           <div class="lawyer-diploma" id="lawyerDiploma">📜 ¡Título de Abogada! 🎓</div>
           <div class="princess" data-char="princess">
             <!-- Birrete / Graduation Cap -->
@@ -252,7 +252,6 @@
         <!-- Flores de felicitación en sus manos -->
         <div class="monkey-bouquet" id="monkeyBouquet">💐</div>
         <div class="monkey-body" data-char="monkey"></div>
-        <div class="lawyer-carried-princess lawyer-princess-wrap" id="lawyerCarriedPrincess"></div>
         <div class="lawyer-camera-flash" id="lawyerFlash">📸✨</div>
       </div>
     </div>
@@ -269,49 +268,23 @@
       <p>Siempre estaré en primera fila aplaudiendo cada uno de tus triunfos. ¡Felicidades, mi abogada hermosa!</p>
     </div>
 
-    <!-- Photo Gallery for Sustentación / Titulación (Waiting for photos) -->
+    <!-- Photo Gallery for Sustentación / Titulación -->
     <div class="lawyer-photos" id="lawyerPhotos">
       <div class="photos-header">
         <button class="photos-back-btn" id="lawyerPhotosBackBtn" aria-label="Volver al menú">← Volver al menú</button>
-        <span class="photos-counter" id="lawyerPhotosCounter" aria-live="polite" aria-atomic="true">1 / 4</span>
+        <span class="photos-counter" id="lawyerPhotosCounter" aria-live="polite" aria-atomic="true">1 / 1</span>
       </div>
       <div class="photos-slider" id="lawyerPhotosSlider">
         <div class="photo-slide active" id="lawyerPhotoSlide1">
-          <div class="photo-card-placeholder">
-            <span class="placeholder-icon">⚖️👩‍⚖️</span>
-            <h4>Sustentación de Tesis</h4>
-            <p>Ese día brillaste con total seguridad y elocuencia ante el jurado.</p>
-            <span class="placeholder-note">📷 Listo para tus fotos</span>
-          </div>
-        </div>
-        <div class="photo-slide" id="lawyerPhotoSlide2">
-          <div class="photo-card-placeholder">
-            <span class="placeholder-icon">📜✨</span>
-            <h4>La Entrega del Título</h4>
-            <p>La recompensa a años de disciplina, perseverancia y dedicación.</p>
-            <span class="placeholder-note">📷 Listo para tus fotos</span>
-          </div>
-        </div>
-        <div class="photo-slide" id="lawyerPhotoSlide3">
-          <div class="photo-card-placeholder">
-            <span class="placeholder-icon">💐🥂</span>
-            <h4>Celebrando Tu Éxito</h4>
-            <p>El brindis por la nueva abogada más hermosa e inteligente del mundo.</p>
-            <span class="placeholder-note">📷 Listo para tus fotos</span>
-          </div>
-        </div>
-        <div class="photo-slide" id="lawyerPhotoSlide4">
-          <div class="photo-card-placeholder">
-            <span class="placeholder-icon">🏛️⭐</span>
-            <h4>El Inicio de una Gran Trayectoria</h4>
-            <p>El orgullo inmenso de verte cumplir tus sueños con la frente en alto.</p>
-            <span class="placeholder-note">📷 Listo para tus fotos</span>
-          </div>
+          <figure class="chapter-photo">
+            <img src="assets/photos/abogada-titulo.jpg" alt="Celebrando juntos, con tu título de abogada y un ramo de flores." width="960" height="1280" loading="lazy" decoding="async">
+            <figcaption>Tu logro, mi orgullo ♡</figcaption>
+          </figure>
         </div>
       </div>
-      <div class="photos-nav">
+      <div class="photos-nav" hidden>
         <button class="photos-arrow prev" id="lawyerPhotosPrev" aria-label="Foto anterior" disabled>❮</button>
-        <button class="photos-arrow next" id="lawyerPhotosNext" aria-label="Foto siguiente">❯</button>
+        <button class="photos-arrow next" id="lawyerPhotosNext" aria-label="Foto siguiente" disabled>❯</button>
       </div>
     </div>
     </div>
@@ -381,11 +354,11 @@
         <div class="papa-speech" id="papaSpeechBubble">¡La paz y el amor con ustedes! 🕊️✨</div>
       </div>
 
-      <!-- Princess and Monkey holding hands in faith and joy -->
+      <!-- Monito lifts the princess onto his shoulders so she can see the Pope. -->
       <div class="papa-pilgrims-wrap" id="papaPilgrims">
+        <div class="pilgrim-speech" id="papaPrincessSpeech">¡Qué bendición tan hermosa! 🙏💕</div>
         <!-- Princess -->
         <div class="papa-princess-pilgrim" id="papaPrincessPilgrim">
-          <div class="pilgrim-speech" id="papaPrincessSpeech">¡Qué bendición tan hermosa! 🙏💕</div>
           <div class="princess" data-char="princess"></div>
         </div>
 
@@ -416,44 +389,24 @@
       <p>Qué momento tan especial e histórico viviste en tu tierra querida, con la emoción, la fe y la dicha de presenciar esa gran misa papal.</p>
     </div>
 
-    <!-- Photo Gallery for Pope Visit (Waiting for user photos) -->
+    <!-- Photo Gallery for Pope Visit -->
     <div class="papa-photos" id="papaPhotos">
       <div class="photos-header">
         <button class="photos-back-btn" id="papaPhotosBackBtn" aria-label="Volver al menú">← Volver al menú</button>
-        <span class="photos-counter" id="papaPhotosCounter" aria-live="polite" aria-atomic="true">1 / 4</span>
+        <span class="photos-counter" id="papaPhotosCounter" aria-live="polite" aria-atomic="true">1 / 2</span>
       </div>
       <div class="photos-slider" id="papaPhotosSlider">
         <div class="photo-slide active" id="papaPhotoSlide1">
-          <div class="photo-card-placeholder">
-            <span class="placeholder-icon">🕊️⛪</span>
-            <h4>Llegada a las Pampas de Pimentel</h4>
-            <p>La multitud llena de emoción y banderas esperando el inicio de la gran misa papal.</p>
-            <span class="placeholder-note">📷 Listo para tus fotos</span>
-          </div>
+          <figure class="chapter-photo">
+            <img src="assets/photos/papa-encuentro.jpg" alt="Juntos entre la multitud durante la visita del Papa." width="1536" height="2048" loading="lazy" decoding="async">
+            <figcaption>Una bendición compartida ♡</figcaption>
+          </figure>
         </div>
         <div class="photo-slide" id="papaPhotoSlide2">
-          <div class="photo-card-placeholder">
-            <span class="placeholder-icon">🚗✨</span>
-            <h4>El Paso del Papamóvil</h4>
-            <p>El momento cumbre al ver de cerca al Santo Padre saludando y bendiciendo a todos.</p>
-            <span class="placeholder-note">📷 Listo para tus fotos</span>
-          </div>
-        </div>
-        <div class="photo-slide" id="papaPhotoSlide3">
-          <div class="photo-card-placeholder">
-            <span class="placeholder-icon">🙏⛪</span>
-            <h4>La Santa Misa al Aire Libre</h4>
-            <p>Oraciones, cantos y un sentimiento de paz inmensa compartido con miles de fieles.</p>
-            <span class="placeholder-note">📷 Listo para tus fotos</span>
-          </div>
-        </div>
-        <div class="photo-slide" id="papaPhotoSlide4">
-          <div class="photo-card-placeholder">
-            <span class="placeholder-icon">📸💖</span>
-            <h4>Recuerdo de Fe y Familia</h4>
-            <p>Ese día único e histórico que guardas con tanto amor y emoción en tu corazón.</p>
-            <span class="placeholder-note">📷 Listo para tus fotos</span>
-          </div>
+          <figure class="chapter-photo">
+            <img src="assets/photos/papa-manos.jpg" alt="Nuestras manos entrelazadas sobre la mesa." width="1542" height="2048" loading="lazy" decoding="async">
+            <figcaption>Siempre de tu mano ♡</figcaption>
+          </figure>
         </div>
       </div>
       <div class="photos-nav">
@@ -1118,6 +1071,6 @@
     <div class="m-tail"></div>
   </template>
 
-  <script src="js/main.js?v=20261116-2"></script>
+  <script src="js/main.js?v=20261116-4"></script>
 </body>
 </html>
