@@ -531,13 +531,13 @@ button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
 .selector-eyebrow { font-size: 11px; letter-spacing: 1.5px; }
 .selector-screen .selector-card-title br { display: initial; }
 .selector-screen .selector-card-title { font-size: 14px; }
-.selector-screen .selector-card:last-child { grid-column: 1 / -1; }
-.selector-screen .selector-card:last-child .selector-card-inner { min-height: 76px; grid-template-columns: 32px 1fr auto; align-items: center; }
-.selector-screen .selector-card:last-child .selector-card-emoji { grid-column: 1; grid-row: 1 / 3; }
-.selector-screen .selector-card:last-child .selector-card-title { grid-column: 2; }
-.selector-screen .selector-card:last-child .selector-card-date { grid-column: 2; }
-.selector-screen .selector-card:last-child .selector-card-inner::after { grid-column: 3; grid-row: 1 / 3; }
-  .selector-screen .selector-card:last-child br { display: initial; }
+.selector-screen .selector-card:is(.card-papa, .card-finale) { grid-column: 1 / -1; }
+.selector-screen .selector-card:is(.card-papa, .card-finale) .selector-card-inner { min-height: 76px; grid-template-columns: 32px 1fr auto; align-items: center; }
+.selector-screen .selector-card:is(.card-papa, .card-finale) .selector-card-emoji { grid-column: 1; grid-row: 1 / 3; }
+.selector-screen .selector-card:is(.card-papa, .card-finale) .selector-card-title { grid-column: 2; }
+.selector-screen .selector-card:is(.card-papa, .card-finale) .selector-card-date { grid-column: 2; }
+.selector-screen .selector-card:is(.card-papa, .card-finale) .selector-card-inner::after { grid-column: 3; grid-row: 1 / 3; }
+  .selector-screen .selector-card:is(.card-papa, .card-finale) br { display: initial; }
 
 /* A smaller dedication leaves room for the heart, even on a laptop. */
 .cover { justify-content: center; gap: 12px; padding: 64px 20px 24px; overflow-y: auto; }
@@ -674,3 +674,66 @@ button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
   .womens-phrase-title { top: 65px; font-size: 25px; }
   .scene-womens .womens-phrase { bottom: 82px; font-size: 15px; padding-block: 8px; }
 }
+
+/* ===== MUSIC TOGGLE ===== */
+.music-btn {
+  position: fixed; top: 18px; right: 18px; z-index: 10002;
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1px solid #edc8ad66; background: #341421dd; color: #fff1dd;
+  font-size: 1.2rem; cursor: pointer; touch-action: manipulation;
+  box-shadow: 0 4px 18px #14081230;
+}
+.music-btn:not(.off) { animation: music-pulse 2.4s ease-in-out infinite; }
+.music-btn.off { opacity: .55; text-decoration: line-through; }
+.music-btn:focus-visible { outline: 2px solid #fff1dd; outline-offset: 3px; }
+@keyframes music-pulse { 50% { box-shadow: 0 0 0 6px #edc8ad22, 0 4px 18px #14081230; } }
+@media (prefers-reduced-motion: reduce) { .music-btn { animation: none !important; } }
+@media (max-width: 600px) { .music-btn { top: 12px; right: 12px; } }
+
+/* ===== INTRO GATE ===== */
+.intro-gate {
+  position: fixed; inset: 0; z-index: 10010;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px; padding: 24px 16px; text-align: center; color: var(--cream);
+  background: radial-gradient(ellipse at 50% 30%, #782e40 0%, transparent 65%),
+              linear-gradient(160deg, #35101e, #54182d 60%, #431222);
+  transition: opacity .7s ease, visibility .7s;
+}
+.intro-gate.leaving { opacity: 0; visibility: hidden; }
+.intro-eyebrow { margin: 0; font: italic 14px 'Lora', serif; color: #e3c1bd; letter-spacing: .5px; }
+.intro-title { margin: 0; font: 700 clamp(42px, 9vw, 76px)/1.05 'Dancing Script', cursive; }
+.intro-title em { font-style: normal; color: var(--rose); }
+.intro-enter {
+  margin-top: 10px; padding: 14px 30px; border-radius: 999px; cursor: pointer;
+  border: 1px solid #edc8ad88; background: #fff1dd14; color: var(--cream);
+  font: 600 17px 'Lora', serif; touch-action: manipulation;
+  animation: music-pulse 2.4s ease-in-out infinite;
+}
+.intro-enter:hover { background: #fff1dd26; }
+.intro-hint { margin: 0; font: 13px 'Lora', serif; color: #e3c1bdaa; }
+@media (prefers-reduced-motion: reduce) { .intro-enter { animation: none; } .intro-gate { transition: none; } }
+
+/* ===== VISITED CHAPTER MARK ===== */
+.selector-screen .selector-card.visited::after {
+  content: '✓'; position: absolute; right: 12px; bottom: 10px;
+  font: 600 13px 'Lora', serif; color: var(--gold); opacity: .85;
+}
+
+/* ===== FINALE CARD + SCENE ===== */
+.selector-screen .card-finale .selector-card-inner { border-style: dashed; }
+.scene-finale {
+  position: fixed; inset: 0; z-index: 100; overflow-y: auto;
+  display: flex; align-items: center; justify-content: center; padding: 72px 16px 32px;
+  color: var(--cream); text-align: center;
+  background: radial-gradient(ellipse at 50% 20%, #782e40 0%, transparent 60%),
+              linear-gradient(160deg, #35101e, #54182d 60%, #431222);
+  visibility: hidden; opacity: 0; pointer-events: none; transition: opacity .5s ease, visibility .5s;
+}
+.scene-finale.visible { visibility: visible; opacity: 1; pointer-events: auto; }
+.finale-inner { max-width: 560px; display: grid; gap: 16px; justify-items: center; }
+.finale-title { margin: 0; font: 700 clamp(36px, 8vw, 60px)/1.1 'Dancing Script', cursive; }
+.finale-days { margin: 0; font: 17px 'Lora', serif; color: #f3d9cf; }
+.finale-days strong { font-size: 30px; color: var(--cream); }
+.finale-next { margin: 0; padding: 12px 18px; border: 1px solid #d7b78255; border-radius: 12px; font: italic 16px/1.5 'Lora', serif; color: var(--gold); }
+.finale-line { margin: 0; font: 17px/1.6 'Lora', serif; }
+.finale-sign { margin: 0; font: 700 22px 'Dancing Script', cursive; color: var(--rose); }
