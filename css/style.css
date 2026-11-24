@@ -915,6 +915,23 @@ button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
 }
 .scene-study.visible { opacity: 1; visibility: visible; pointer-events: auto; }
 .scene-study .chapter-details { background: #101c2a; }
+/* Study real outfits: her dark blazer + gold buckle; his black tee + gold chain + tattoo band */
+.scene-study .princess-crown { display: none; }
+.scene-study .princess-dress-top { background: linear-gradient(105deg, #1b1e24, #2a2f38 50%, #16181d); box-shadow: inset 0 2px 0 #3f4552; }
+.scene-study .princess-dress-top::after { background: linear-gradient(90deg, #1b1e24 38%, #d7b782 40% 60%, #1b1e24 62%); height: 4px; }
+.scene-study .princess-arm::before { background: #1b1e24; }
+.scene-study .princess-dress-bottom { background: linear-gradient(180deg, #1b1e24, #111318); }
+.scene-study .princess-dress-sparkle { display: none; }
+.scene-study .monkey-body .m-torso { background: linear-gradient(180deg, #242830, #14171c); position: relative; }
+.scene-study .monkey-body .m-torso::after {
+  content: ''; position: absolute; top: 3px; left: 50%; transform: translateX(-50%);
+  width: 22px; height: 9px; border: 2px solid #e5b94c; border-top: none; border-radius: 0 0 12px 12px;
+}
+.scene-study .monkey-body .m-belly { display: none; }
+.scene-study .monkey-body .m-arm.l::after {
+  content: ''; position: absolute; top: 10px; left: 1px; right: 1px; height: 14px;
+  background: repeating-linear-gradient(135deg, #2d2622 0 3px, transparent 3px 6px); opacity: .7; border-radius: 4px;
+}
 .study-room-grid {
   position: absolute; inset: 0; opacity: .24;
   background-image: linear-gradient(rgba(255,230,140,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(120,210,255,.12) 1px, transparent 1px);
@@ -1083,12 +1100,17 @@ button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
 .scene-tarapoto .princess-arm::before { background: #6e1a2f; }
 .scene-tarapoto .princess-dress-bottom { background: linear-gradient(180deg, #e2d4bc, #c7b599); }
 .scene-tarapoto .princess-dress-sparkle { display: none; }
-.scene-tarapoto .monkey .m-torso { background: linear-gradient(180deg, #252932, #15181e); position: relative; }
-.scene-tarapoto .monkey .m-torso::after {
+.scene-tarapoto .princess-head::after {
+  content: ''; position: absolute; top: 18px; left: 9px; width: 13px; height: 11px; z-index: 9;
+  background: linear-gradient(135deg, #2e333d 0 30%, #0e1014 31%); border: 1.5px solid #3c424d; border-radius: 50%;
+  box-shadow: 17px 0 0 0 #0e1014, 17px 0 0 1.5px #3c424d, 8.5px -3px 0 -4.5px #3c424d;
+}
+.scene-tarapoto .monkey-body .m-torso { background: linear-gradient(180deg, #252932, #15181e); position: relative; }
+.scene-tarapoto .monkey-body .m-torso::after {
   content: ''; position: absolute; top: 3px; left: 50%; transform: translateX(-50%);
   width: 22px; height: 9px; border: 2px solid #e5b94c; border-top: none; border-radius: 0 0 12px 12px;
 }
-.scene-tarapoto .monkey .m-belly { display: none; }
+.scene-tarapoto .monkey-body .m-belly { display: none; }
 /* His iconic Tarapoto look: black New Era cap with grey underbrim + black square sunglasses */
 .scene-tarapoto .m-hair-tuft {
   top: -7px; left: 28px; width: 44px; height: 15px; transform: rotate(-4deg);
@@ -1256,6 +1278,36 @@ button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
 .lawyer-court-stage, .papa-stage { position: relative; width: 100%; height: 100%; overflow: hidden; z-index: 3; }
 .scene-lawyer .lawyer-court-stage { grid-row: 2; align-self: stretch; }
 .scene-papa .papa-stage { position: absolute; inset: 0; }
+/* Papa visit real outfits: her cream top + yellow bag strap + black skirt + sunglasses; his white shirt + brown backpack straps + sunglasses */
+.scene-papa .princess-crown { display: none; }
+.scene-papa .princess-head::after {
+  content: ''; position: absolute; top: 18px; left: 9px; width: 13px; height: 9px; z-index: 9;
+  background: linear-gradient(135deg, #2b2f38 0 30%, #0d0f13 31%); border: 1.5px solid #c9a75c; border-radius: 50% 50% 45% 45%;
+  box-shadow: 17px 0 0 0 #0d0f13, 17px 0 0 1.5px #c9a75c, 8.5px -2px 0 -4px #0d0f13;
+}
+.scene-papa .princess-dress-top {
+  background: linear-gradient(125deg, #f4ead8 0 64%, #d8ae3a 64% 72%, #f4ead8 72%);
+  box-shadow: inset 0 2px 0 #fffaf0;
+}
+.scene-papa .princess-dress-top::after { display: none; }
+.scene-papa .princess-arm::before { display: none; }
+.scene-papa .princess-dress-bottom { background: linear-gradient(180deg, #22252c, #14161b); }
+.scene-papa .princess-dress-sparkle { display: none; }
+.scene-papa .monkey-body .m-torso {
+  background: linear-gradient(90deg, #f3f5f8 0 16%, #5c3a21 16% 26%, #f3f5f8 26% 74%, #5c3a21 74% 84%, #f3f5f8 84%);
+  position: relative;
+}
+.scene-papa .monkey-body .m-torso::after {
+  content: ''; position: absolute; top: 3px; left: 50%; transform: translateX(-50%);
+  width: 22px; height: 9px; border: 2px solid #e5b94c; border-top: none; border-radius: 0 0 12px 12px;
+}
+.scene-papa .monkey-body .m-belly { display: none; }
+.scene-papa .monkey-body .m-head::after {
+  content: ''; position: absolute; top: 18px; left: 12px; width: 17px; height: 12px; z-index: 9;
+  background: linear-gradient(135deg, #2a2e38 0 32%, #0d0f13 33%);
+  border: 1.5px solid #090a0d; border-radius: 4px 4px 7px 7px;
+  box-shadow: 20px 0 0 0 #0d0f13, 20px 0 0 1.5px #090a0d, 10px -3px 0 -4px #090a0d;
+}
 .lawyer-court-stage::before {
   content: ''; position: absolute; inset: 22% 10% 15%;
   border: 1px solid #d7b78230; border-radius: 180px 180px 0 0;
