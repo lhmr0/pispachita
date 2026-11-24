@@ -459,6 +459,13 @@ button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
   background: linear-gradient(105deg, #c04a75, #f4a5bf 40%, #d85f8c);
   box-shadow: inset 0 2px 0 #ffd7df, inset -3px 0 0 #a1356620;
 }
+/* Shared SVG character accessories (shown per-scene) */
+.char-cap, .char-shades { display: none; position: absolute; pointer-events: none; z-index: 12; }
+.princess-cap { top: -15px; left: -3px; width: 68px; height: 30px; transform: rotate(-3deg); z-index: 10; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .2)); }
+.princess-shades { top: 15px; left: -1px; width: 48px; height: 16px; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .28)); }
+.monkey-cap { top: -17px; left: -5px; width: 74px; height: 34px; transform: rotate(-4deg); z-index: 10; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .28)); }
+.monkey-shades { top: 8px; left: -2px; width: 60px; height: 18px; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .28)); }
+
 .princess-dress-top::after {
   content: ''; position: absolute; left: 0; right: 0; bottom: 3px; height: 4px;
   background: linear-gradient(90deg, #e5b769, #fff0ba, #e5b769); border-radius: 2px;
@@ -915,9 +922,13 @@ button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
 }
 .scene-study.visible { opacity: 1; visibility: visible; pointer-events: auto; }
 .scene-study .chapter-details { background: #101c2a; }
-/* Study real outfits: her dark blazer + gold buckle; his black tee + gold chain + tattoo band */
+/* Study real outfits: her dark blazer + crisp lapel + gold buckle; his black tee + gold chain + tattoo band */
 .scene-study .princess-crown { display: none; }
-.scene-study .princess-dress-top { background: linear-gradient(105deg, #1b1e24, #2a2f38 50%, #16181d); box-shadow: inset 0 2px 0 #3f4552; }
+.scene-study .princess-dress-top { background: linear-gradient(105deg, #1b1e24, #2a2f38 50%, #16181d); box-shadow: inset 0 2px 0 #3f4552; position: relative; }
+.scene-study .princess-dress-top::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 10px solid #f2ebe1;
+}
 .scene-study .princess-dress-top::after { background: linear-gradient(90deg, #1b1e24 38%, #d7b782 40% 60%, #1b1e24 62%); height: 4px; }
 .scene-study .princess-arm::before { background: #1b1e24; }
 .scene-study .princess-dress-bottom { background: linear-gradient(180deg, #1b1e24, #111318); }
@@ -1088,41 +1099,24 @@ button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
 }
 .title-palm-svg { width: 1.05em; height: 1.05em; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .35)); }
 .tarapoto-float svg { width: clamp(22px, 2.8vw, 34px); height: clamp(22px, 2.8vw, 34px); display: block; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .18)); }
-/* Tarapoto real outfits: she in light cap + burgundy top + beige skirt; he in black tee */
+/* Tarapoto real outfits: she in light cap + sunglasses + burgundy top + beige skirt; he in black New Era cap + square shades + black tee */
 .scene-tarapoto .princess-crown { display: none; }
-.scene-tarapoto .princess-hair-top::after {
-  content: ''; position: absolute; top: -6px; left: 12px; width: 42px; height: 14px;
-  background: linear-gradient(180deg, #e5dfd5, #c8c0b4); border-radius: 22px 22px 5px 5px;
-  box-shadow: 9px 6px 0 -2px #b5ad9f, 0 2px 4px rgba(0, 0, 0, .2);
-}
+.scene-tarapoto .princess-cap,
+.scene-tarapoto .princess-shades,
+.scene-tarapoto .monkey-cap,
+.scene-tarapoto .monkey-shades { display: block; }
 .scene-tarapoto .princess-dress-top { background: linear-gradient(180deg, #6e1a2f, #4c1020); box-shadow: inset 0 2px 0 #8c2a44; }
 .scene-tarapoto .princess-dress-top::after { background: #5a1225; }
 .scene-tarapoto .princess-arm::before { background: #6e1a2f; }
 .scene-tarapoto .princess-dress-bottom { background: linear-gradient(180deg, #e2d4bc, #c7b599); }
 .scene-tarapoto .princess-dress-sparkle { display: none; }
-.scene-tarapoto .princess-head::after {
-  content: ''; position: absolute; top: 18px; left: 9px; width: 13px; height: 11px; z-index: 9;
-  background: linear-gradient(135deg, #2e333d 0 30%, #0e1014 31%); border: 1.5px solid #3c424d; border-radius: 50%;
-  box-shadow: 17px 0 0 0 #0e1014, 17px 0 0 1.5px #3c424d, 8.5px -3px 0 -4.5px #3c424d;
-}
 .scene-tarapoto .monkey-body .m-torso { background: linear-gradient(180deg, #252932, #15181e); position: relative; }
 .scene-tarapoto .monkey-body .m-torso::after {
   content: ''; position: absolute; top: 3px; left: 50%; transform: translateX(-50%);
   width: 22px; height: 9px; border: 2px solid #e5b94c; border-top: none; border-radius: 0 0 12px 12px;
 }
 .scene-tarapoto .monkey-body .m-belly { display: none; }
-/* His iconic Tarapoto look: black New Era cap with grey underbrim + black square sunglasses */
-.scene-tarapoto .m-hair-tuft {
-  top: -7px; left: 28px; width: 44px; height: 15px; transform: rotate(-4deg);
-  background: linear-gradient(180deg, #1b1d22, #0e1014); border-radius: 22px 22px 4px 4px;
-  box-shadow: 11px 6px 0 -2px #b7bcc4, 0 2px 4px rgba(0, 0, 0, .28);
-}
-.scene-tarapoto .m-head::after {
-  content: ''; position: absolute; top: 18px; left: 12px; width: 17px; height: 12px; z-index: 9;
-  background: linear-gradient(135deg, #2a2e38 0 32%, #0d0f13 33%);
-  border: 1.5px solid #090a0d; border-radius: 3px;
-  box-shadow: 20px 0 0 0 #0d0f13, 20px 0 0 1.5px #090a0d, 10px -3px 0 -4px #090a0d;
-}
+.scene-tarapoto .m-hair-tuft { display: none; }
 .tarapoto-title.show { animation: phraseReveal .9s ease forwards; }
 .tarapoto-narrative-position { position: absolute; z-index: 20; top: 15%; left: 50%; transform: translateX(-50%); width: min(580px, calc(100% - 32px)); pointer-events: none; }
 .tarapoto-narrative {
@@ -1280,11 +1274,8 @@ button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
 .scene-papa .papa-stage { position: absolute; inset: 0; }
 /* Papa visit real outfits: her cream top + yellow bag strap + black skirt + sunglasses; his white shirt + brown backpack straps + sunglasses */
 .scene-papa .princess-crown { display: none; }
-.scene-papa .princess-head::after {
-  content: ''; position: absolute; top: 18px; left: 9px; width: 13px; height: 9px; z-index: 9;
-  background: linear-gradient(135deg, #2b2f38 0 30%, #0d0f13 31%); border: 1.5px solid #c9a75c; border-radius: 50% 50% 45% 45%;
-  box-shadow: 17px 0 0 0 #0d0f13, 17px 0 0 1.5px #c9a75c, 8.5px -2px 0 -4px #0d0f13;
-}
+.scene-papa .princess-shades,
+.scene-papa .monkey-shades { display: block; }
 .scene-papa .princess-dress-top {
   background: linear-gradient(125deg, #f4ead8 0 64%, #d8ae3a 64% 72%, #f4ead8 72%);
   box-shadow: inset 0 2px 0 #fffaf0;
@@ -1302,12 +1293,6 @@ button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
   width: 22px; height: 9px; border: 2px solid #e5b94c; border-top: none; border-radius: 0 0 12px 12px;
 }
 .scene-papa .monkey-body .m-belly { display: none; }
-.scene-papa .monkey-body .m-head::after {
-  content: ''; position: absolute; top: 18px; left: 12px; width: 17px; height: 12px; z-index: 9;
-  background: linear-gradient(135deg, #2a2e38 0 32%, #0d0f13 33%);
-  border: 1.5px solid #090a0d; border-radius: 4px 4px 7px 7px;
-  box-shadow: 20px 0 0 0 #0d0f13, 20px 0 0 1.5px #090a0d, 10px -3px 0 -4px #090a0d;
-}
 .lawyer-court-stage::before {
   content: ''; position: absolute; inset: 22% 10% 15%;
   border: 1px solid #d7b78230; border-radius: 180px 180px 0 0;
@@ -1405,16 +1390,32 @@ button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
   position: absolute; left: 22vw; bottom: 22svh; z-index: 6;
   display: flex; flex-direction: column; align-items: center;
   scale: var(--cast-scale); transform-origin: bottom left;
+  transform: translateX(-42vw); opacity: 0;
+  transition: transform 2.2s cubic-bezier(.22, .85, .36, 1), opacity .7s ease;
 }
-.papa-popemobile-wrap.advancing { animation: popemobileDrive 2.8s ease-in-out infinite alternate; }
-@keyframes popemobileDrive { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+.papa-popemobile-wrap.advancing {
+  transform: translateX(0); opacity: 1;
+  animation: popemobileCruise 3.2s ease-in-out 2.2s infinite alternate;
+}
+@keyframes popemobileCruise {
+  0%   { transform: translateX(-8px) translateY(0); }
+  50%  { transform: translateX(12px) translateY(-3px); }
+  100% { transform: translateX(26px) translateY(-1px); }
+}
 .popemobile-glass-cabin { width: 110px; height: 110px; background: linear-gradient(115deg, #ffffff35, #d9f4ff0a 45%, #ffffff38); border: 2px solid rgba(255,255,255,.6); border-radius: 18px 18px 4px 4px; display: flex; align-items: flex-end; justify-content: center; }
 .popemobile-body { width: 140px; height: 42px; background: linear-gradient(#fffdf8, #dedbd2); border-radius: 6px 6px 12px 12px; border: 2px solid #e0e0e0; position: relative; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,0,0,.4); }
 .flag-va { display: inline-block; width: 24px; height: 16px; border-radius: 2px; background: linear-gradient(90deg,#ffd700 50%,#fff 50%); box-shadow: 0 0 0 1px rgba(0,0,0,.2); }
 .popemobile-wheel { position: absolute; bottom: -12px; width: 26px; height: 26px; background: #212121; border-radius: 50%; border: 3px solid #757575; }
+.popemobile-wheel::after {
+  content: ''; position: absolute; inset: 4px; border-radius: 50%;
+  background: repeating-conic-gradient(#b5b8c0 0 20deg, transparent 20deg 90deg);
+}
+.papa-popemobile-wrap.advancing .popemobile-wheel { animation: wheelSpin .7s linear infinite; }
 .popemobile-wheel.w-left { left: 16px; } .popemobile-wheel.w-right { right: 16px; }
 
-.pope-character { position: relative; width: 65px; height: 95px; display: flex; flex-direction: column; align-items: center; }
+.pope-character { position: relative; width: 65px; height: 95px; display: flex; flex-direction: column; align-items: center; transform-origin: bottom center; }
+.papa-popemobile-wrap.advancing .pope-character { animation: popeSway 2.4s ease-in-out infinite alternate; }
+@keyframes popeSway { 0% { transform: rotate(-2deg) translateY(0); } 100% { transform: rotate(2.5deg) translateY(-2px); } }
 .pope-head { width: 37px; height: 43px; flex-shrink: 0; border-radius: 46% 46% 44% 44%; background: radial-gradient(circle at 35% 30%, #ffe8cf, #dfb196); box-shadow: inset -3px -2px 0 #c9927235; position: relative; margin-top: 2px; z-index: 2; }
 .pope-zucchetto { position: absolute; width: 32px; height: 9px; top: -4px; left: 2px; border-radius: 70% 70% 20% 20%; background: linear-gradient(#fffefa, #dddcd6); }
 .pope-hair { position: absolute; top: 2px; width: 7px; height: 23px; background: repeating-linear-gradient(100deg, #c7c7bf 0 1px, #e8e5db 2px 3px); }
